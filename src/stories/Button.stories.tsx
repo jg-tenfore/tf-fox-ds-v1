@@ -8,7 +8,7 @@ import { Button } from "@/components/base/buttons/button";
  * the primary action is near-black; everything else is greyscale.
  */
 const meta = {
-    title: "Base/Button",
+    title: "Base Components/Button",
     component: Button,
     parameters: { layout: "centered" },
     argTypes: {

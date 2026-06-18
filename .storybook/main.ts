@@ -14,7 +14,10 @@ const config: StorybookConfig = {
   ],
   "framework": "@storybook/nextjs-vite",
   "staticDirs": [
-    "../public"
+    "../public",
+    // Serve Sagamore brand imagery at a stable absolute URL (/sagamore-images/...)
+    // in both dev and static builds, independent of Vite asset resolution.
+    { "from": "../images/sagamore", "to": "/sagamore-images" }
   ]
 };
 export default config;
