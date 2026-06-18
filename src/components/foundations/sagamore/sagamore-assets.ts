@@ -9,8 +9,14 @@
  * sandboxed preview iframe — unlike bundled `import.meta.url` asset URLs.
  */
 
-/** Public base path — must match the `staticDirs` mapping in .storybook/main.ts. */
-const SAGAMORE_BASE = "/sagamore-images";
+/**
+ * Public base path — must match the `staticDirs` mapping in .storybook/main.ts.
+ * Relative (no leading slash) so it resolves correctly whether Storybook is
+ * served from the domain root (dev / local static) or a repo subpath (GitHub
+ * Pages, e.g. /tf-fox-ds-v1/). The Storybook preview iframe resolves it against
+ * its own URL, which already carries the right base.
+ */
+const SAGAMORE_BASE = "sagamore-images";
 
 export type SagamoreAssetCategory = "logo" | "dining" | "photography";
 

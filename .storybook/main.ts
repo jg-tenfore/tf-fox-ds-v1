@@ -15,9 +15,17 @@ const config: StorybookConfig = {
   "framework": "@storybook/nextjs-vite",
   "staticDirs": [
     "../public",
-    // Serve Sagamore brand imagery at a stable absolute URL (/sagamore-images/...)
-    // in both dev and static builds, independent of Vite asset resolution.
+    // Serve Sagamore brand imagery at a stable URL (sagamore-images/...) in both
+    // dev and static builds, independent of Vite asset resolution.
     { "from": "../images/sagamore", "to": "/sagamore-images" }
-  ]
+  ],
+  // When building for GitHub Pages the site is served from a repo subpath, so
+  // the production bundle needs that base. Dev stays at root.
+  viteFinal: async (viteConfig, { configType }) => {
+    if (configType === "PRODUCTION") {
+      viteConfig.base = "/tf-fox-ds-v1/";
+    }
+    return viteConfig;
+  },
 };
 export default config;
