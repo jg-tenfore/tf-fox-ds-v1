@@ -61,6 +61,7 @@ const reviewCount = 187;
 
 const meta = {
     title: "Explorations/SevenRooms + GolfNow",
+    tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

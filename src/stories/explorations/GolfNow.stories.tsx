@@ -39,6 +39,7 @@ import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
  */
 const meta = {
     title: "Explorations/GolfNow",
+    tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

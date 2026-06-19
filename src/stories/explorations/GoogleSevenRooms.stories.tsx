@@ -46,6 +46,7 @@ const gallery = photos.slice(1, 4);
 
 const meta = {
     title: "Explorations/Google + SevenRooms",
+    tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

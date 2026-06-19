@@ -33,6 +33,7 @@ const gallery = photos.slice(1, 6);
 
 const meta = {
     title: "Explorations/SevenRooms",
+    tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

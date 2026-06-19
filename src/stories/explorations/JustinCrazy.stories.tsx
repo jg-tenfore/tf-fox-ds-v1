@@ -28,8 +28,7 @@ import { cx } from "@/utils/cx";
  * period. Deals are shown via a discounted price, not badges. Sagamore Spring data.
  */
 const meta = {
-    title: "Explorations/Google",
-    tags: ["!dev"],
+    title: "Explorations/Justin Crazy",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 
@@ -133,6 +132,7 @@ interface TeeOption extends TeeTime {
     wasPrice?: number;
     lastSpot: boolean;
     backNine: boolean;
+    holesLabel: string;
 }
 
 /**
@@ -141,7 +141,7 @@ interface TeeOption extends TeeTime {
  * and all twilight slots.
  */
 const MAX_MIDDAY_DEALS = 2;
-const buildOptions = (slots: TeeTime[], opts: { holes: 9 | 18; ride: Ride; weekend: boolean }): TeeOption[] => {
+const buildOptions = (slots: TeeTime[], opts: { holes: 9 | 18; ride: Ride; weekend: boolean; nine?: "front" | "back" }): TeeOption[] => {
     let middayDeals = 0;
     return slots.map((slot, i) => {
         const standard = greenFeeRate(opts.holes, opts.weekend);
@@ -162,9 +162,10 @@ const buildOptions = (slots: TeeTime[], opts: { holes: 9 | 18; ride: Ride; weeke
         }
         // morning: never a hot deal
 
-        // 9 holes in the morning play the back 9 only (front 9 holds 18-hole groups) until the afternoon.
+        // 9-hole mornings default to the back 9 (front 9 holds 18-hole groups) unless front/back is chosen.
         const backNine = opts.holes === 9 && slot.timeOfDay === "morning";
-        return { ...slot, holes: opts.holes, ride: RIDE_LABEL[opts.ride], rideFee: RIDE_FEE[opts.ride], rideFeeLabel: RIDE_FEE_LABEL[opts.ride], players: slot.spotsAvailable, isDeal, price, wasPrice, lastSpot, backNine };
+        const holesLabel = opts.holes === 18 ? "18 holes" : opts.nine === "front" ? "Front 9" : opts.nine === "back" ? "Back 9" : backNine ? "Back 9" : "9 holes";
+        return { ...slot, holes: opts.holes, ride: RIDE_LABEL[opts.ride], rideFee: RIDE_FEE[opts.ride], rideFeeLabel: RIDE_FEE_LABEL[opts.ride], players: slot.spotsAvailable, isDeal, price, wasPrice, lastSpot, backNine, holesLabel };
     });
 };
 
@@ -608,7 +609,7 @@ const TimeCard = ({ option, selected, onSelect, golfers }: { option: TeeOption; 
             <Money amount={option.price} className={cx("text-sm font-semibold", option.wasPrice ? "text-success-primary" : "text-primary")} />
         </div>
         <div className="flex items-center gap-1.5 text-xs text-tertiary">
-            <span>{option.backNine ? "Back 9" : `${option.holes} holes`}</span>
+            <span>{option.holesLabel}</span>
             <span aria-hidden>·</span>
             <span>{option.ride}</span>
         </div>
@@ -994,9 +995,10 @@ const NotifyEmptyState = ({ date, golfers, nearest, onJump }: { date: Date; golf
     </div>
 );
 
-const SearchBookingModule = () => {
-    const [selected, setSelected] = useState(DEFAULT_DATE);
-    const [rateType, setRateType] = useState<"weekday" | "weekend">("weekday");
+const SearchBookingModule = ({ variant = "june19" }: { variant?: "june19" | "june20" }) => {
+    const isV2 = variant === "june20";
+    const [selected, setSelected] = useState<Date>(isV2 ? new Date(2026, 5, 20) : DEFAULT_DATE);
+    const [rateType, setRateType] = useState<"weekday" | "weekend">(isV2 ? "weekend" : "weekday");
     const [golfers, setGolfers] = useState(2);
     const [holes, setHoles] = useState<9 | 18>(18);
     const [ride, setRide] = useState<Ride>("cart");
@@ -1037,6 +1039,11 @@ const SearchBookingModule = () => {
 
     return (
         <div className="mx-auto w-full max-w-5xl px-4">
+            {isV2 ? (
+                <div className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-medium text-brand-secondary">
+                    <Zap className="size-4" /> Weekend twilight rates are live — book after 3 PM and save
+                </div>
+            ) : null}
             <Hero />
 
             {/* Sticky pill search bar — gains the Sagamore info once scrolled to the top */}
@@ -1137,30 +1144,284 @@ const SearchBookingModule = () => {
     );
 };
 
+/* =================== June 20 — Google-Flights chip bar version ============= */
+
+/** A filters-panel row: a heading with a vertical list of radio buttons. */
+const RadioRow = ({ label, options, value, onChange }: { label: string; options: { id: string; label: string }[]; value: string; onChange: (v: string) => void }) => (
+    <div className="py-4">
+        <h3 className="mb-3 text-sm font-semibold text-primary">{label}</h3>
+        <RadioGroup value={value} onChange={onChange} aria-label={label} className="flex flex-col gap-3">
+            {options.map((o) => (
+                <RadioButton key={o.id} value={o.id} label={o.label} />
+            ))}
+        </RadioGroup>
+    </div>
+);
+
+interface June20Filters {
+    deals: boolean;
+    setDeals: (v: boolean) => void;
+    holes: 9 | 18;
+    setHoles: (h: 9 | 18) => void;
+    nine: "front" | "back";
+    setNine: (n: "front" | "back") => void;
+    ride: Ride;
+    setRide: (r: Ride) => void;
+}
+
+const June20FiltersPanel = ({ open, onClose, state }: { open: boolean; onClose: () => void; state: June20Filters }) => {
+    if (!open) return null;
+    const clearAll = () => {
+        state.setDeals(false);
+        state.setHoles(18);
+        state.setRide("cart");
+    };
+    return (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-overlay/50 p-4 backdrop-blur-[2px]" onClick={onClose}>
+            <div onClick={(e) => e.stopPropagation()} className="mt-12 flex max-h-[80vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-primary shadow-xl ring-1 ring-secondary">
+                <header className="flex items-center justify-between border-b border-secondary px-5 py-4">
+                    <h2 className="text-lg font-semibold text-primary">Filters</h2>
+                    <button type="button" aria-label="Close" onClick={onClose} className="flex size-8 items-center justify-center rounded-md text-fg-quaternary hover:bg-secondary_hover">
+                        <XClose className="size-5" />
+                    </button>
+                </header>
+                <div className="flex-1 divide-y divide-secondary overflow-y-auto px-5">
+                    {/* Hot deals — switch with icon */}
+                    <div className="flex items-center justify-between gap-4 py-3.5">
+                        <span className="flex items-center gap-3">
+                            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success-secondary text-fg-success-primary">
+                                <Zap className="size-5" />
+                            </span>
+                            <span className="flex flex-col">
+                                <span className="text-sm font-medium text-primary">Hot deals</span>
+                                <span className="text-xs text-tertiary">Only show discounted tee times</span>
+                            </span>
+                        </span>
+                        <Toggle isSelected={state.deals} onChange={state.setDeals} />
+                    </div>
+                    <RadioRow
+                        label="Getting around"
+                        options={[
+                            { id: "walking", label: "Walking" },
+                            { id: "cart", label: "Cart" },
+                            { id: "pull-cart", label: "Pull cart" },
+                        ]}
+                        value={state.ride}
+                        onChange={(v) => state.setRide(v as Ride)}
+                    />
+                    <RadioRow
+                        label="Holes"
+                        options={[
+                            { id: "18", label: "18 holes" },
+                            { id: "9", label: "9 holes" },
+                        ]}
+                        value={state.holes === 18 ? "18" : "9"}
+                        onChange={(v) => state.setHoles(v === "18" ? 18 : 9)}
+                    />
+                    {/* Conditional — only when 9 holes is chosen */}
+                    {state.holes === 9 ? (
+                        <RadioRow
+                            label="Which nine"
+                            options={[
+                                { id: "front", label: "Front 9" },
+                                { id: "back", label: "Back 9" },
+                            ]}
+                            value={state.nine}
+                            onChange={(v) => state.setNine(v as "front" | "back")}
+                        />
+                    ) : null}
+                </div>
+                <footer className="flex items-center justify-center border-t border-secondary px-5 py-3.5">
+                    <button type="button" onClick={clearAll} className="flex items-center gap-1.5 text-sm font-medium text-secondary transition duration-100 ease-linear hover:text-primary">
+                        <XClose className="size-4" /> Clear all filters
+                    </button>
+                </footer>
+            </div>
+        </div>
+    );
+};
+
+const June20Module = () => {
+    const [selected, setSelected] = useState<Date>(new Date(2026, 5, 20));
+    const [rateType, setRateType] = useState<"weekday" | "weekend">("weekend");
+    const [golfers, setGolfers] = useState(2);
+    const [holes, setHoles] = useState<9 | 18>(18);
+    const [nine, setNine] = useState<"front" | "back">("back");
+    const [ride, setRide] = useState<Ride>("cart");
+    const [time, setTime] = useState("all-day");
+    const [deals, setDeals] = useState(false);
+    const [slot, setSlot] = useState<string | null>(null);
+    const [openChip, setOpenChip] = useState<null | "date" | "time" | "golfers">(null);
+    const [filtersOpen, setFiltersOpen] = useState(false);
+    const toggleChip = (k: "date" | "time" | "golfers") => setOpenChip((p) => (p === k ? null : k));
+    const close = () => setOpenChip(null);
+
+    // Show the Sagamore info in the sticky search bar once it's scrolled to the top.
+    const sentinelRef = useRef<HTMLDivElement>(null);
+    const [stuck, setStuck] = useState(false);
+    useEffect(() => {
+        const el = sentinelRef.current;
+        if (!el) return;
+        const io = new IntersectionObserver(([e]) => setStuck(!e.isIntersecting), { threshold: 0 });
+        io.observe(el);
+        return () => io.disconnect();
+    }, []);
+
+    const all = buildOptions(generateTeeTimes(dayType(selected)).filter((s) => s.spotsAvailable > 0), { holes, ride, weekend: isWeekend(selected), nine: holes === 9 ? nine : undefined });
+    let options = all.filter((o) => o.players >= golfers);
+    const timeSpecific = time !== "all-day";
+    if (timeSpecific) options = options.filter((o) => o.minutes >= Number(time));
+    if (deals) options = options.filter((o) => o.isDeal);
+    const sections = PERIODS.map((p) => ({ ...p, items: options.filter((o) => o.timeOfDay === p.key) })).filter((s) => s.items.length > 0);
+    const card = (o: TeeOption) => <TimeCard key={o.id} option={o} selected={slot === o.id} onSelect={() => setSlot(o.id)} golfers={golfers} />;
+    const unavailableSelected = isUnavailable(selected);
+    const nearest = nearestAvailable(selected);
+    const activeCount = (deals ? 1 : 0) + (holes !== 18 ? 1 : 0) + (ride !== "cart" ? 1 : 0) + (timeSpecific ? 1 : 0);
+    const dateLabel = sameDay(selected, TODAY) ? "Today" : sameDay(selected, addDays(TODAY, 1)) ? "Tomorrow" : fmtShort(selected);
+    const timeLabel = timeSpecific ? `From ${formatMinutes(Number(time))}` : "All Day";
+
+    // Dismissable chips for each active filter (golfers/date/time live in the bar above).
+    const filterChips: { key: string; label: string; clear: () => void }[] = [];
+    if (deals) filterChips.push({ key: "deals", label: "Hot deals", clear: () => setDeals(false) });
+    if (holes !== 18) filterChips.push({ key: "holes", label: nine === "front" ? "Front 9" : "Back 9", clear: () => setHoles(18) });
+    if (ride !== "cart") filterChips.push({ key: "ride", label: RIDE_LABEL[ride], clear: () => setRide("cart") });
+    if (timeSpecific) filterChips.push({ key: "time", label: timeLabel, clear: () => setTime("all-day") });
+
+    return (
+        <div className="mx-auto w-full max-w-5xl px-4">
+            <Hero />
+
+            {/* Sticky pill search bar — gains the Sagamore info once scrolled to the top */}
+            <div ref={sentinelRef} className="mt-6 h-px" />
+            <div className="sticky top-0 z-40 -mx-4 bg-primary/95 px-4 pt-2 pb-2.5 backdrop-blur-sm">
+                {stuck && (
+                    <div className="mb-2.5 flex items-center justify-center gap-2.5">
+                        <SagamoreLogo className="h-7 w-auto" />
+                        <span className="text-sm font-semibold text-primary">{course.name}</span>
+                    </div>
+                )}
+                <div className="mx-auto flex max-w-3xl items-stretch rounded-full bg-primary p-1.5 shadow-sm ring-1 ring-secondary">
+                <Segment label="Golfers" value={`${golfers} ${golfers === 1 ? "Golfer" : "Golfers"}`} open={openChip === "golfers"} onToggle={() => toggleChip("golfers")} onClose={close}>
+                    <RadioGroup value={String(golfers)} onChange={(v) => setGolfers(Number(v))} className="flex flex-col gap-2.5">
+                        <RadioButton value="1" label="1 golfer" />
+                        <RadioButton value="2" label="2 golfers" />
+                        <RadioButton value="3" label="3 golfers" />
+                        <RadioButton value="4" label="4 golfers" />
+                    </RadioGroup>
+                </Segment>
+                <span className="my-2 w-px shrink-0 bg-secondary" />
+                <Segment label="Date" value={dateLabel} open={openChip === "date"} onToggle={() => toggleChip("date")} onClose={close} align="center" wide>
+                    <CalendarPanel selected={selected} onSelect={setSelected} rateType={rateType} onRateType={setRateType} onDone={close} />
+                </Segment>
+                <span className="my-2 w-px shrink-0 bg-secondary" />
+                <Segment label="Time" value={timeLabel} open={openChip === "time"} onToggle={() => toggleChip("time")} onClose={close} align="center">
+                    <TimePicker value={time} onChange={setTime} />
+                </Segment>
+                <span className="my-2 w-px shrink-0 bg-secondary" />
+                <button
+                    type="button"
+                    onClick={() => setFiltersOpen(true)}
+                    className="flex flex-1 items-center justify-between gap-2 rounded-full px-4 py-2 text-left outline-brand transition duration-100 ease-linear hover:bg-secondary focus-visible:outline-2 focus-visible:-outline-offset-2"
+                >
+                    <span className="flex min-w-0 flex-col">
+                        <span className="text-xs text-tertiary">Filters</span>
+                        <span className="truncate text-base font-semibold whitespace-nowrap text-primary">{activeCount > 0 ? "Active" : "All"}</span>
+                    </span>
+                    {activeCount > 0 ? (
+                        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-solid text-xs font-semibold text-white">{activeCount}</span>
+                    ) : (
+                        <FilterLines className="size-5 shrink-0 text-fg-quaternary" />
+                    )}
+                </button>
+            </div>
+
+            {/* Dismissable active-filter chips */}
+            {filterChips.length > 0 ? (
+                <div className="mx-auto mt-3 flex max-w-3xl flex-wrap items-center gap-2">
+                    {filterChips.map((c) => (
+                        <span key={c.key} className="inline-flex items-center gap-1 rounded-full border border-brand bg-brand-primary py-1 pr-1.5 pl-3 text-sm font-medium text-brand-secondary">
+                            {c.label}
+                            <button
+                                type="button"
+                                aria-label={`Remove ${c.label}`}
+                                onClick={c.clear}
+                                className="flex size-5 items-center justify-center rounded-full text-brand-secondary outline-brand transition duration-100 ease-linear hover:bg-brand-secondary focus-visible:outline-2"
+                            >
+                                <XClose className="size-3.5" />
+                            </button>
+                        </span>
+                    ))}
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setDeals(false);
+                            setHoles(18);
+                            setRide("cart");
+                            setTime("all-day");
+                        }}
+                        className="ml-1 text-sm font-medium text-tertiary outline-brand transition duration-100 ease-linear hover:text-secondary focus-visible:outline-2"
+                    >
+                        Clear all
+                    </button>
+                </div>
+            ) : null}
+            </div>
+
+            {unavailableSelected ? (
+                <div className="mt-8">
+                    <NotifyEmptyState date={selected} golfers={golfers} nearest={nearest} onJump={() => setSelected(nearest)} />
+                </div>
+            ) : (
+                <>
+                    <div className="mt-6 flex items-center justify-between">
+                        <span className="text-sm font-semibold text-primary">{options.length} tee times</span>
+                        <span className="text-xs text-tertiary">{fmtShort(selected)}</span>
+                    </div>
+                    {options.length > 0 ? (
+                        <div className="mt-3 space-y-8">
+                            {sections.map((s) => (
+                                <section key={s.key}>
+                                    <div className="mb-3 flex items-baseline gap-2">
+                                        <h3 className="text-sm font-semibold text-primary">{s.label}</h3>
+                                        <span className="text-xs text-tertiary">{s.hint}</span>
+                                        <span className="ml-auto text-xs text-tertiary">{s.items.length} times</span>
+                                    </div>
+                                    <CardGrid>
+                                        {s.items.map(card)}
+                                        <WaitlistCard period={s.label} date={selected} party={golfers} startTime={formatMinutes(s.window[0])} endTime={formatMinutes(s.window[1])} />
+                                    </CardGrid>
+                                </section>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="mt-3 rounded-xl border border-secondary py-12 text-center text-sm text-tertiary">No tee times match — try clearing a filter.</p>
+                    )}
+                </>
+            )}
+
+            <p className="mt-6 text-center text-xs text-tertiary">Prices are per player and may include a shared cart. Taxes &amp; fees calculated at checkout.</p>
+
+            <June20FiltersPanel open={filtersOpen} onClose={() => setFiltersOpen(false)} state={{ deals, setDeals, holes, setHoles, nine, setNine, ride, setRide }} />
+        </div>
+    );
+};
+
 /* ---------------------------------- stories ------------------------------- */
 
-export const TeeTimeModule: Story = {
+/** The Sagamore tee-time search experience — June 18. */
+export const June18: Story = {
     render: () => (
         <div className="min-h-screen bg-primary py-10">
-            <BookingModule />
+            <SearchBookingModule variant="june19" />
         </div>
     ),
 };
 
-export const Mobile: Story = {
-    parameters: { viewport: { defaultViewport: "mobile1" } },
-    render: () => (
-        <div className="min-h-screen bg-primary py-6">
-            <BookingModule />
-        </div>
-    ),
-};
-
-/** A second version: a SevenRooms-style pill search bar (Golfers · Date · Time · Holes), a date strip whose "···" opens the calendar, and a Best/Cheapest-style Hot deals tab. */
-export const SearchBar: Story = {
+/** June 19 — a Google-Flights-style chip-bar version: search pill bar with a Filters menu, dismissable filter chips, no big date selector or Best/Hot-deals tabs. */
+export const June19: Story = {
     render: () => (
         <div className="min-h-screen bg-primary py-10">
-            <SearchBookingModule />
+            <June20Module />
         </div>
     ),
 };
