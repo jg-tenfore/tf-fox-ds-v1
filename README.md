@@ -1,6 +1,6 @@
-# Sagamore Spring — Tee-Time Booking Design System
+# Tenfore Golf — Fox Design System
 
-**▶ Live Storybook: https://jg-tenfore.github.io/tf-fox-ds-v1/**
+**▶ Live Storybook environment: https://jg-tenfore.github.io/tf-fox-ds-v1/**
 
 A design system **and** product exploration for a Resy/OpenTable-style **tee-time booking** experience at **Sagamore Spring Golf Club** (1287 Main St, Lynnfield, MA — public, 18 holes, par 70). It pairs a reusable, token-driven component library with end-to-end booking flows and a set of reference-driven design explorations.
 
