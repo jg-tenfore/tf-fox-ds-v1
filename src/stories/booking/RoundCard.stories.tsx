@@ -11,6 +11,7 @@ import { sampleBookings, type Booking } from "@/components/booking/sagamore-data
  */
 const meta = {
     title: "Booking/Molecules/Round Card",
+    tags: ["!dev"],
     component: RoundCard,
     parameters: { layout: "padded" },
     decorators: [

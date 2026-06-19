@@ -96,6 +96,7 @@ const ConfirmationPage = ({ dateLabel, timeLabel, holes, players, ride, lineItem
 
 const meta = {
     title: "Booking/Pages/Confirmation",
+    tags: ["!dev"],
     component: ConfirmationPage,
     parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof ConfirmationPage>;

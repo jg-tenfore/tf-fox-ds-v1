@@ -127,6 +127,7 @@ const MyRoundsPage = ({ bookings }: MyRoundsPageProps) => {
 
 const meta = {
     title: "Booking/Pages/My Rounds",
+    tags: ["!dev"],
     component: MyRoundsPage,
     parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof MyRoundsPage>;

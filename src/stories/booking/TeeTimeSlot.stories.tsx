@@ -11,6 +11,7 @@ import { generateTeeTimes, groupTeeTimes, timeOfDayLabels, type TimeOfDay } from
  */
 const meta = {
     title: "Booking/Molecules/Tee Time Slot",
+    tags: ["!dev"],
     component: TeeTimeSlot,
     parameters: { layout: "centered" },
     argTypes: {
