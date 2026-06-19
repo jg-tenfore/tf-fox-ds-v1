@@ -9,6 +9,7 @@ import { DateSelector } from "@/components/booking/date-selector";
  */
 const meta = {
     title: "Booking/Molecules/Date Selector",
+    tags: ["!dev"],
     component: DateSelector,
     parameters: { layout: "centered" },
     argTypes: {

@@ -10,6 +10,7 @@ import { BookingSummary } from "@/components/booking/booking-summary";
  */
 const meta = {
     title: "Booking/Molecules/Booking Summary",
+    tags: ["!dev"],
     component: BookingSummary,
     parameters: { layout: "centered" },
     argTypes: {

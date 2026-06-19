@@ -12,6 +12,7 @@ import type { HoleCount, Ride as RideType, TimeOfDay as TimeOfDayType } from "@/
  */
 const meta = {
     title: "Booking/Molecules/Booking Controls",
+    tags: ["!dev"],
     parameters: { layout: "centered" },
 } satisfies Meta;
 

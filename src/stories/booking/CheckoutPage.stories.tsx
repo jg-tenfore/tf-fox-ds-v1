@@ -178,6 +178,7 @@ const CheckoutPage = ({ dateLabel, timeLabel, holes, ride, dayType, twilight, pl
  */
 const meta = {
     title: "Booking/Pages/Checkout",
+    tags: ["!dev"],
     component: CheckoutPage,
     parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof CheckoutPage>;

@@ -168,6 +168,7 @@ const AvailabilityPage = ({ dayType }: AvailabilityPageProps) => {
 
 const meta = {
     title: "Booking/Pages/Availability",
+    tags: ["!dev"],
     component: AvailabilityPage,
     parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof AvailabilityPage>;
