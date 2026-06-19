@@ -7,7 +7,7 @@ import { Badge } from "@/components/base/badges/badges";
  * the whole tee sheet stays calm and minimal.
  */
 const meta = {
-    title: "Base/Badge",
+    title: "Base Components/Badge",
     component: Badge,
     parameters: { layout: "centered" },
     argTypes: {

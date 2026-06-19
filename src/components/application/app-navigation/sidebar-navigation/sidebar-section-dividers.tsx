@@ -2,7 +2,7 @@
 
 import { SearchLg } from "@untitledui/icons";
 import { Input } from "@/components/base/input/input";
-import { UntitledLogo } from "@/components/foundations/logo/untitledui-logo";
+import { TfLogo } from "@/components/foundations/logo/tf-logo";
 import { MobileNavigationHeader } from "../base-components/mobile-header";
 import { NavAccountCard } from "../base-components/nav-account-card";
 import { NavList } from "../base-components/nav-list";
@@ -28,7 +28,7 @@ export const SidebarNavigationSectionDividers = ({ activeUrl, items }: SidebarNa
             className="flex h-full w-full max-w-full flex-col justify-between overflow-auto bg-primary pt-4 shadow-xs ring-secondary ring-inset lg:w-(--width) lg:rounded-xl lg:pt-5 lg:ring-1"
         >
             <div className="flex flex-col gap-5 px-4 lg:px-5">
-                <UntitledLogo className="h-6" />
+                <TfLogo variant="color" className="w-auto h-6" />
 
                 {/* Mobile search input */}
                 <Input size="md" aria-label="Search" placeholder="Search" icon={SearchLg} className="md:hidden" />

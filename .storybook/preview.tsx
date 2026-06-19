@@ -7,6 +7,12 @@ import "../src/styles/globals.css";
 const preview: Preview = {
     parameters: {
         layout: "centered",
+        options: {
+            storySort: {
+                method: "alphabetical",
+                order: ["Foundations", "Base Components", "Application Components", "Account", "Booking", "Explorations"],
+            },
+        },
         controls: {
             matchers: {
                 color: /(background|color)$/i,

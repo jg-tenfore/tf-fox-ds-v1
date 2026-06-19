@@ -5,7 +5,7 @@ import { useState } from "react";
 import { SearchLg } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { Input } from "@/components/base/input/input";
-import { UntitledLogo } from "@/components/foundations/logo/untitledui-logo";
+import { TfLogo } from "@/components/foundations/logo/tf-logo";
 import { cx } from "@/utils/cx";
 import { MobileNavigationHeader } from "../base-components/mobile-header";
 import { NavAccountCard, type NavAccountType } from "../base-components/nav-account-card";
@@ -62,7 +62,7 @@ export const SidebarNavigationDualTier = ({
                 )}
             >
                 <div className="flex flex-col gap-5 px-4 lg:px-5">
-                    <UntitledLogo className="h-6" />
+                    <TfLogo variant="color" className="w-auto h-6" />
 
                     {/* Mobile search input */}
                     <Input size="md" aria-label="Search" placeholder="Search" icon={SearchLg} className="md:hidden" />
