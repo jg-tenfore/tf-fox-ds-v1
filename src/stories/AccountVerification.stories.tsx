@@ -3,7 +3,6 @@ import { ArrowLeft, ArrowRight, CheckCircle, Mail01 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { PinInput } from "@/components/base/input/pin-input";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
-import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
 
 /**
  * Full-page account verification flows for the Sagamore member portal — the
@@ -24,8 +23,6 @@ export const EmailVerification: Story = {
     render: () => (
         <div className="flex min-h-screen items-center justify-center bg-primary p-6">
             <div className="flex w-full max-w-sm flex-col items-center text-center">
-                <SagamoreLogo className="mb-8 h-7 w-auto" />
-
                 <FeaturedIcon icon={Mail01} size="lg" color="gray" theme="modern" />
 
                 <h1 className="mt-6 text-display-xs font-semibold text-primary">Check your email</h1>

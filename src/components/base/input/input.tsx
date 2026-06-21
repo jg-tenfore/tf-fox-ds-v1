@@ -68,7 +68,8 @@ export const InputBase = ({
     // If the input is inside a `TextFieldContext`, use its context to simplify applying styles
     const context = useContext(TextFieldContext);
 
-    const inputSize = context?.size || size;
+    // Input size is locked to "md" globally, regardless of any size prop/context.
+    const inputSize = "md";
 
     const sizes = sortCx({
         sm: {
@@ -208,7 +209,9 @@ const TextFieldContext = createContext<TextFieldContextProps>({});
 
 export interface TextFieldProps extends AriaTextFieldProps, TextFieldContextProps {}
 
-export const TextField = ({ className, size = "md", inputClassName, wrapperClassName, iconClassName, tooltipClassName, ...props }: TextFieldProps) => {
+export const TextField = ({ className, inputClassName, wrapperClassName, iconClassName, tooltipClassName, ...props }: TextFieldProps) => {
+    // Input size is locked to "md" globally.
+    const size = "md" as const;
     return (
         <TextFieldContext.Provider value={{ inputClassName, wrapperClassName, iconClassName, tooltipClassName, size }}>
             <AriaTextField
