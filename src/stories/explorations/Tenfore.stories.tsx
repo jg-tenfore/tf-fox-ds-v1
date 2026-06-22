@@ -1,30 +1,38 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 import {
+    ArrowLeft,
     Calendar,
     Check,
+    CheckCircle,
     ChevronDown,
+    ChevronLeft,
+    ChevronRight,
     Clock,
+    Download01,
     Flag01,
     HelpCircle,
     InfoCircle,
     LifeBuoy01,
     Mail01,
     MarkerPin01,
+    MessageChatCircle,
     Phone,
     Plus,
     ShoppingCart01,
-    Star01,
     User01,
     Users01,
     XClose,
 } from "@untitledui/icons";
+import { Carousel } from "@/components/application/carousel/carousel-base";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { Badge } from "@/components/base/badges/badges";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { RadioButton, RadioGroup } from "@/components/base/radio-buttons/radio-buttons";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { sagamoreImagesByCategory } from "@/components/foundations/sagamore/sagamore-assets";
 import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
 import { cx } from "@/utils/cx";
 import {
@@ -713,11 +721,26 @@ export const Checkout: Story = {
 /* Confirmation                                                        */
 /* ------------------------------------------------------------------ */
 
-/** Minimal black header for the confirmation — centered, stacked logo + club name. */
+/** Black confirmation header — centered logo + club name, with a back button
+ *  on the left and a Get help link (jumps to Important information) on the right. */
 const ConfirmationHeader = () => (
-    <header className="flex flex-col items-center gap-2 bg-primary-solid px-6 py-7 text-center">
+    <header className="relative flex flex-col items-center gap-2 bg-primary-solid px-6 py-6 text-center">
+        <button
+            type="button"
+            aria-label="Back"
+            className="absolute top-1/2 left-6 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 transition duration-100 ease-linear hover:bg-white/20"
+        >
+            <ArrowLeft className="size-5" aria-hidden="true" />
+        </button>
         <SagamoreLogo className="h-12 w-auto" />
         <span className="text-base font-semibold text-white">{course.name}</span>
+        <button
+            type="button"
+            onClick={() => document.getElementById("important-information")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            className="absolute top-1/2 right-6 flex -translate-y-1/2 items-center gap-2 rounded-full bg-white/10 px-4 py-2.5 text-sm font-semibold text-white ring-1 ring-white/20 transition duration-100 ease-linear hover:bg-white/20"
+        >
+            <MessageChatCircle className="size-4" aria-hidden="true" /> Get help
+        </button>
     </header>
 );
 
@@ -747,25 +770,10 @@ const PayRow = ({ label, sub, value }: { label: string; sub?: string; value: str
     </div>
 );
 
-/** A support link card shown at the bottom of the confirmation. */
-const HelpCard = ({ icon: Icon, title, description }: { icon: typeof Calendar; title: string; description: string }) => (
-    <a
-        href="#"
-        className="flex flex-col gap-3 rounded-xl bg-primary px-5 py-5 ring-1 ring-secondary ring-inset transition duration-100 ease-linear hover:ring-brand"
-    >
-        <FeaturedIcon icon={Icon} size="md" color="brand" theme="light" />
-        <div className="flex flex-col gap-1">
-            <span className="text-sm font-semibold text-primary">{title}</span>
-            <span className="text-xs leading-relaxed text-tertiary">{description}</span>
-        </div>
-    </a>
-);
-
-const GOOD_TO_KNOW = [
-    "This tee time is played precisely at the time chosen. The Twilight Deal rate is valid for this tee time only.",
-    "Groups of fewer than four players may be paired with other pre-paid golfers.",
-    "Payment is due online in full at the time of reservation; pro-shop staff can't change the tee time or honor the prepaid rate for another slot.",
-];
+/** Real Sagamore course photography for the confirmation carousel. */
+const COURSE_PHOTOS = sagamoreImagesByCategory("photography");
+const carouselArrow =
+    "absolute top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-fg-secondary shadow-md ring-1 ring-primary transition duration-100 ease-linear hover:bg-primary_hover";
 
 const ConfirmationScreen = () => {
     const golfers = [
@@ -773,31 +781,113 @@ const ConfirmationScreen = () => {
         { first: "Sam", last: "Carter", email: "sam.carter@example.com" },
     ];
 
+    // Celebrate the booking on load.
+    useEffect(() => {
+        confetti({ particleCount: 140, spread: 75, startVelocity: 45, origin: { y: 0.35 } });
+        const t = window.setTimeout(() => confetti({ particleCount: 90, spread: 110, startVelocity: 32, origin: { y: 0.4 } }), 260);
+        return () => window.clearTimeout(t);
+    }, []);
+
     return (
         <div className="flex min-h-dvh flex-col bg-secondary">
             <ConfirmationHeader />
 
-            <main className="mx-auto w-full max-w-[720px] flex-1 px-6 pt-10 pb-20">
-                {/* Minimal dark green header card — no hero imagery */}
-                <div className="overflow-hidden rounded-2xl ring-1 ring-secondary ring-inset">
-                    <div className="bg-brand-900 px-7 py-7 text-center">
-                        <span className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/20">
-                            <Check className="size-6 text-white" aria-hidden="true" />
-                        </span>
-                        <p className="text-xs font-semibold tracking-wide text-tertiary_on-brand uppercase">Confirmation #421292164</p>
-                        <h1 className="mt-2 text-2xl font-semibold text-white">You're all set — see you on the first tee!</h1>
-                        <p className="mt-2 text-md text-tertiary_on-brand">
-                            Your twilight round at {course.name} is locked in. Fresh greens and golden-hour light are waiting — all that's left is to show up and play.
-                        </p>
-                        <p className="mt-3 text-md text-tertiary_on-brand">1287 Main Street, Lynnfield, MA 01940</p>
-                        <a href="#" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white underline">
-                            <MarkerPin01 className="size-4" aria-hidden="true" /> Get directions
-                        </a>
+            <main className="flex-1 px-6 pt-10 pb-20">
+                <div className="mx-auto max-w-2xl">
+                    {/* Super container */}
+                    <div className="overflow-hidden rounded-2xl bg-primary shadow-sm ring-1 ring-secondary ring-inset">
+                        {/* Green check */}
+                        <div className="flex justify-center px-7 pt-7">
+                            <FeaturedIcon icon={CheckCircle} size="lg" color="success" theme="light" />
+                        </div>
+
+                        {/* Reservation confirmation */}
+                        <div className="px-7 pt-4 text-center">
+                            <p className="text-xs font-semibold tracking-wide text-quaternary uppercase">Reservation confirmation</p>
+                            <p className="mt-1 text-lg font-semibold tabular-nums text-primary">#421292164</p>
+                        </div>
+
+                        {/* Course carousel */}
+                        <div className="px-7 pt-6">
+                            <Carousel.Root opts={{ loop: true }} className="w-full">
+                                <Carousel.Content>
+                                    {COURSE_PHOTOS.map((photo) => (
+                                        <Carousel.Item key={photo.name}>
+                                            <img src={photo.src} alt={photo.name} className="aspect-video w-full rounded-xl object-cover" loading="lazy" />
+                                        </Carousel.Item>
+                                    ))}
+                                </Carousel.Content>
+                                <Carousel.PrevTrigger className={cx(carouselArrow, "left-3")}>
+                                    <ChevronLeft className="size-5" aria-hidden="true" />
+                                </Carousel.PrevTrigger>
+                                <Carousel.NextTrigger className={cx(carouselArrow, "right-3")}>
+                                    <ChevronRight className="size-5" aria-hidden="true" />
+                                </Carousel.NextTrigger>
+                                <Carousel.IndicatorGroup className="absolute inset-x-0 bottom-3 flex justify-center gap-2">
+                                    {({ index }) => (
+                                        <Carousel.Indicator
+                                            key={index}
+                                            index={index}
+                                            className={({ isSelected }) => cx("size-2 rounded-full transition duration-100 ease-linear", isSelected ? "w-5 bg-white" : "bg-white/60")}
+                                        />
+                                    )}
+                                </Carousel.IndicatorGroup>
+                            </Carousel.Root>
+                        </div>
+
+                        {/* Course info */}
+                        <div className="px-7 pt-6 pb-7 text-center">
+                            <h1 className="text-2xl font-semibold text-primary">{course.name}</h1>
+                            <p className="mt-2 text-md text-tertiary">Twilight · 9 holes</p>
+                            <p className="mt-1 text-md text-tertiary">1287 Main Street, Lynnfield, MA 01940</p>
+                            <div className="mt-5 flex justify-center">
+                                <Button href="#" color="secondary" iconLeading={MarkerPin01}>
+                                    Get directions
+                                </Button>
+                            </div>
+                        </div>
+
+                {/* Tee time details */}
+                <section className="border-t border-secondary px-7 py-7">
+                    <div className="flex items-center justify-between gap-3">
+                        <h2 className="text-xl font-semibold text-primary">Tee time details</h2>
+                        <Badge color="success" size="md" type="pill-color">
+                            Confirmed
+                        </Badge>
                     </div>
-                </div>
+
+                    {/* Sub-container — the details + banner */}
+                    <div className="mt-4 rounded-xl px-6 ring-1 ring-secondary ring-inset">
+                        <table className="w-full">
+                            <tbody className="divide-y divide-secondary">
+                                <ConfRow icon={Calendar} label="Date" value="Tuesday, April 21, 2026" />
+                            <ConfRow icon={Clock} label="Tee time" value="6:00 PM" />
+                            <ConfRow icon={Users01} label="Players" value="2 golfers" />
+                            <ConfRow icon={Flag01} label="Holes" value="9 holes" />
+                            <ConfRow
+                                label="Rate type"
+                                value={
+                                    <Badge color="purple" size="md" type="pill-color">
+                                        Twilight Deal
+                                    </Badge>
+                                }
+                            />
+                            <ConfRow label="Confirmation" value="#421292164" />
+                            <ConfRow label="Course confirmation" value="#SSGC|34938" />
+                            <ConfRow label="Group" value="Justin Girard · 617-470-7879" />
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Free cancellation banner — outside the sub-container */}
+                    <div className="mt-5 flex items-center justify-center gap-2 rounded-full bg-warning-primary px-6 py-2.5 text-center text-sm font-medium text-warning-primary ring-1 ring-utility-yellow-200 ring-inset">
+                        <CheckCircle className="size-4 shrink-0" aria-hidden="true" />
+                        Free cancellation up to 24 hours before your tee time
+                    </div>
+                </section>
 
                 {/* Who's going */}
-                <section className="mt-8 rounded-xl bg-primary px-6 py-5 ring-1 ring-secondary ring-inset">
+                <section className="border-t border-secondary px-7 py-7">
                     <h2 className="mb-4 text-lg font-semibold text-primary">Who's going</h2>
                     <div className="flex flex-col gap-4">
                         {golfers.map((g, i) => (
@@ -815,75 +905,80 @@ const ConfirmationScreen = () => {
                     </div>
                 </section>
 
-                {/* Tee time details */}
-                <section className="mt-8">
-                    <div className="mb-3 flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-primary">Tee time details</h2>
-                        <Badge color="success" size="md" type="pill-color">
-                            Confirmed
-                        </Badge>
-                    </div>
-                    <div className="rounded-xl bg-primary px-6 py-2 ring-1 ring-secondary ring-inset">
-                        <table className="w-full">
-                            <tbody className="divide-y divide-secondary">
-                                <ConfRow icon={Calendar} label="Date" value="Tuesday, April 21, 2026" />
-                                <ConfRow icon={Clock} label="Tee time" value="6:00 PM" />
-                                <ConfRow icon={Users01} label="Players" value="2 golfers" />
-                                <ConfRow icon={Flag01} label="Holes" value="9 holes" />
-                                <ConfRow
-                                    label="Rate type"
-                                    value={
-                                        <Badge color="purple" size="md" type="pill-color">
-                                            Twilight Deal
-                                        </Badge>
-                                    }
-                                />
-                                <ConfRow label="Confirmation" value="#421292164" />
-                                <ConfRow label="Course confirmation" value="#SSGC|34938" />
-                                <ConfRow label="Group" value="Justin Girard · 617-470-7879" />
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+                {/* Price details */}
+                <section className="border-t border-secondary px-7 py-7">
+                    <h2 className="text-lg font-semibold text-primary">Payment details</h2>
 
-                {/* Payment details */}
-                <section className="mt-8 rounded-xl bg-primary px-7 py-7 ring-1 ring-secondary ring-inset">
-                    <h2 className="text-md font-semibold text-primary">Payment details</h2>
-                    <div className="mt-4 flex items-baseline justify-between">
-                        <span className="text-2xl font-semibold text-primary">Grand total</span>
-                        <span className="text-2xl font-semibold tabular-nums text-primary">$13.00</span>
+                    {/* Total + paid */}
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                        <span className="text-2xl font-semibold text-primary">Total</span>
+                        <span className="flex items-center gap-2.5">
+                            <span className="text-2xl font-semibold tabular-nums text-primary">$13.00</span>
+                            <Badge color="success" size="md" type="pill-color">
+                                Paid
+                            </Badge>
+                        </span>
                     </div>
-                    <div className="mt-2 flex flex-col divide-y divide-secondary border-t border-secondary">
-                        <PayRow label="Green fees ($20.70 / player)" value="$41.40" />
+
+                    {/* Line items */}
+                    <div className="mt-4 flex flex-col divide-y divide-secondary border-t border-secondary text-sm">
+                        <PayRow label="Twilight green fee — 9 holes × 2" value="$41.40" />
                         <PayRow label="Convenience fee" value="$6.98" />
-                        <PayRow label="Taxes" value="$0.00" />
-                        <PayRow label="Discounts" sub="Sagamore Pass waived-fee credit · Worry Free" value="−$36.06" />
                         <PayRow label="Youth On Course donation" value="$0.68" />
+                        <PayRow label="Sagamore Pass credit" value="−$36.06" />
+                        <div className="py-3.5">
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary">Subtotal</span>
+                                <span className="tabular-nums text-primary">$13.00</span>
+                            </div>
+                            <div className="mt-1 flex items-center justify-between text-xs text-tertiary">
+                                <span>Tax</span>
+                                <span className="tabular-nums">$0.00</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="mt-4 flex items-center justify-between rounded-lg bg-secondary px-4 py-3 text-sm text-tertiary">
-                        <span>
-                            Paid online <span className="font-semibold text-primary">$13.00</span>
-                        </span>
-                        <span>
-                            Due at course <span className="font-semibold text-primary">$0.00</span>
-                        </span>
+
+                    <p className="mt-4 text-xs text-tertiary">Paid online on April 18, 2026.</p>
+
+                    {/* Total charged + card */}
+                    <div className="mt-4 border-t border-secondary pt-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-base font-semibold text-primary">Total charged</span>
+                            <span className="text-base font-semibold tabular-nums text-primary">$13.00</span>
+                        </div>
+                        <div className="mt-2 flex items-center justify-between">
+                            <span className="flex items-center gap-2.5 text-sm text-secondary">
+                                <img src="card-images/Visa.svg" alt="Visa" className="h-6 w-auto" />
+                                Visa ending in 4242
+                            </span>
+                            <span className="tabular-nums text-sm text-secondary">$13.00</span>
+                        </div>
                     </div>
+
+                    <Button color="secondary" size="lg" iconLeading={Download01} className="mt-6 w-full">
+                        Download PDF receipt
+                    </Button>
                 </section>
 
-                {/* Good to know */}
-                <section className="mt-8 rounded-xl bg-primary px-7 py-7 ring-1 ring-secondary ring-inset">
-                    <h2 className="text-lg font-semibold text-primary">Good to know</h2>
-                    <ul className="mt-4 flex list-disc flex-col gap-2.5 pl-5 text-sm leading-relaxed text-tertiary marker:text-fg-quaternary">
-                        {GOOD_TO_KNOW.map((note) => (
-                            <li key={note}>{note}</li>
-                        ))}
-                    </ul>
-                    <h3 className="mt-6 text-sm font-semibold text-primary">Tee time policy</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-tertiary">
-                        Please follow the course dress code: collared shirt required; no denim or tank tops. Reservations are refundable only if cancelled 24+
-                        hours in advance, if the course is closed on the day of play, or with an eligible Sagamore Pass cancellation. Refunds are issued as
-                        account credit valid for six months.
-                    </p>
+                {/* Important information */}
+                <section id="important-information" className="scroll-mt-6 border-t border-secondary px-7 py-7">
+                    <h2 className="text-lg font-semibold text-primary">Important information</h2>
+                    <div className="mt-5 flex flex-col gap-5">
+                        <div>
+                            <h3 className="text-sm font-semibold text-primary">Cancellations and changes</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-tertiary">
+                                Free cancellation up to 24 hours before your tee time. Inside 24 hours the Twilight Deal rate is non-refundable. Eligible refunds
+                                are issued as TenFore account credit valid for six months.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-semibold text-primary">Course policies</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-tertiary">
+                                Collared shirt required; no denim or tank tops. Arrive 15 minutes early to check in at the pro shop. Groups of fewer than four
+                                players may be paired with other pre-paid golfers.
+                            </p>
+                        </div>
+                    </div>
                     <div className="mt-6 flex flex-col gap-3">
                         <Button color="secondary" size="lg" className="w-full">
                             Change reservation
@@ -894,15 +989,40 @@ const ConfirmationScreen = () => {
                     </div>
                 </section>
 
-                {/* Help */}
-                <section className="mt-8">
-                    <h2 className="mb-4 text-md font-semibold text-primary">Anything else?</h2>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        <HelpCard icon={Star01} title="Help us get better" description="Share quick feedback about your booking experience." />
-                        <HelpCard icon={LifeBuoy01} title="Need help?" description="Reach our team for changes, questions, or special requests." />
-                        <HelpCard icon={HelpCircle} title="Frequently asked questions" description="Browse answers to common tee-time booking questions." />
+                {/* Where to find help */}
+                <section className="border-t border-secondary px-7 py-7">
+                    <h2 className="text-lg font-semibold text-primary">Where to find help</h2>
+                    <div className="mt-5 flex flex-col gap-5">
+                        <div className="flex gap-3">
+                            <Phone className="mt-0.5 size-5 shrink-0 text-fg-brand-primary" aria-hidden="true" />
+                            <div>
+                                <p className="text-sm font-semibold text-primary">Questions about your round</p>
+                                <p className="mt-1 text-sm text-tertiary">
+                                    Contact {course.name} at{" "}
+                                    <a href="tel:7813343151" className="font-medium text-brand-secondary hover:underline">
+                                        {course.phone}
+                                    </a>
+                                    .
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <LifeBuoy01 className="mt-0.5 size-5 shrink-0 text-fg-brand-primary" aria-hidden="true" />
+                            <div>
+                                <p className="text-sm font-semibold text-primary">Help with this receipt or your account</p>
+                                <p className="mt-1 text-sm text-tertiary">
+                                    Reach TenFore support 24/7 —{" "}
+                                    <a href="#" className="font-medium text-brand-secondary hover:underline">
+                                        get support
+                                    </a>
+                                    .
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </section>
+                    </div>
+                </div>
             </main>
 
             <SiteFooter />
