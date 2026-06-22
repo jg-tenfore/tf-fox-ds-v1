@@ -17,7 +17,9 @@ const config: StorybookConfig = {
     "../public",
     // Serve Sagamore brand imagery at a stable URL (sagamore-images/...) in both
     // dev and static builds, independent of Vite asset resolution.
-    { "from": "../images/sagamore", "to": "/sagamore-images" }
+    { "from": "../images/sagamore", "to": "/sagamore-images" },
+    // Card-brand logos (Visa, Mastercard, …) served at card-images/...
+    { "from": "../creditCards", "to": "/card-images" }
   ],
   // When building for GitHub Pages the site is served from a repo subpath, so
   // the production bundle needs that base. Dev stays at root.

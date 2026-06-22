@@ -289,9 +289,10 @@ interface CarouselIndicatorGroupProps extends Omit<HTMLAttributes<HTMLDivElement
 const CarouselIndicatorGroup = ({ children, ...props }: CarouselIndicatorGroupProps) => {
     const { scrollSnaps } = useCarousel();
 
-    // If the children is a render prop, we need to pass the index to the render prop.
+    // If the children is a render prop, pass the integer slide index (not the
+    // embla snap position) so indicators select/scroll to the correct slide.
     if (typeof children === "function") {
-        return <nav {...props}>{scrollSnaps.map((index) => children({ index }))}</nav>;
+        return <nav {...props}>{scrollSnaps.map((_, index) => children({ index }))}</nav>;
     }
 
     return <nav {...props}>{children}</nav>;
