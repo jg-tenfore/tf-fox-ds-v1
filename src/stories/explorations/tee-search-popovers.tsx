@@ -91,7 +91,7 @@ const RateToggle = ({ value, onChange }: { value: "weekday" | "weekend"; onChang
     </div>
 );
 
-const MonthGrid = ({ year, month, selected, rateType, onSelect }: { year: number; month: number; selected: Date; rateType: "weekday" | "weekend"; onSelect: (d: Date) => void }) => {
+const MonthGrid = ({ year, month, selected, rateType, onSelect, showPrices = true }: { year: number; month: number; selected: Date; rateType: "weekday" | "weekend"; onSelect: (d: Date) => void; showPrices?: boolean }) => {
     const monthName = new Date(year, month, 1).toLocaleDateString("en-US", { month: "long" });
     return (
         <div>
@@ -112,6 +112,8 @@ const MonthGrid = ({ year, month, selected, rateType, onSelect }: { year: number
                     const isSel = sameDay(date, selected);
                     const isToday = sameDay(date, TODAY);
                     const matches = dayType(date) === rateType;
+                    // When prices are hidden there are no rate tiers, so every open day reads as active.
+                    const active = matches || !showPrices;
                     const { price, isDeal } = priceFor(date);
                     const showPrice = !unavailable && matches;
                     return (
@@ -133,7 +135,7 @@ const MonthGrid = ({ year, month, selected, rateType, onSelect }: { year: number
                                           ? "text-quaternary"
                                           : closed
                                             ? "text-quaternary line-through"
-                                            : matches
+                                            : active
                                               ? "text-primary hover:bg-secondary_hover"
                                               : "text-quaternary hover:bg-secondary_hover",
                                     isToday && !isSel && "text-brand-secondary ring-1 ring-inset ring-brand",
@@ -144,8 +146,8 @@ const MonthGrid = ({ year, month, selected, rateType, onSelect }: { year: number
                             <span className="h-3.5 text-[11px] leading-none tabular-nums">
                                 {isToday ? (
                                     <span className="font-semibold text-brand-secondary">Today</span>
-                                ) : showPrice ? (
-                                    <span className={cx(isSel ? "font-medium text-brand-secondary" : isDeal ? "font-medium text-success-primary" : "text-tertiary")}>{formatPrice(price)}</span>
+                                ) : showPrices && showPrice ? (
+                                    <span className={cx(isSel ? "font-medium text-brand-secondary" : isDeal ? "font-medium text-brand-secondary" : "text-tertiary")}>{formatPrice(price)}</span>
                                 ) : null}
                             </span>
                         </button>
@@ -156,10 +158,10 @@ const MonthGrid = ({ year, month, selected, rateType, onSelect }: { year: number
     );
 };
 
-export const CalendarPanel = ({ selected, onSelect, rateType, onRateType, onDone }: { selected: Date; onSelect: (d: Date) => void; rateType: "weekday" | "weekend"; onRateType: (v: "weekday" | "weekend") => void; onDone: () => void }) => (
+export const CalendarPanel = ({ selected, onSelect, rateType, onRateType, onDone, showPrices = true }: { selected: Date; onSelect: (d: Date) => void; rateType: "weekday" | "weekend"; onRateType: (v: "weekday" | "weekend") => void; onDone: () => void; showPrices?: boolean }) => (
     <div className="w-[640px] max-w-[86vw]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-secondary pb-3">
-            <RateToggle value={rateType} onChange={onRateType} />
+            {showPrices ? <RateToggle value={rateType} onChange={onRateType} /> : <span className="text-sm font-medium text-primary">Select a date</span>}
             <button
                 type="button"
                 onClick={() => {
@@ -172,13 +174,17 @@ export const CalendarPanel = ({ selected, onSelect, rateType, onRateType, onDone
             </button>
         </div>
         <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 sm:gap-10">
-            <MonthGrid year={2026} month={5} selected={selected} rateType={rateType} onSelect={onSelect} />
-            <MonthGrid year={2026} month={6} selected={selected} rateType={rateType} onSelect={onSelect} />
+            <MonthGrid year={2026} month={5} selected={selected} rateType={rateType} onSelect={onSelect} showPrices={showPrices} />
+            <MonthGrid year={2026} month={6} selected={selected} rateType={rateType} onSelect={onSelect} showPrices={showPrices} />
         </div>
         <div className="flex items-center justify-between border-t border-secondary pt-3">
-            <p className="text-xs text-tertiary">
-                <span className="font-medium text-success-primary">Green</span> = best rate · <span className="line-through">struck</span> = sold out
-            </p>
+            {showPrices ? (
+                <p className="text-xs text-tertiary">
+                    <span className="font-medium text-brand-secondary">Highlighted</span> = best rate · <span className="line-through">struck</span> = sold out
+                </p>
+            ) : (
+                <span />
+            )}
             <Button size="sm" onClick={onDone}>
                 Done
             </Button>

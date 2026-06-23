@@ -7,7 +7,7 @@ import { KETTLE_HILLS_CLUB, KETTLE_HILLS_NINES, TeeTimesScreen } from "./tenfore
  * selector-bar GUI, different club identity + course list.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/3 Courses (Kettle Hills)",
+    title: "Tenfore Fox/Tee Times/3 Courses (Kettle Hills)",
     parameters: { layout: "fullscreen" },
 };
 
@@ -16,5 +16,5 @@ type Story = StoryObj;
 
 export const Default: Story = {
     name: "3 Courses (Kettle Hills)",
-    render: () => <TeeTimesScreen club={KETTLE_HILLS_CLUB} nines={KETTLE_HILLS_NINES} />,
+    render: () => <TeeTimesScreen club={KETTLE_HILLS_CLUB} nines={KETTLE_HILLS_NINES} parallelTwilightNines />,
 };

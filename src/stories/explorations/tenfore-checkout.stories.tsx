@@ -1,12 +1,35 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useEffect, useState } from "react";
-import { Calendar, Check, Clock, Flag01, HelpCircle, InfoCircle, MarkerPin01, Plus, Users01, XClose } from "@untitledui/icons";
+import { ArrowLeft, Calendar, Check, Clock, Flag01, HelpCircle, InfoCircle, MarkerPin01, MessageChatCircle, Plus, Users01, XClose } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { RadioButton, RadioGroup } from "@/components/base/radio-buttons/radio-buttons";
+import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
 import { course, formatPrice, rates } from "@/components/booking/sagamore-data";
 import { cx } from "@/utils/cx";
-import { DropdownCell, PlayerAvatar, SiteFooter, TopNav } from "./tenfore-chrome";
+import { DropdownCell, PlayerAvatar, SiteFooter } from "./tenfore-chrome";
+
+/** Black header bar — centered Sagamore logo + name, back button, and Get help (jumps to the FAQ). */
+const CheckoutHeader = () => (
+    <header className="relative flex flex-col items-center gap-2 bg-primary-solid px-6 py-6 text-center">
+        <button
+            type="button"
+            aria-label="Back"
+            className="absolute top-1/2 left-6 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 transition duration-100 ease-linear hover:bg-white/20"
+        >
+            <ArrowLeft className="size-5" aria-hidden="true" />
+        </button>
+        <SagamoreLogo className="h-12 w-auto" />
+        <span className="text-base font-semibold text-white">{course.name}</span>
+        <button
+            type="button"
+            onClick={() => document.getElementById("common-questions")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            className="absolute top-1/2 right-6 flex -translate-y-1/2 items-center gap-2 rounded-full bg-white/10 px-4 py-2.5 text-sm font-semibold text-white ring-1 ring-white/20 transition duration-100 ease-linear hover:bg-white/20"
+        >
+            <MessageChatCircle className="size-4" aria-hidden="true" /> Get help
+        </button>
+    </header>
+);
 
 /**
  * "Tenfore Fox / Checkout" — the per-player checkout, a faithful recreation of
@@ -76,7 +99,7 @@ const FAQ_ITEMS = [
 const FaqAccordion = () => {
     const [open, setOpen] = useState<number | null>(0);
     return (
-        <section className="rounded-xl bg-primary px-7 py-7 ring-1 ring-secondary ring-inset">
+        <section id="common-questions" className="scroll-mt-6 rounded-xl bg-primary px-7 py-7 ring-1 ring-secondary ring-inset">
             <div className="mb-5 flex items-center gap-2">
                 <HelpCircle className="size-5 text-fg-brand-primary" aria-hidden="true" />
                 <h4 className="text-lg font-semibold text-primary">Common questions</h4>
@@ -151,7 +174,7 @@ const CheckoutScreen = () => {
 
     return (
         <div className="flex min-h-dvh flex-col bg-secondary">
-            <TopNav active="Tee Times" />
+            <CheckoutHeader />
 
             <main className="mx-auto w-full max-w-[1080px] flex-1 px-6 pt-10 pb-20">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">

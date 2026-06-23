@@ -7,7 +7,7 @@ import { SAGAMORE_CLUB, SAGAMORE_NINES, TeeTimesScreen } from "./tenfore-chrome"
  * Course / Date / Players selector bar.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/18 Holes (Sagamore)",
+    title: "Tenfore Fox/Tee Times/18 Holes (Sagamore)",
     parameters: { layout: "fullscreen" },
 };
 
