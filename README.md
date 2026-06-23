@@ -18,20 +18,19 @@ A design system **and** product exploration for a Resy/OpenTable-style **tee-tim
 
 - **Monochrome + green accent.** The brand ramp is the club's fairway green (**#339C5D**), so every brand-derived token — primary CTAs, links, focus rings, toggles, active/selected states — renders green, while text / background / border tokens stay neutral.
 - **Tenfore logo** as `TfLogo` (color / black / white wordmark) and `TfLogoMark` (square icon marks).
-- **Sagamore course photography** is auto-indexed from `images/sagamore/` and filtered to **high-resolution only** for crisp heroes, cards, and galleries.
+- **Course photography** for all three venues (Sagamore, Kettle Hills, FloGolf Lounge) is auto-indexed from `images/<course>/` and filtered to **high-resolution only** for crisp heroes, cards, and galleries.
+- **Per-club nav branding** in the Tenfore Fox flow: each venue carries its own logo and nav color (Sagamore black, Kettle Hills `#0E319E`, FloGolf `#143620`).
 - To re-skin, edit the `--color-brand-*` ramp in `src/styles/theme.css`; everything updates at the token level.
 
 ## Storybook categories
 
-1. **Foundations** — Colors, Typography, Spacing, Effect Styles, Border, Radius, Logos, Icons, and the Sagamore brand asset index (all driven by real theme tokens).
+1. **Foundations** — Colors, Typography, Spacing, Effect Styles, Border, Radius, Logos, Icons, and a **Golf Courses** brand-asset index (auto-indexed photography + logos for **Sagamore**, **Kettle Hills**, and **FloGolf Lounge**), all driven by real theme tokens.
 2. **Base Components** — buttons & button groups, inputs (text, group, date, file, number, payment, tags, pin), selects / combobox / multi-select, checkbox / radio / toggle, tags, badges & badge groups, avatars, tooltip, slider, social buttons, dropdowns, form, file-upload trigger, progress indicators.
 3. **Application Components** — alerts, breadcrumbs, card headers, filter bars, progress steps, header navigations, modals, carousel, date picker (+ date-time), table, tabs, pagination, file upload, loading indicator, slideout menus, empty state.
 4. **Account** — log in, sign up (incl. social-leading and header-nav variants), verification, and forgot-password pages.
-5. **Booking** — the tee-time domain, built atomically:
-   - **Content/data:** `src/components/booking/sagamore-data.ts` — course facts, green-fee rates (9/18 × weekday/weekend × walk/cart), twilight pricing, add-ons, a deterministic tee-time generator, and sample bookings.
-   - **Molecules:** tee-time slot, date selector, player stepper, booking filters, booking summary, round card.
-   - **Pages:** Availability · Checkout · Confirmation · My Rounds.
-6. **Explorations** — real booking GUIs recreated for Sagamore and normalized to the core design system (same palette + font, only layout differs): **GolfNow · Google · SevenRooms · Tenfore**, plus combined **Google + SevenRooms** and **SevenRooms + GolfNow** directions.
+5. **Tenfore Fox** — the productized tee-time flow, one component per screen: **18 Holes (Sagamore)**, **3 Courses (Kettle Hills)**, **Simulator (FloGolf)**, plus a shared **Checkout** and **Confirmation**. The course picker filters the live tee sheet (**All Courses** = the full mix · **18 Holes** = 18-hole only · a single nine), 18-hole and nine rounds intermix by tee time, and per-club nav branding skins each venue. Shared chrome lives in `tenfore-chrome.tsx`.
+6. **Booking** *(domain layer — hidden from the sidebar)* — the atomic tee-time domain that backs the screens: content/data (`src/components/booking/sagamore-data.ts` — course facts, green-fee rates, twilight pricing, add-ons, a deterministic tee-time generator, sample bookings), molecules (tee-time slot, date selector, player stepper, booking filters, summary, round card), and pages (Availability · Checkout · Confirmation · My Rounds).
+7. **Explorations** *(pinned to the bottom)* — reference-driven design studies normalized to the core design system (same palette + font, layout differs). Currently visible: **Alt Concepts June**. Earlier GolfNow / Google / SevenRooms directions (and their combinations) are retained in code but hidden from the sidebar.
 
 ## Architecture
 
