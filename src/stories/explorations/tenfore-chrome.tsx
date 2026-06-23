@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Flag01, Mail01, MarkerPin01, Phone, ShoppingCart01, User01, Users01 } from "@untitledui/icons";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Check, ChevronDown, Flag01, Mail01, MarkerPin01, Phone, ShoppingCart01, User01, Users01 } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { RadioButton, RadioGroup } from "@/components/base/radio-buttons/radio-buttons";
 import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
 import { KettleHillsLogo } from "@/components/foundations/kettle-hills/kettle-hills-logo";
 import { FlogolfLogo } from "@/components/foundations/flogolf/flogolf-logo";
@@ -38,14 +37,16 @@ export const SAGAMORE_CLUB: Club = {
     addressLine: `1287 Main Street ${course.city} 01940`,
     email: "tdoucette@sagamoregolf.com",
     Logo: SagamoreLogo,
+    // Black nav → black brand accents (radios, card hover, buttons). Uses the token so it stays dark-mode aware.
+    navColor: "var(--color-bg-primary-solid)",
 };
 
 export const KETTLE_HILLS_CLUB: Club = {
     name: "Kettle Hills Golf Course",
-    city: "Lynnfield, MA",
-    phone: "(781) 593-2200",
-    addressLine: "230 Walnut Street Lynnfield 01940",
-    email: "proshop@kettlehillsgolf.com",
+    city: "Richfield, WI",
+    phone: "(262) 628-4200",
+    addressLine: "W236 N9430 WI-164, Richfield, WI 53076",
+    email: "info@kettlehills.com",
     Logo: KettleHillsLogo,
     navColor: "#0E319E",
 };
@@ -77,9 +78,9 @@ export const KETTLE_HILLS_NINES: Nine[] = [
 
 export const FLOGOLF_CLUB: Club = {
     name: "FloGolf Lounge",
-    city: "Lynnfield, MA",
+    city: "Saugus, MA",
     phone: "(781) 477-0444",
-    addressLine: "600 Market Street Lynnfield 01940",
+    addressLine: "Saugus, MA 01906",
     email: "hello@flogolflounge.com",
     Logo: FlogolfLogo,
     navColor: "#143620",
@@ -287,12 +288,56 @@ const ALL_OPTION = "All Courses";
 /** The "play all 18" filter — 18-hole rounds only. */
 const EIGHTEEN_OPTION = "18 Holes";
 
+/**
+ * Per-club brand override — re-skins every brand-derived token to the club's nav color
+ * (radios, card hover ring, calendar rates, dropdown checks, buttons). We override the
+ * namespace vars the utilities read DIRECTLY (--text-color-*, --color-fg-*, --ring-color-*,
+ * etc.) because chained theme vars compute at :root and don't cascade from the base ramp.
+ */
+export const clubBrandStyle = (navColor?: string): CSSProperties | undefined =>
+    navColor
+        ? ({
+              "--color-brand-500": navColor,
+              "--color-brand-600": navColor,
+              "--color-brand-700": navColor,
+              "--color-border-brand": navColor,
+              "--color-bg-brand-solid": navColor,
+              "--background-color-brand-solid": navColor,
+              "--ring-color-brand": navColor,
+              "--ring-color-brand-solid": navColor,
+              "--border-color-brand": navColor,
+              "--color-fg-brand-primary": navColor,
+              "--color-fg-brand-secondary": navColor,
+              "--text-color-brand-primary": navColor,
+              "--text-color-brand-secondary": navColor,
+          } as CSSProperties)
+        : undefined;
+
+/** A single-select menu row with a check when active (shared dropdown style). */
+export const MenuRow = ({ selected, onClick, label, right }: { selected: boolean; onClick: () => void; label: ReactNode; right?: ReactNode }) => (
+    <button
+        type="button"
+        onClick={onClick}
+        className={cx(
+            "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm transition duration-100 ease-linear",
+            selected ? "bg-active font-semibold text-primary ring-1 ring-secondary ring-inset" : "text-secondary hover:bg-primary_hover",
+        )}
+    >
+        <span className="min-w-0 flex-1 truncate">{label}</span>
+        <span className="flex shrink-0 items-center gap-2">
+            {right}
+            {selected && <Check className="size-4 text-fg-brand-primary" aria-hidden="true" />}
+        </span>
+    </button>
+);
+
 export const TeeTimesScreen = ({
     club = SAGAMORE_CLUB,
     courses = COURSES,
     courseLabel = "Course",
     holesOverride,
     nines,
+    parallelTwilightNines,
 }: {
     club?: Club;
     /** Dropdown options when NOT using nines (e.g. FloGolf simulator bays). */
@@ -305,6 +350,10 @@ export const TeeTimesScreen = ({
      *  selection filters the sheet (All Courses → the full mix; 18 Holes → 18-hole
      *  cards only; a nine → only that nine's cards). */
     nines?: Nine[];
+    /** Kettle Hills: its three nines are independent loops, so during twilight every
+     *  nine runs in parallel — the same tee time is offered on each (same clock time,
+     *  different starting nine) to pack more 9-hole players in at end of day. */
+    parallelTwilightNines?: boolean;
 }) => {
     // With nines, the picker is "All Courses" + "18 Holes" + each nine's option; otherwise the raw course list.
     const options = nines ? [ALL_OPTION, EIGHTEEN_OPTION, ...nines.map((n) => n.option)] : courses;
@@ -336,20 +385,34 @@ export const TeeTimesScreen = ({
     // (every other slot is a nine, cycling through them) so the board is a genuine
     // mix. The selected option then filters it: "18 Holes" shows the full mix,
     // while a specific nine narrows to just that nine's cards.
-    const cells = slots.map((slot, index) => {
-        if (!nines) return { slot, banner: undefined as string | undefined, holes: holesOverride, option: undefined as string | undefined };
+    const cells = slots.flatMap((slot, index) => {
+        if (!nines) return [{ key: slot.id, slot, banner: undefined as string | undefined, holes: holesOverride, option: undefined as string | undefined }];
+
+        // Kettle Hills' nines are independent loops, so twilight runs them all in
+        // parallel: the same tee time is offered on each nine (different start).
+        if (parallelTwilightNines && slot.timeOfDay === "twilight") {
+            return nines
+                .filter((n) => n.availableFrom === undefined || slot.minutes >= n.availableFrom)
+                .map((n) => ({ key: `${slot.id}-${n.option}`, slot, banner: n.banner as string | undefined, holes: 9, option: n.option }));
+        }
+
         const candidate = index % 2 === 1 ? nines[Math.floor(index / 2) % nines.length] : null;
         // A nine only applies if it's available at this tee time; otherwise the slot is an 18-hole round.
         const nine = candidate && (candidate.availableFrom === undefined || slot.minutes >= candidate.availableFrom) ? candidate : null;
         // 18-hole rounds carry no banner — only single-nine rounds get the brand tag.
-        return nine
-            ? { slot, banner: nine.banner as string | undefined, holes: 9, option: nine.option }
-            : { slot, banner: undefined as string | undefined, holes: 18, option: EIGHTEEN_OPTION };
+        return [
+            nine
+                ? { key: slot.id, slot, banner: nine.banner as string | undefined, holes: 9, option: nine.option }
+                : { key: slot.id, slot, banner: undefined as string | undefined, holes: 18, option: EIGHTEEN_OPTION },
+        ];
     });
     const visibleCells = nines && selectedCourse !== ALL_OPTION ? cells.filter((c) => c.option === selectedCourse) : cells;
 
+    // Re-skin brand-derived accents to the club's nav color (e.g. blue under Kettle Hills).
+    const brandStyle = clubBrandStyle(club.navColor);
+
     return (
-        <div className="flex min-h-dvh flex-col bg-secondary">
+        <div className="flex min-h-dvh flex-col bg-secondary" style={brandStyle}>
             <TopNav active="Tee Times" club={club} />
 
             <main className="mx-auto w-full max-w-7xl flex-1 px-6 pt-10 pb-20">
@@ -367,11 +430,23 @@ export const TeeTimesScreen = ({
                     <DropdownCell label={courseLabel} value={selectedCourse} open={openCell === "course"} onToggle={() => toggle("course")} onClose={close} align="left" edge="left">
                         <div className="w-64">
                             <p className="mb-3 text-sm font-semibold text-primary">{courseLabel}</p>
-                            <RadioGroup aria-label={courseLabel} value={selectedCourse} onChange={setSelectedCourse} className="flex flex-col gap-2.5">
-                                {options.map((c) => (
-                                    <RadioButton key={c} value={c} label={c} />
-                                ))}
-                            </RadioGroup>
+                            <div className="flex flex-col gap-0.5">
+                                {nines ? (
+                                    <>
+                                        {/* All Courses · divider · 18 Holes · divider · the nines */}
+                                        <MenuRow selected={selectedCourse === ALL_OPTION} onClick={() => setSelectedCourse(ALL_OPTION)} label={ALL_OPTION} />
+                                        <div role="separator" className="-mx-4 my-1 border-t border-secondary" />
+                                        <MenuRow selected={selectedCourse === EIGHTEEN_OPTION} onClick={() => setSelectedCourse(EIGHTEEN_OPTION)} label={EIGHTEEN_OPTION} />
+                                        <div role="separator" className="-mx-4 mt-1 border-t border-secondary" />
+                                        <p className="px-3 pt-3 pb-1 text-xs font-semibold tracking-wide text-quaternary uppercase">9 Holes</p>
+                                        {nines.map((n) => (
+                                            <MenuRow key={n.option} selected={selectedCourse === n.option} onClick={() => setSelectedCourse(n.option)} label={n.option} />
+                                        ))}
+                                    </>
+                                ) : (
+                                    options.map((c) => <MenuRow key={c} selected={selectedCourse === c} onClick={() => setSelectedCourse(c)} label={c} />)
+                                )}
+                            </div>
                         </div>
                     </DropdownCell>
                     <DropdownCell label="Date" value={fmtNice(selected)} open={openCell === "date"} onToggle={() => toggle("date")} onClose={close} align="center">
@@ -380,11 +455,11 @@ export const TeeTimesScreen = ({
                     <DropdownCell label="Players" value={`${players} ${players === 1 ? "Player" : "Players"}`} open={openCell === "players"} onToggle={() => toggle("players")} onClose={close} align="right" edge="right">
                         <div className="w-56">
                             <p className="mb-3 text-sm font-semibold text-primary">Players</p>
-                            <RadioGroup aria-label="Players" value={String(players)} onChange={(v) => setPlayers(Number(v))} className="flex flex-col gap-2.5">
+                            <div className="flex flex-col gap-0.5">
                                 {[1, 2, 3, 4].map((n) => (
-                                    <RadioButton key={n} value={String(n)} label={`${n} ${n === 1 ? "player" : "players"}`} />
+                                    <MenuRow key={n} selected={players === n} onClick={() => setPlayers(n)} label={`${n} ${n === 1 ? "player" : "players"}`} />
                                 ))}
-                            </RadioGroup>
+                            </div>
                         </div>
                     </DropdownCell>
                     </div>
@@ -392,9 +467,9 @@ export const TeeTimesScreen = ({
 
                 {/* Tee-sheet grid */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                    {visibleCells.map(({ slot, banner, holes }) => (
+                    {visibleCells.map(({ key, slot, banner, holes }) => (
                         <TeeCell
-                            key={slot.id}
+                            key={key}
                             slot={slot}
                             dayLabel={weekend ? "Weekend" : "Weekday"}
                             holesOverride={holes}
