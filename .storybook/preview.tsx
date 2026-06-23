@@ -10,7 +10,7 @@ const preview: Preview = {
         options: {
             storySort: {
                 method: "alphabetical",
-                order: ["Foundations", "Base Components", "Application Components", "Account", "Booking", "Explorations"],
+                order: ["Foundations", "Base Components", "Application Components", "Account", "Booking", "Tenfore Fox", "Explorations"],
             },
         },
         controls: {
