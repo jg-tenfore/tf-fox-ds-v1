@@ -1,15 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type { ReactNode } from "react";
-import { sagamoreAssets, sagamoreImagesByCategory } from "@/components/foundations/sagamore/sagamore-assets";
-import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
+import { kettleHillsAssets, kettleHillsImagesByCategory } from "@/components/foundations/kettle-hills/kettle-hills-assets";
+import { KettleHillsLogo } from "@/components/foundations/kettle-hills/kettle-hills-logo";
 
 /**
- * Sagamore Spring Golf Club brand imagery — auto-indexed from `images/sagamore/`.
+ * Kettle Hills Golf Course brand imagery — auto-indexed from `images/kettleHills/`.
  * Drop new images into that folder and they appear here automatically, ready to
- * reuse across stories and screens via `sagamoreAssets` / `SagamoreLogo`.
+ * reuse across stories and screens via `kettleHillsAssets` / `KettleHillsLogo`.
+ *
+ * https://kettlehills.com/ · https://maps.app.goo.gl/vo74MPfZGDgksoeC8
  */
 const meta = {
-    title: "Foundations/Golf Courses/Sagamore",
+    title: "Foundations/Golf Courses/Kettle Hills",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 
@@ -46,36 +48,36 @@ const ImageGrid = ({ assets }: { assets: { name: string; src: string }[] }) => (
 export const Logo: Story = {
     render: () => (
         <Page>
-            <SectionHeading title="Sagamore Spring Golf Club — logo" count={1} />
+            <SectionHeading title="Kettle Hills Golf Course — logo" count={1} />
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-3">
                     <div className="flex items-center justify-center rounded-xl bg-primary p-12 ring-1 ring-border-secondary">
-                        <SagamoreLogo className="h-24 w-auto" />
+                        <KettleHillsLogo className="h-24 w-auto" />
                     </div>
                     <p className="text-xs text-tertiary">On bg-primary</p>
                 </div>
                 <div className="space-y-3">
                     <div className="flex items-center justify-center rounded-xl bg-primary-solid p-12 ring-1 ring-border-secondary">
-                        <SagamoreLogo className="h-24 w-auto" />
+                        <KettleHillsLogo className="h-24 w-auto" />
                     </div>
                     <p className="text-xs text-tertiary">On bg-primary-solid</p>
                 </div>
             </div>
             <div className="flex flex-wrap items-end gap-6">
-                <SagamoreLogo className="h-10 w-auto" />
-                <SagamoreLogo className="h-16 w-auto" />
-                <SagamoreLogo className="h-24 w-auto" />
+                <KettleHillsLogo className="h-10 w-auto" />
+                <KettleHillsLogo className="h-16 w-auto" />
+                <KettleHillsLogo className="h-24 w-auto" />
             </div>
         </Page>
     ),
 };
 
-/** Every indexed Sagamore image, for reference and reuse. */
+/** Every indexed Kettle Hills image, for reference and reuse. */
 export const AllImages: Story = {
     render: () => (
         <Page>
-            <SectionHeading title="All Sagamore imagery" count={sagamoreAssets.length} />
-            <ImageGrid assets={sagamoreAssets} />
+            <SectionHeading title="All Kettle Hills imagery" count={kettleHillsAssets.length} />
+            <ImageGrid assets={kettleHillsAssets} />
         </Page>
     ),
 };
@@ -83,23 +85,10 @@ export const AllImages: Story = {
 /** Course and clubhouse photography. */
 export const Photography: Story = {
     render: () => {
-        const assets = sagamoreImagesByCategory("photography");
+        const assets = kettleHillsImagesByCategory("photography");
         return (
             <Page>
                 <SectionHeading title="Photography" count={assets.length} />
-                <ImageGrid assets={assets} />
-            </Page>
-        );
-    },
-};
-
-/** Clubhouse dining imagery. */
-export const Dining: Story = {
-    render: () => {
-        const assets = sagamoreImagesByCategory("dining");
-        return (
-            <Page>
-                <SectionHeading title="Dining" count={assets.length} />
                 <ImageGrid assets={assets} />
             </Page>
         );

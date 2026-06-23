@@ -18,6 +18,10 @@ const config: StorybookConfig = {
     // Serve Sagamore brand imagery at a stable URL (sagamore-images/...) in both
     // dev and static builds, independent of Vite asset resolution.
     { "from": "../images/sagamore", "to": "/sagamore-images" },
+    // Kettle Hills Golf Course imagery served at kettle-hills-images/...
+    { "from": "../images/kettleHills", "to": "/kettle-hills-images" },
+    // FloGolf Lounge imagery served at flogolf-images/...
+    { "from": "../images/flogolf", "to": "/flogolf-images" },
     // Card-brand logos (Visa, Mastercard, …) served at card-images/...
     { "from": "../creditCards", "to": "/card-images" }
   ],
