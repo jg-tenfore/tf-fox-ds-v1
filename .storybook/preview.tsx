@@ -10,7 +10,17 @@ const preview: Preview = {
         options: {
             storySort: {
                 method: "alphabetical",
-                order: ["Foundations", "Base Components", "Application Components", "Account", "Booking", "Tenfore Fox", "Explorations"],
+                order: [
+                    "Foundations",
+                    "Base Components",
+                    "Application Components",
+                    "Account",
+                    "Booking",
+                    "Tenfore Fox",
+                    "Explorations",
+                    "Design Systems",
+                    ["Overview", "Colorways", "Color Theory", "Kettle Hills", "Sagamore", "FloGolf Indoor"],
+                ],
             },
         },
         controls: {

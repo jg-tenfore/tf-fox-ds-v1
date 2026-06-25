@@ -170,9 +170,12 @@ export const ProductCard = ({
                     aria-label={saved ? "Remove from saved" : "Save to wishlist"}
                     aria-pressed={saved}
                     onClick={onToggleSave}
-                    className="absolute right-3 bottom-3 flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition duration-100 ease-linear hover:bg-black/55"
+                    className={cx(
+                        "absolute right-3 bottom-3 flex size-9 items-center justify-center rounded-full text-white transition duration-100 ease-linear",
+                        saved ? "bg-brand-solid hover:bg-brand-solid_hover" : "bg-black/40 backdrop-blur-sm hover:bg-black/55",
+                    )}
                 >
-                    <Heart className={cx("size-4.5", saved && "fill-current text-error-primary")} aria-hidden="true" />
+                    <Heart strokeWidth={2.5} className={cx("size-4.5", saved && "fill-current")} aria-hidden="true" />
                 </button>
             </div>
 
