@@ -223,7 +223,7 @@ export const PlayerAvatar = ({ number, initials }: { number: number; initials?: 
  * names which nine the round plays (e.g. "Back 9" / "Ponds"). The banner takes
  * the club's nav color so each course's tee sheet stays on-brand.
  */
-const TeeCell = ({
+export const TeeCell = ({
     slot,
     dayLabel = "Weekday",
     holesOverride,
