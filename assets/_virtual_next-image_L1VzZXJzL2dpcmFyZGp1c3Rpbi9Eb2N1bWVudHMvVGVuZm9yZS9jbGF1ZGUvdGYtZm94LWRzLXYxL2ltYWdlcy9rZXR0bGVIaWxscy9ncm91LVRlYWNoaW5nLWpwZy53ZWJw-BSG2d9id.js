@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/grou-Teaching-jpg-Bd_u1M2N.webp?ignore`})),r;e((()=>{n(),r={src:t,height:802,width:1024,blurDataURL:t}}))();export{r as default};
