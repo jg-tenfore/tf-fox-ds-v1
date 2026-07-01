@@ -1,0 +1,9 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";import{d as t}from"./iframe-JEutOpZn.js";import{n,t as r}from"./dist-Ce7pAI2g.js";var i,a,o,s,c,l,u;e((()=>{i=t(),n(),a=Object.entries(r).filter(([e,t])=>typeof t==`function`&&/^[A-Z]/.test(e)).map(([e,t])=>({name:e,Icon:t})).sort((e,t)=>e.name.localeCompare(t.name)),o=({query:e=``})=>{let t=e.trim().toLowerCase(),n=t?a.filter(({name:e})=>e.toLowerCase().includes(t)):a;return(0,i.jsxs)(`div`,{className:`min-h-screen bg-primary p-6`,children:[(0,i.jsxs)(`p`,{className:`mb-4 text-sm text-secondary`,children:[`Showing `,(0,i.jsx)(`span`,{className:`font-semibold text-primary`,children:n.length}),` of `,a.length,` icons`,t?` matching “${e}”`:``,`.`]}),(0,i.jsx)(`div`,{className:`grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3`,children:n.map(({name:e,Icon:t})=>(0,i.jsxs)(`div`,{className:`flex flex-col items-center gap-2 rounded-lg p-3 ring-1 ring-border-secondary`,children:[(0,i.jsx)(t,{className:`size-6 text-fg-secondary`}),(0,i.jsx)(`span`,{className:`w-full truncate text-center text-xs text-tertiary`,title:e,children:e})]},e))})]})},s={title:`Foundations/Icons`,component:o,parameters:{layout:`fullscreen`},argTypes:{query:{control:`text`}},args:{query:``}},c={args:{query:``}},l={args:{query:`arrow`}},c.parameters={...c.parameters,docs:{...c.parameters?.docs,source:{originalSource:`{
+  args: {
+    query: ""
+  }
+}`,...c.parameters?.docs?.source},description:{story:`The full grid — every icon in the @untitledui/icons set.`,...c.parameters?.docs?.description}}},l.parameters={...l.parameters,docs:{...l.parameters?.docs,source:{originalSource:`{
+  args: {
+    query: "arrow"
+  }
+}`,...l.parameters?.docs?.source},description:{story:'Type into the `query` control to filter icons by name (defaults to "arrow").',...l.parameters?.docs?.description}}},u=[`AllIcons`,`Filterable`]}))();export{c as AllIcons,l as Filterable,u as __namedExportsOrder,s as default};

@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/golf-club-dining-room-CdcSndtF.webp?ignore`})),r;e((()=>{n(),r={src:t,height:1e3,width:1900,blurDataURL:t}}))();export{r as default};

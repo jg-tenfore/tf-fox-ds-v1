@@ -1,0 +1,84 @@
+import{i as e,l as t}from"./preload-helper-tpQASj4C.js";import{d as n,j as r}from"./iframe-JEutOpZn.js";import{$t as i,gr as a,m as o,n as s}from"./dist-Ce7pAI2g.js";import{n as c,t as l}from"./cx-BIL-0sez.js";import{c as u,d,i as f,l as p,n as m,o as h,r as g,t as _,u as v}from"./avatar-B8VsAF9v.js";import{n as y,t as b}from"./avatar-label-group-RcNkpK4e.js";import{n as x,s as S}from"./sagamore-DSNO8sBh.js";var C,w,T,E,D,O=e((()=>{C=n(),w=t(r()),s(),c(),g(),T={sm:{root:`size-18 p-0.75`,rootWithPlaceholder:`p-1`,content:`outline-[0.5px] -outline-offset-[0.5px] before:border`,icon:`size-9`,initials:`text-display-sm font-semibold`,badge:`bottom-0.5 right-0.5`},md:{root:`size-24 p-1`,rootWithPlaceholder:`p-1.25`,content:`shadow-xl outline-[0.75px] -outline-offset-[0.75px] before:border-[1.5px]`,icon:`size-12`,initials:`text-display-md font-semibold`,badge:`bottom-1 right-1`},lg:{root:`size-40 p-1.5`,rootWithPlaceholder:`p-1.75`,content:`shadow-2xl outline-[0.75px] -outline-offset-[0.75px] before:border-[1.5px]`,icon:`size-20`,initials:`text-display-xl font-semibold`,badge:`bottom-2 right-2`}},E={sm:`2xl`,md:`3xl`,lg:`4xl`},D=({size:e=`md`,src:t,alt:n,initials:r,placeholder:i,placeholderIcon:a,verified:s,badge:c,status:u,className:d})=>{let[p,m]=(0,w.useState)(!1);return(0,C.jsxs)(`div`,{className:l(`relative flex shrink-0 items-center justify-center rounded-full bg-primary ring-1 ring-secondary_alt`,T[e].root,(!t||p)&&T[e].rootWithPlaceholder,d),children:[t&&!p?(0,C.jsx)(`div`,{className:l(`relative size-full overflow-hidden rounded-full outline-black/16 before:absolute before:inset-0 before:rounded-full before:border-white/32 before:mask-[linear-gradient(to_bottom,black_0%,transparent_25%,transparent_75%,black_100%)]`,T[e].content),children:(0,C.jsx)(`img`,{src:t,alt:n,onError:()=>m(!0),className:`size-full object-cover`})}):r?(0,C.jsx)(`div`,{className:l(`flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-secondary_alt outline-transparent before:hidden`,T[e].content),children:(0,C.jsx)(`span`,{className:l(`text-quaternary`,T[e].initials),children:r})}):a?(0,C.jsx)(`div`,{className:l(`flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-secondary_alt outline-transparent before:hidden`,T[e].content),children:(0,C.jsx)(a,{className:l(`text-fg-quaternary`,T[e].icon)})}):(0,C.jsx)(`div`,{className:l(`flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-secondary_alt outline-transparent before:hidden`,T[e].content),children:i||(0,C.jsx)(o,{className:l(`text-fg-quaternary`,T[e].icon)})}),u?(0,C.jsx)(h,{status:u,size:E[e],className:T[e].badge}):s?(0,C.jsx)(f,{size:E[e],className:l(`absolute`,T[e].badge)}):c]})},D.__docgenInfo={description:``,methods:[],displayName:`AvatarProfilePhoto`,props:{size:{required:!1,tsType:{name:`union`,raw:`"sm" | "md" | "lg"`,elements:[{name:`literal`,value:`"sm"`},{name:`literal`,value:`"md"`},{name:`literal`,value:`"lg"`}]},description:``,defaultValue:{value:`"md"`,computed:!1}},className:{required:!1,tsType:{name:`string`},description:``},contentClassName:{required:!1,tsType:{name:`string`},description:`The class name for the main child of the avatar.`},src:{required:!1,tsType:{name:`union`,raw:`string | null`,elements:[{name:`string`},{name:`null`}]},description:``},alt:{required:!1,tsType:{name:`string`},description:``},contrastBorder:{required:!1,tsType:{name:`boolean`},description:`Display an inner contrast border around the avatar image.`},rounded:{required:!1,tsType:{name:`boolean`},description:`Whether the avatar should be rounded.
+@default true`},border:{required:!1,tsType:{name:`boolean`},description:`Display an outer border around the avatar.`},badge:{required:!1,tsType:{name:`ReactNode`},description:`Display a badge (i.e. company logo).`},status:{required:!1,tsType:{name:`union`,raw:`"online" | "offline"`,elements:[{name:`literal`,value:`"online"`},{name:`literal`,value:`"offline"`}]},description:`Display a status indicator.`},verified:{required:!1,tsType:{name:`boolean`},description:`Display a verified tick icon.
+
+@default false`},count:{required:!1,tsType:{name:`number`},description:`Display a count badge.`},initials:{required:!1,tsType:{name:`string`},description:`The initials of the user to display if no image is available.`},placeholderIcon:{required:!1,tsType:{name:`FC`,elements:[{name:`signature`,type:`object`,raw:`{ className?: string }`,signature:{properties:[{key:`className`,value:{name:`string`,required:!1}}]}}],raw:`FC<{ className?: string }>`},description:`An icon to display if no image is available.`},placeholder:{required:!1,tsType:{name:`ReactNode`},description:`A placeholder to display if no image is available.`},focusable:{required:!1,tsType:{name:`boolean`},description:`Whether the avatar should show a focus ring when the parent group is in focus.
+For example, when the avatar is wrapped inside a link.
+
+@default false`}}}})),k,A,j,M,N,P,F,I,L,R,z,B,V,H,U,W,G,K;e((()=>{k=n(),s(),m(),y(),O(),d(),p(),S(),A=`https://www.untitledui.com/images/avatars/olivia-rhye?fm=webp&q=80`,j=`https://www.untitledui.com/images/avatars/phoenix-baker?fm=webp&q=80`,M=`https://www.untitledui.com/images/avatars/lana-steiner?fm=webp&q=80`,N={title:`Base Components/Avatar`,component:_,parameters:{layout:`centered`,docs:{description:{component:`Avatars represent golfers in a group booking — the foursome on a tee time,
+the member profile, the playing partners on a saved round. We lead with
+initials (monochromatic, no photos required), but the same component takes
+a photo, an icon, a status dot, a verified tick, or a company badge.`}}},argTypes:{size:{control:`inline-radio`,options:[`xs`,`sm`,`md`,`lg`,`xl`,`2xl`]},status:{control:`inline-radio`,options:[void 0,`online`,`offline`]},verified:{control:`boolean`},border:{control:`boolean`},rounded:{control:`boolean`},initials:{control:`text`},src:{control:`text`}},args:{size:`md`,initials:`MA`,alt:`Marcus Avery`}},P={},F={render:e=>(0,k.jsxs)(`div`,{className:`flex items-center gap-3`,children:[(0,k.jsx)(_,{...e,size:`xs`}),(0,k.jsx)(_,{...e,size:`sm`}),(0,k.jsx)(_,{...e,size:`md`}),(0,k.jsx)(_,{...e,size:`lg`}),(0,k.jsx)(_,{...e,size:`xl`}),(0,k.jsx)(_,{...e,size:`2xl`})]})},I={render:()=>(0,k.jsxs)(`div`,{className:`flex items-center gap-4`,children:[(0,k.jsx)(_,{size:`lg`,src:A,alt:`Olivia Rhye`}),(0,k.jsx)(_,{size:`lg`,initials:`MA`,alt:`Marcus Avery`}),(0,k.jsx)(_,{size:`lg`,placeholderIcon:i,alt:`House player`}),(0,k.jsx)(_,{size:`lg`,alt:`Empty profile`})]})},L={render:e=>(0,k.jsxs)(`div`,{className:`flex items-center gap-3`,children:[(0,k.jsx)(_,{...e,src:A,alt:`Olivia Rhye`,status:`online`}),(0,k.jsx)(_,{...e,initials:`PR`,alt:`Priya Raghavan`,status:`offline`})]})},R={render:()=>(0,k.jsxs)(`div`,{className:`flex items-center gap-3`,children:[(0,k.jsx)(_,{size:`xs`,src:j,alt:`Phoenix Baker`,verified:!0}),(0,k.jsx)(_,{size:`sm`,src:j,alt:`Phoenix Baker`,verified:!0}),(0,k.jsx)(_,{size:`md`,src:j,alt:`Phoenix Baker`,verified:!0}),(0,k.jsx)(_,{size:`lg`,src:j,alt:`Phoenix Baker`,verified:!0}),(0,k.jsx)(_,{size:`xl`,src:j,alt:`Phoenix Baker`,verified:!0})]})},z={render:()=>(0,k.jsxs)(`div`,{className:`flex items-center gap-4`,children:[(0,k.jsx)(_,{size:`lg`,src:M,alt:`Lana Steiner`,badge:(0,k.jsx)(u,{size:`lg`,src:A,alt:`Sponsoring club`})}),(0,k.jsx)(_,{size:`lg`,initials:`DW`,alt:`Dale Whitmore`,badge:(0,k.jsx)(`span`,{className:`absolute -right-0.5 -bottom-0.5 flex size-5 items-center justify-center rounded-full bg-primary ring-[1.5px] ring-bg-primary`,children:(0,k.jsx)(a,{className:`size-3 text-fg-quaternary`})})})]})},B={render:()=>(0,k.jsxs)(`div`,{className:`flex flex-col gap-4`,children:[(0,k.jsx)(b,{size:`sm`,src:A,alt:`Olivia Rhye`,title:`Olivia Rhye`,subtitle:`olivia@sagamore.club`}),(0,k.jsx)(b,{size:`md`,initials:`MA`,alt:`Marcus Avery`,title:`Marcus Avery`,subtitle:`Handicap 8.4 · Member`}),(0,k.jsx)(b,{size:`lg`,src:M,alt:`Lana Steiner`,title:`Lana Steiner`,subtitle:`lana@sagamore.club`,status:`online`})]})},V={render:()=>(0,k.jsxs)(`div`,{className:`flex items-end gap-6`,children:[(0,k.jsx)(D,{size:`sm`,src:A,alt:`Olivia Rhye`}),(0,k.jsx)(D,{size:`md`,src:j,alt:`Phoenix Baker`,verified:!0}),(0,k.jsx)(D,{size:`lg`,src:M,alt:`Lana Steiner`,status:`online`})]})},H={render:()=>(0,k.jsxs)(`div`,{className:`flex items-end gap-6`,children:[(0,k.jsx)(D,{size:`md`,initials:`MA`,alt:`Marcus Avery`}),(0,k.jsx)(D,{size:`md`,placeholderIcon:o,alt:`New member`})]})},U={render:()=>(0,k.jsx)(`div`,{className:`flex items-center -space-x-2`,children:x.map(e=>(0,k.jsx)(`div`,{className:`rounded-full ring-2 ring-white`,children:(0,k.jsx)(_,{size:`md`,initials:e.initials,alt:e.name})},e.id))})},W={render:()=>(0,k.jsxs)(`div`,{className:`flex items-center gap-3`,children:[(0,k.jsxs)(`div`,{className:`flex items-center -space-x-2`,children:[(0,k.jsx)(_,{size:`md`,src:A,alt:`Olivia Rhye`,className:`ring-2 ring-bg-primary`}),(0,k.jsx)(_,{size:`md`,src:j,alt:`Phoenix Baker`,className:`ring-2 ring-bg-primary`}),(0,k.jsx)(_,{size:`md`,src:M,alt:`Lana Steiner`,className:`ring-2 ring-bg-primary`}),(0,k.jsx)(_,{size:`md`,initials:`+5`,alt:`Five more golfers`,className:`ring-2 ring-bg-primary`})]}),(0,k.jsx)(v,{size:`md`,title:`Invite a playing partner`})]})},G={render:()=>(0,k.jsxs)(`div`,{className:`flex items-center gap-4`,children:[(0,k.jsx)(_,{size:`lg`,src:A,alt:`Olivia Rhye`,count:3}),(0,k.jsx)(_,{size:`lg`,initials:`PR`,alt:`Priya Raghavan`,count:8})]})},P.parameters={...P.parameters,docs:{...P.parameters?.docs,source:{originalSource:`{}`,...P.parameters?.docs?.source}}},F.parameters={...F.parameters,docs:{...F.parameters?.docs,source:{originalSource:`{
+  render: args => <div className="flex items-center gap-3">
+            <Avatar {...args} size="xs" />
+            <Avatar {...args} size="sm" />
+            <Avatar {...args} size="md" />
+            <Avatar {...args} size="lg" />
+            <Avatar {...args} size="xl" />
+            <Avatar {...args} size="2xl" />
+        </div>
+}`,...F.parameters?.docs?.source},description:{story:`Every size from xs through 2xl, the full ladder used across the club app.`,...F.parameters?.docs?.description}}},I.parameters={...I.parameters,docs:{...I.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-center gap-4">
+            <Avatar size="lg" src={OLIVIA} alt="Olivia Rhye" />
+            <Avatar size="lg" initials="MA" alt="Marcus Avery" />
+            <Avatar size="lg" placeholderIcon={Flag03} alt="House player" />
+            <Avatar size="lg" alt="Empty profile" />
+        </div>
+}`,...I.parameters?.docs?.source},description:{story:`A member photo when one is on file, falling back to initials or the default icon.`,...I.parameters?.docs?.description}}},L.parameters={...L.parameters,docs:{...L.parameters?.docs,source:{originalSource:`{
+  render: args => <div className="flex items-center gap-3">
+            <Avatar {...args} src={OLIVIA} alt="Olivia Rhye" status="online" />
+            <Avatar {...args} initials="PR" alt="Priya Raghavan" status="offline" />
+        </div>
+}`,...L.parameters?.docs?.source},description:{story:`On the tee sheet, a green dot marks members who are checked in and ready to play.`,...L.parameters?.docs?.description}}},R.parameters={...R.parameters,docs:{...R.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-center gap-3">
+            <Avatar size="xs" src={PHOENIX} alt="Phoenix Baker" verified />
+            <Avatar size="sm" src={PHOENIX} alt="Phoenix Baker" verified />
+            <Avatar size="md" src={PHOENIX} alt="Phoenix Baker" verified />
+            <Avatar size="lg" src={PHOENIX} alt="Phoenix Baker" verified />
+            <Avatar size="xl" src={PHOENIX} alt="Phoenix Baker" verified />
+        </div>
+}`,...R.parameters?.docs?.source},description:{story:`Verified members — those with a confirmed club account — earn a blue tick.`,...R.parameters?.docs?.description}}},z.parameters={...z.parameters,docs:{...z.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-center gap-4">
+            <Avatar size="lg" src={LANA} alt="Lana Steiner" badge={<AvatarCompanyIcon size="lg" src={OLIVIA} alt="Sponsoring club" />} />
+            <Avatar size="lg" initials="DW" alt="Dale Whitmore" badge={<span className="absolute -right-0.5 -bottom-0.5 flex size-5 items-center justify-center rounded-full bg-primary ring-[1.5px] ring-bg-primary">
+                        <Building05 className="size-3 text-fg-quaternary" />
+                    </span>} />
+        </div>
+}`,...z.parameters?.docs?.source},description:{story:`A custom badge slot — here a company crest for a corporate-outing guest.`,...z.parameters?.docs?.description}}},B.parameters={...B.parameters,docs:{...B.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex flex-col gap-4">
+            <AvatarLabelGroup size="sm" src={OLIVIA} alt="Olivia Rhye" title="Olivia Rhye" subtitle="olivia@sagamore.club" />
+            <AvatarLabelGroup size="md" initials="MA" alt="Marcus Avery" title="Marcus Avery" subtitle="Handicap 8.4 · Member" />
+            <AvatarLabelGroup size="lg" src={LANA} alt="Lana Steiner" title="Lana Steiner" subtitle="lana@sagamore.club" status="online" />
+        </div>
+}`,...B.parameters?.docs?.source},description:{story:`Avatar paired with a member's name and email — the standard roster row.`,...B.parameters?.docs?.description}}},V.parameters={...V.parameters,docs:{...V.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-end gap-6">
+            <AvatarProfilePhoto size="sm" src={OLIVIA} alt="Olivia Rhye" />
+            <AvatarProfilePhoto size="md" src={PHOENIX} alt="Phoenix Baker" verified />
+            <AvatarProfilePhoto size="lg" src={LANA} alt="Lana Steiner" status="online" />
+        </div>
+}`,...V.parameters?.docs?.source},description:{story:`Large profile-photo treatment for the member account page.`,...V.parameters?.docs?.description}}},H.parameters={...H.parameters,docs:{...H.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-end gap-6">
+            <AvatarProfilePhoto size="md" initials="MA" alt="Marcus Avery" />
+            <AvatarProfilePhoto size="md" placeholderIcon={User01} alt="New member" />
+        </div>
+}`,...H.parameters?.docs?.source},description:{story:`Profile photo fallbacks — initials and the default placeholder icon.`,...H.parameters?.docs?.description}}},U.parameters={...U.parameters,docs:{...U.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-center -space-x-2">
+            {GOLFERS.map(golfer => <div key={golfer.id} className="rounded-full ring-2 ring-white">
+                    <Avatar size="md" initials={golfer.initials} alt={golfer.name} />
+                </div>)}
+        </div>
+}`,...U.parameters?.docs?.source},description:{story:`The foursome on a championship tee time, drawn from Sagamore data.`,...U.parameters?.docs?.description}}},W.parameters={...W.parameters,docs:{...W.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-center gap-3">
+            <div className="flex items-center -space-x-2">
+                <Avatar size="md" src={OLIVIA} alt="Olivia Rhye" className="ring-2 ring-bg-primary" />
+                <Avatar size="md" src={PHOENIX} alt="Phoenix Baker" className="ring-2 ring-bg-primary" />
+                <Avatar size="md" src={LANA} alt="Lana Steiner" className="ring-2 ring-bg-primary" />
+                <Avatar size="md" initials="+5" alt="Five more golfers" className="ring-2 ring-bg-primary" />
+            </div>
+            <AvatarAddButton size="md" title="Invite a playing partner" />
+        </div>
+}`,...W.parameters?.docs?.source},description:{story:`A stacked group with an overflow count and an add-button to invite playing partners.`,...W.parameters?.docs?.description}}},G.parameters={...G.parameters,docs:{...G.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="flex items-center gap-4">
+            <Avatar size="lg" src={OLIVIA} alt="Olivia Rhye" count={3} />
+            <Avatar size="lg" initials="PR" alt="Priya Raghavan" count={8} />
+        </div>
+}`,...G.parameters?.docs?.source},description:{story:`A pending-invite avatar using the error-colored count badge for outstanding RSVPs.`,...G.parameters?.docs?.description}}},K=[`Playground`,`Sizes`,`Variants`,`WithStatus`,`Verified`,`WithBadge`,`LabelGroup`,`ProfilePhoto`,`ProfilePhotoPlaceholders`,`Foursome`,`AvatarGroup`,`WithCount`]}))();export{W as AvatarGroup,U as Foursome,B as LabelGroup,P as Playground,V as ProfilePhoto,H as ProfilePhotoPlaceholders,F as Sizes,I as Variants,R as Verified,z as WithBadge,G as WithCount,L as WithStatus,K as __namedExportsOrder,N as default};

@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/DJI_20240701100402_0153_D-scaled-1-1024x575-DsbadRqq.jpg?ignore`})),r;e((()=>{n(),r={src:t,height:575,width:1024,blurDataURL:t}}))();export{r as default};
