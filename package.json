@@ -6,7 +6,7 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "storybook": "storybook dev -p 6006",
+        "storybook": "storybook dev -p 6017",
         "build-storybook": "storybook build"
     },
     "dependencies": {
