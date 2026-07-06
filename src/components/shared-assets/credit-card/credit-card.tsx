@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { cx, sortCx } from "@/utils/cx";
 import { MastercardIcon, MastercardIconWhite, PaypassIcon } from "./icons";
 
@@ -119,6 +119,8 @@ interface CreditCardProps {
     type?: CreditCardType;
     className?: string;
     width?: number;
+    /** Overrides the card-network logo (defaults to Mastercard) — e.g. a club/brand mark. */
+    logo?: ReactNode;
 }
 
 const calculateScale = (desiredWidth: number, originalWidth: number, originalHeight: number) => {
@@ -144,6 +146,7 @@ export const CreditCard = ({
     type = "brand-dark",
     className,
     width,
+    logo,
 }: CreditCardProps) => {
     const originalWidth = 316;
     const originalHeight = 190;
@@ -227,8 +230,8 @@ export const CreditCard = ({
                         </div>
                     </div>
 
-                    <div className={cx("flex h-8 w-11.5 shrink-0 items-center justify-center rounded", styles[type].cardTypeRoot)}>
-                        {CARD_WITH_COLOR_LOGO.includes(type as (typeof CARD_WITH_COLOR_LOGO)[number]) ? <MastercardIcon /> : <MastercardIconWhite />}
+                    <div className={cx("flex h-8 w-11.5 shrink-0 items-center justify-center overflow-hidden rounded", styles[type].cardTypeRoot)}>
+                        {logo ?? (CARD_WITH_COLOR_LOGO.includes(type as (typeof CARD_WITH_COLOR_LOGO)[number]) ? <MastercardIcon /> : <MastercardIconWhite />)}
                     </div>
                 </div>
             </div>

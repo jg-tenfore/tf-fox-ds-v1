@@ -7,7 +7,7 @@ import { KETTLE_HILLS_CLUB, KETTLE_HILLS_NINES, TeeTimesScreen } from "./tenfore
  * selector-bar GUI, different club identity + course list.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/Tee Times/3 Courses (Kettle Hills)",
+    title: "Global Nav/Tee Times/3 Courses (Kettle Hills)",
     parameters: { layout: "fullscreen" },
 };
 

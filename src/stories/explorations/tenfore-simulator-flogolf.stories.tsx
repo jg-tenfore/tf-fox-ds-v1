@@ -18,7 +18,7 @@ import { CalendarPanel, DEFAULT_DATE, fmtNice } from "./tee-search-popovers";
  * must book two bays for the same window.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/Tee Times/FloGolf Indoor",
+    title: "Global Nav/Tee Times/FloGolf Indoor",
     parameters: { layout: "fullscreen" },
 };
 

@@ -1,41 +1,34 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
-import { Check, ChevronDown, FilterLines, Heart } from "@untitledui/icons";
-import { STORE_PRODUCTS, type StoreCategory } from "@/components/store/store-catalog";
+import { Check, ChevronDown, FilterLines } from "@untitledui/icons";
+import { CONCEPTS, type EventConcept, GOLF_EVENTS } from "@/components/events/events-catalog";
 import { cx } from "@/utils/cx";
-import { ProductCard } from "./store-ui";
+import { EventCard } from "./events-ui";
 import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
 
 /**
- * "Tenfore Fox / Pro Shop / Shop All" — a product-grid storefront for the
- * Sagamore Pro Shop, modeled on a modern shop layout (filter bar + responsive
- * card grid) but re-skinned with the design-system tokens. Filters and sort are
- * functional over the real golf-product catalog.
+ * "Tenfore Fox / Events / Browse Events" — the Pro Shop "shop all" experience
+ * applied to golf events, with clean photo-led cards. Same filter bar + responsive
+ * card grid, over the five event concepts (scrambles, clinics, chip-&-putt
+ * contests, the Rally-for-the-Cure charity series, and leagues/nights).
  */
 const meta: Meta = {
-    title: "Global Nav/Pro Shop/Shop All",
+    title: "Global Nav/Events/Browse Events",
     parameters: { layout: "fullscreen" },
 };
 
 export default meta;
 type Story = StoryObj;
 
-const effectivePrice = (p: (typeof STORE_PRODUCTS)[number]) => (p.onSale && p.salePrice ? p.salePrice : p.price);
+const CATEGORIES: { key: "all" | EventConcept; label: string }[] = [{ key: "all", label: "All events" }, ...CONCEPTS];
 
-const CATEGORIES: { key: "all" | StoreCategory; label: string }[] = [
-    { key: "all", label: "All products" },
-    { key: "apparel", label: "Apparel" },
-    { key: "shoes", label: "Golf shoes" },
-    { key: "equipment", label: "Equipment" },
-];
-
-type SortKey = "featured" | "price-asc" | "price-desc" | "rating" | "reviews";
+type SortKey = "date" | "price-asc" | "price-desc" | "rating" | "spots";
 const SORTS: { key: SortKey; label: string }[] = [
-    { key: "featured", label: "Featured" },
+    { key: "date", label: "Date: soonest" },
     { key: "price-asc", label: "Price: low to high" },
     { key: "price-desc", label: "Price: high to low" },
     { key: "rating", label: "Top rated" },
-    { key: "reviews", label: "Most reviewed" },
+    { key: "spots", label: "Most spots left" },
 ];
 
 type PriceKey = "u50" | "50-100" | "100-200" | "200p";
@@ -47,7 +40,7 @@ const PRICES: { key: PriceKey; label: string; test: (n: number) => boolean }[] =
 ];
 
 /* ------------------------------------------------------------------ */
-/* Filter-bar primitives                                               */
+/* Filter-bar primitives (shared shape with the Pro Shop shop-all)     */
 /* ------------------------------------------------------------------ */
 
 const Pill = ({
@@ -104,53 +97,49 @@ const MenuItem = ({ selected, onClick, children }: { selected: boolean; onClick:
 /* Screen                                                              */
 /* ------------------------------------------------------------------ */
 
-const ShopAllScreen = () => {
+const EventsAllScreen = () => {
     const [openMenu, setOpenMenu] = useState<null | "filter" | "sort" | "price">(null);
-    const [category, setCategory] = useState<"all" | StoreCategory>("all");
-    const [sort, setSort] = useState<SortKey>("featured");
-    const [onSale, setOnSale] = useState(false);
-    const [inStock, setInStock] = useState(false);
-    const [showSaved, setShowSaved] = useState(false);
+    const [category, setCategory] = useState<"all" | EventConcept>("all");
+    const [sort, setSort] = useState<SortKey>("date");
+    const [charityOnly, setCharityOnly] = useState(false);
+    const [availableOnly, setAvailableOnly] = useState(false);
     const [price, setPrice] = useState<PriceKey | null>(null);
-    // A handful are pre-saved so the Saved filter has something to show.
-    const [saved, setSaved] = useState<Set<string>>(() => new Set(STORE_PRODUCTS.filter((_, i) => i % 8 === 3).map((p) => p.id)));
-    const toggleSave = (id: string) =>
-        setSaved((prev) => {
-            const next = new Set(prev);
-            next.has(id) ? next.delete(id) : next.add(id);
-            return next;
-        });
     const close = () => setOpenMenu(null);
     const toggle = (k: "filter" | "sort" | "price") => setOpenMenu((p) => (p === k ? null : k));
 
-    let list = STORE_PRODUCTS.slice();
-    if (category !== "all") list = list.filter((p) => p.category === category);
-    if (onSale) list = list.filter((p) => p.onSale);
-    if (inStock) list = list.filter((p) => p.inStock);
-    if (showSaved) list = list.filter((p) => saved.has(p.id));
+    let list = GOLF_EVENTS.slice();
+    if (category !== "all") list = list.filter((e) => e.concept === category);
+    if (charityOnly) list = list.filter((e) => e.charity);
+    if (availableOnly) list = list.filter((e) => e.spotsLeft > 0);
     if (price) {
         const test = PRICES.find((p) => p.key === price)!.test;
-        list = list.filter((p) => test(effectivePrice(p)));
+        list = list.filter((e) => test(e.price));
     }
-    if (sort === "price-asc") list.sort((a, b) => effectivePrice(a) - effectivePrice(b));
-    else if (sort === "price-desc") list.sort((a, b) => effectivePrice(b) - effectivePrice(a));
+    if (sort === "date") list.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+    else if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
+    else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
     else if (sort === "rating") list.sort((a, b) => b.rating - a.rating);
-    else if (sort === "reviews") list.sort((a, b) => b.reviews - a.reviews);
+    else if (sort === "spots") list.sort((a, b) => b.spotsLeft - a.spotsLeft);
 
     const priceLabel = price ? PRICES.find((p) => p.key === price)!.label : "Price";
     const categoryLabel = CATEGORIES.find((c) => c.key === category)!.label;
 
     return (
         <div className="flex min-h-dvh flex-col bg-secondary">
-            <TopNav active="Shop" club={SAGAMORE_CLUB} />
+            <TopNav active="Events" club={SAGAMORE_CLUB} />
             <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-10">
+                <header className="mb-7">
+                    <h1 className="text-display-xs font-semibold text-primary">Events at Sagamore</h1>
+                    <p className="mt-1.5 text-md text-tertiary">Scrambles, clinics with our PGA pros, chip &amp; putt contests, charity outings, and night leagues — reserve your spot.</p>
+                </header>
+
                 {/* Filter bar */}
                 <div className="flex flex-wrap items-center gap-2.5">
                     <div className="relative">
                         <button
                             type="button"
                             onClick={() => toggle("filter")}
-                            aria-label="Filter by category"
+                            aria-label="Filter by event type"
                             className={cx(
                                 "flex size-10 items-center justify-center rounded-full ring-1 transition duration-100 ease-linear ring-inset",
                                 category !== "all" ? "bg-primary-solid text-white ring-transparent" : "bg-primary text-fg-secondary ring-secondary hover:bg-primary_hover",
@@ -159,7 +148,7 @@ const ShopAllScreen = () => {
                             <FilterLines className="size-5" aria-hidden="true" />
                         </button>
                         <Menu open={openMenu === "filter"} onClose={close} align="left">
-                            <p className="px-3 py-1.5 text-xs font-semibold tracking-wide text-quaternary uppercase">Category</p>
+                            <p className="px-3 py-1.5 text-xs font-semibold tracking-wide text-quaternary uppercase">Event type</p>
                             {CATEGORIES.map((c) => (
                                 <MenuItem key={c.key} selected={category === c.key} onClick={() => { setCategory(c.key); close(); }}>
                                     {c.label}
@@ -181,8 +170,8 @@ const ShopAllScreen = () => {
                         </Menu>
                     </div>
 
-                    <Pill active={onSale} onClick={() => setOnSale((v) => !v)}>
-                        On sale
+                    <Pill active={charityOnly} onClick={() => setCharityOnly((v) => !v)}>
+                        Charity
                     </Pill>
 
                     <div className="relative">
@@ -201,35 +190,26 @@ const ShopAllScreen = () => {
                         </Menu>
                     </div>
 
-                    <Pill active={inStock} onClick={() => setInStock((v) => !v)}>
-                        In-stock
-                    </Pill>
-
-                    <Pill active={showSaved} onClick={() => setShowSaved((v) => !v)}>
-                        <Heart className={cx("size-4", showSaved && "fill-current")} aria-hidden="true" /> Saved
+                    <Pill active={availableOnly} onClick={() => setAvailableOnly((v) => !v)}>
+                        Available
                     </Pill>
                 </div>
 
                 <p className="mt-4 text-sm text-tertiary">
-                    {list.length} {list.length === 1 ? "item" : "items"}
+                    {list.length} {list.length === 1 ? "event" : "events"}
                     {category !== "all" && <span> · {categoryLabel}</span>}
                 </p>
 
-                {/* Product grid */}
+                {/* Event grid — up to 4 columns */}
                 {list.length > 0 ? (
-                    <div className="mt-5 grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                        {list.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                saved={saved.has(product.id)}
-                                onToggleSave={() => toggleSave(product.id)}
-                            />
+                    <div className="mt-5 grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {list.map((event) => (
+                            <EventCard key={event.id} event={event} />
                         ))}
                     </div>
                 ) : (
                     <div className="mt-16 flex flex-col items-center gap-2 text-center">
-                        <p className="text-md font-semibold text-primary">No products match your filters</p>
+                        <p className="text-md font-semibold text-primary">No events match your filters</p>
                         <p className="text-sm text-tertiary">Try clearing a filter to see more.</p>
                     </div>
                 )}
@@ -240,6 +220,6 @@ const ShopAllScreen = () => {
 };
 
 export const Default: Story = {
-    name: "Shop All",
-    render: () => <ShopAllScreen />,
+    name: "Browse Events",
+    render: () => <EventsAllScreen />,
 };

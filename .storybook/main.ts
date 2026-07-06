@@ -25,7 +25,9 @@ const config: StorybookConfig = {
     // Sagamore Pro Shop product imagery served at store-images/...
     { "from": "../images/store/images", "to": "/store-images" },
     // Card-brand logos (Visa, Mastercard, …) served at card-images/...
-    { "from": "../creditCards", "to": "/card-images" }
+    { "from": "../creditCards", "to": "/card-images" },
+    // Event imagery served at events-images/...
+    { "from": "../images/events", "to": "/events-images" }
   ],
   // When building for GitHub Pages the site is served from a repo subpath, so
   // the production bundle needs that base. Dev stays at root.

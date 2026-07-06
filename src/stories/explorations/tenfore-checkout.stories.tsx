@@ -37,7 +37,7 @@ const CheckoutHeader = () => (
  * summary, a hold countdown, and a common-questions accordion.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/Checkout",
+    title: "Checkout/Checkout",
     parameters: { layout: "fullscreen" },
 };
 

@@ -91,7 +91,7 @@ export const FLOGOLF_BAYS = Array.from({ length: 10 }, (_, i) => `Bay ${i + 1}`)
 
 const NAV_ITEMS = ["Tee Times", "Shop", "Events", "Calendar", "Clinics", "Restaurant"] as const;
 
-export const TopNav = ({ active = "Tee Times", club = SAGAMORE_CLUB }: { active?: (typeof NAV_ITEMS)[number]; club?: Club }) => (
+export const TopNav = ({ active = "Tee Times", club = SAGAMORE_CLUB, accountLabel = "Sign in" }: { active?: string; club?: Club; accountLabel?: string }) => (
     <header
         className={cx("w-full border-b border-white/10 text-white", !club.navColor && "bg-primary-solid")}
         style={club.navColor ? { backgroundColor: club.navColor } : undefined}
@@ -110,7 +110,7 @@ export const TopNav = ({ active = "Tee Times", club = SAGAMORE_CLUB }: { active?
             <div className="flex items-center gap-4">
                 <button type="button" className="flex items-center gap-1.5 text-white/70 transition duration-100 ease-linear hover:text-white">
                     <User01 className="size-3.5" aria-hidden="true" />
-                    Sign in
+                    {accountLabel}
                 </button>
                 <span className="flex items-center gap-1.5 text-white">
                     <ShoppingCart01 className="size-3.5 text-white/50" aria-hidden="true" />
@@ -338,6 +338,7 @@ export const TeeTimesScreen = ({
     holesOverride,
     nines,
     parallelTwilightNines,
+    banner,
 }: {
     club?: Club;
     /** Dropdown options when NOT using nines (e.g. FloGolf simulator bays). */
@@ -345,6 +346,9 @@ export const TeeTimesScreen = ({
     /** Label for the first selector cell — e.g. "Course" or "Simulator Bay". */
     courseLabel?: string;
     holesOverride?: number;
+    /** Optional announcement rendered below the Course/Date/Players bar and above
+     *  the tee sheet (e.g. the dismissible maintenance banner). */
+    banner?: ReactNode;
     /** The course's nines. When set, the tee sheet mixes 18-hole and single-nine
      *  rounds, the picker offers "All Courses" + "18 Holes" + each nine, and the
      *  selection filters the sheet (All Courses → the full mix; 18 Holes → 18-hole
@@ -464,6 +468,9 @@ export const TeeTimesScreen = ({
                     </DropdownCell>
                     </div>
                 </div>
+
+                {/* Announcement banner — sits between the selector bar and the tee sheet */}
+                {banner}
 
                 {/* Tee-sheet grid */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
