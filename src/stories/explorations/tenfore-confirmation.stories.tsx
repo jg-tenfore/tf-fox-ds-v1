@@ -32,7 +32,7 @@ import { PlayerAvatar, SiteFooter } from "./tenfore-chrome";
  * who's going, payment details, and help links, with confetti on load.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/Confirmation",
+    title: "Checkout/Confirmation",
     parameters: { layout: "fullscreen" },
 };
 

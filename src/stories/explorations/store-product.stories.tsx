@@ -16,7 +16,7 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * description, and a reviews block. Re-skinned with the design-system tokens.
  */
 const meta: Meta = {
-    title: "Tenfore Fox/Pro Shop/Product",
+    title: "Global Nav/Pro Shop/Product",
     parameters: { layout: "fullscreen" },
 };
 

@@ -16,7 +16,7 @@ import { StarRating } from "./store-ui";
  * panel offers the next 14 days as a synced day × time grid (days replace bays).
  */
 const meta: Meta = {
-    title: "Tenfore Fox/Restaurant",
+    title: "Global Nav/Restaurant",
     parameters: { layout: "fullscreen" },
 };
 
