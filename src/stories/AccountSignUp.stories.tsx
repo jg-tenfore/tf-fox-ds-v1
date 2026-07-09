@@ -7,10 +7,10 @@ import { AuthSimple } from "./account-auth-simple";
  * MM/DD/YYYY dropdowns, phone), a green create-account CTA, and the Google /
  * Apple icon social group.
  */
-const meta = {
-    title: "Account/Sign up",
+const meta: Meta = {
+    title: "Sign in ∕ Sign up/Sign up",
     parameters: { layout: "fullscreen" },
-} satisfies Meta;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

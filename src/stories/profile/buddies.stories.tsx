@@ -8,7 +8,7 @@ import { Avatar, Panel, StatTile } from "./profile-ui";
  * "Profile / Golf Buddies" — the member's connections plus suggestions and
  * pending invites, to encourage members to build a regular group.
  */
-const meta: Meta = { title: "Profile/Golf Buddies", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/Golf Buddies", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

@@ -32,7 +32,7 @@ import { PlayerAvatar, SiteFooter } from "./tenfore-chrome";
  * who's going, payment details, and help links, with confetti on load.
  */
 const meta: Meta = {
-    title: "Checkout/Confirmation",
+    title: "Tee Time Checkout/Confirmation - Tee Time",
     parameters: { layout: "fullscreen" },
 };
 
@@ -349,6 +349,6 @@ const ConfirmationScreen = () => {
 };
 
 export const Default: Story = {
-    name: "Confirmation",
+    name: "Confirmation - Tee Time",
     render: () => <ConfirmationScreen />,
 };

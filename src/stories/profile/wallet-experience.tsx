@@ -18,7 +18,7 @@ import { ProfileShell } from "./profile-shell";
 /* --------------------------------- QR ---------------------------------- */
 
 /** A convincing faux QR code — deterministic pattern + three finder squares. */
-const QRCode = ({ value, size = 220 }: { value: string; size?: number }) => {
+export const QRCode = ({ value, size = 220 }: { value: string; size?: number }) => {
     const N = 25;
     const cells = useMemo(() => {
         const hash = (n: number) => {
@@ -71,7 +71,7 @@ const ModalHeader = ({ title, onClose }: { title: string; onClose: () => void })
 
 /* ---------------------------- Punch card modal ------------------------- */
 
-const PunchVisual = ({ total, used }: { total: number; used: number }) => (
+export const PunchVisual = ({ total, used }: { total: number; used: number }) => (
     <div className="grid grid-cols-5 justify-items-center gap-x-2.5 gap-y-4">
         {Array.from({ length: total }).map((_, i) => {
             const isUsed = i < used;

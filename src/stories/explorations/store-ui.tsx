@@ -127,7 +127,24 @@ export const StarRating = ({ rating, count, className }: { rating: number; count
     );
 };
 
-/** A product tile — image, wishlist heart, sale/sold-out badge, title, rating, price. */
+export interface CardBadge {
+    label: string;
+    color: "gray" | "success" | "brand" | "warning" | "blue";
+}
+
+/** Derive up to two promo badges for a product (sold out, savings, best seller, new, low stock). */
+export const badgesFor = (product: StoreProduct): CardBadge[] => {
+    if (!product.inStock) return [{ label: "Sold out", color: "gray" }];
+    const out: CardBadge[] = [];
+    if (product.onSale && product.salePrice) out.push({ label: `Save $${Math.round(product.price - product.salePrice)}`, color: "success" });
+    const h = hashId(product.id);
+    if (product.reviews >= 160) out.push({ label: "Best seller", color: "brand" });
+    else if (h % 6 === 0) out.push({ label: "New", color: "blue" });
+    else if (h % 5 === 0) out.push({ label: `Only ${(h % 3) + 1} left`, color: "warning" });
+    return out.slice(0, 2);
+};
+
+/** A product tile — image, wishlist heart, promo badges, title, rating, price. */
 export const ProductCard = ({
     product,
     onOpen,
@@ -151,19 +168,13 @@ export const ProductCard = ({
                 >
                     <img src={product.src} alt={product.title} className="size-full object-contain p-5" loading="lazy" />
                 </button>
-                {!product.inStock ? (
-                    <span className="absolute top-3 left-3">
-                        <Badge color="gray" size="sm" type="pill-color">
-                            Sold out
+                <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
+                    {badgesFor(product).map((b) => (
+                        <Badge key={b.label} color={b.color} size="sm" type="pill-color">
+                            {b.label}
                         </Badge>
-                    </span>
-                ) : product.onSale ? (
-                    <span className="absolute top-3 left-3">
-                        <Badge color="error" size="sm" type="pill-color">
-                            Sale
-                        </Badge>
-                    </span>
-                ) : null}
+                    ))}
+                </div>
                 {/* Wishlist heart — blurred dark circle, red when saved */}
                 <button
                     type="button"

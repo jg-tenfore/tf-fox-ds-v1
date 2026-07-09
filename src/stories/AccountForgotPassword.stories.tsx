@@ -10,10 +10,10 @@ import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-ic
  * from existing base components. Monochromatic, so featured icons stay `gray`
  * except the final success screen. Voice: a member resetting their booking login.
  */
-const meta = {
-    title: "Account/Forgot password",
+const meta: Meta = {
+    title: "Sign in ∕ Sign up/Forgot password",
     parameters: { layout: "fullscreen" },
-} satisfies Meta;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

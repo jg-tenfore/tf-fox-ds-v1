@@ -53,7 +53,7 @@ const AddPaymentModal = ({ onClose }: { onClose: () => void }) => {
  * membership, and documents follow beneath. Re-skinned with design-system tokens.
  */
 const meta: Meta = {
-    title: "Profile/My Account",
+    title: "Profile ∕ Account/My Account",
     parameters: { layout: "fullscreen" },
 };
 

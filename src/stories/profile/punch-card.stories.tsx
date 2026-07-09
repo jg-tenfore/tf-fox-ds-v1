@@ -6,7 +6,7 @@ import { WalletExperience } from "./wallet-experience";
  * visual card, an activatable QR code with a countdown timer to scan at the
  * register, and packs to buy.
  */
-const meta: Meta = { title: "Profile/Wallet", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/Wallet", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

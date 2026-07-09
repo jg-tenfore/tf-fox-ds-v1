@@ -6,10 +6,10 @@ import { AuthSimple } from "./account-auth-simple";
  * card with email + password, a green sign-in CTA, and the Google / Apple icon
  * social group.
  */
-const meta = {
-    title: "Account/Log in",
+const meta: Meta = {
+    title: "Sign in ∕ Sign up/Log in",
     parameters: { layout: "fullscreen" },
-} satisfies Meta;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

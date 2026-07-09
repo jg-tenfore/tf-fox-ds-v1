@@ -37,7 +37,7 @@ const CheckoutHeader = () => (
  * summary, a hold countdown, and a common-questions accordion.
  */
 const meta: Meta = {
-    title: "Checkout/Checkout",
+    title: "Tee Time Checkout/Checkout",
     parameters: { layout: "fullscreen" },
 };
 
