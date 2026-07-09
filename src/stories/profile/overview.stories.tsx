@@ -11,7 +11,7 @@ import { MEMBER, ProfileShell } from "./profile-shell";
  * introduces the connect concept early to nudge members to play together.
  */
 const meta: Meta = {
-    title: "Profile/Overview",
+    title: "Profile ∕ Account/Overview",
     parameters: { layout: "fullscreen" },
 };
 

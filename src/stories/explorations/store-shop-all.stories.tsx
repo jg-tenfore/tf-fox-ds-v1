@@ -3,8 +3,11 @@ import { useState } from "react";
 import { Check, ChevronDown, FilterLines, Heart } from "@untitledui/icons";
 import { STORE_PRODUCTS, type StoreCategory } from "@/components/store/store-catalog";
 import { cx } from "@/utils/cx";
+import { GiftCardTile, PunchCardTile } from "./card-tiles";
 import { ProductCard } from "./store-ui";
 import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
+
+type Category = "all" | StoreCategory | "cards";
 
 /**
  * "Tenfore Fox / Pro Shop / Shop All" — a product-grid storefront for the
@@ -22,11 +25,12 @@ type Story = StoryObj;
 
 const effectivePrice = (p: (typeof STORE_PRODUCTS)[number]) => (p.onSale && p.salePrice ? p.salePrice : p.price);
 
-const CATEGORIES: { key: "all" | StoreCategory; label: string }[] = [
+const CATEGORIES: { key: Category; label: string }[] = [
     { key: "all", label: "All products" },
     { key: "apparel", label: "Apparel" },
     { key: "shoes", label: "Golf shoes" },
     { key: "equipment", label: "Equipment" },
+    { key: "cards", label: "Gift & punch cards" },
 ];
 
 type SortKey = "featured" | "price-asc" | "price-desc" | "rating" | "reviews";
@@ -106,7 +110,7 @@ const MenuItem = ({ selected, onClick, children }: { selected: boolean; onClick:
 
 const ShopAllScreen = () => {
     const [openMenu, setOpenMenu] = useState<null | "filter" | "sort" | "price">(null);
-    const [category, setCategory] = useState<"all" | StoreCategory>("all");
+    const [category, setCategory] = useState<Category>("all");
     const [sort, setSort] = useState<SortKey>("featured");
     const [onSale, setOnSale] = useState(false);
     const [inStock, setInStock] = useState(false);
@@ -136,6 +140,10 @@ const ShopAllScreen = () => {
     else if (sort === "price-desc") list.sort((a, b) => effectivePrice(b) - effectivePrice(a));
     else if (sort === "rating") list.sort((a, b) => b.rating - a.rating);
     else if (sort === "reviews") list.sort((a, b) => b.reviews - a.reviews);
+
+    // The two "card" products live alongside the catalog — shown in All / Gift & punch cards,
+    // and hidden by filters they can't satisfy (on sale, saved, or a price bucket).
+    const showCards = (category === "all" || category === "cards") && !onSale && !showSaved && !price;
 
     const priceLabel = price ? PRICES.find((p) => p.key === price)!.label : "Price";
     const categoryLabel = CATEGORIES.find((c) => c.key === category)!.label;
@@ -211,13 +219,19 @@ const ShopAllScreen = () => {
                 </div>
 
                 <p className="mt-4 text-sm text-tertiary">
-                    {list.length} {list.length === 1 ? "item" : "items"}
+                    {list.length + (showCards ? 2 : 0)} {list.length + (showCards ? 2 : 0) === 1 ? "item" : "items"}
                     {category !== "all" && <span> · {categoryLabel}</span>}
                 </p>
 
-                {/* Product grid */}
-                {list.length > 0 ? (
+                {/* Product grid — the two card products lead the grid when shown */}
+                {list.length > 0 || showCards ? (
                     <div className="mt-5 grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                        {showCards && (
+                            <>
+                                <GiftCardTile />
+                                <PunchCardTile />
+                            </>
+                        )}
                         {list.map((product) => (
                             <ProductCard
                                 key={product.id}

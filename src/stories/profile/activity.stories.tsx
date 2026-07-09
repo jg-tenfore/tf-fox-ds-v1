@@ -13,7 +13,7 @@ import { money, Panel, Segmented, StatusBadge } from "./profile-ui";
  * scrollable page (buckets the legacy Purchase History + Reservations + Statements
  * items). Re-skinned with design-system tokens.
  */
-const meta: Meta = { title: "Profile/Activity", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/Activity", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

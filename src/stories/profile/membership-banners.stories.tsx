@@ -6,7 +6,7 @@ import { AD_BANNERS, AdBanner } from "../explorations/membership-ad-banners";
  * the Tee Times banner, reused to advertise memberships. A stack of color variants
  * with alternate messaging, each independently dismissible.
  */
-const meta: Meta = { title: "Profile/Memberships", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/Memberships", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

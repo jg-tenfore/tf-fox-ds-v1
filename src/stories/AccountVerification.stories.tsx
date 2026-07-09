@@ -10,10 +10,10 @@ import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-ic
  * phone before their first booking. Composed entirely from existing design
  * system parts: FeaturedIcon, PinInput, Button and the Tenfore logo.
  */
-const meta = {
-    title: "Account/Verification",
+const meta: Meta = {
+    title: "Sign in ∕ Sign up/Verification",
     parameters: { layout: "fullscreen" },
-} satisfies Meta;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

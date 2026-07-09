@@ -31,7 +31,7 @@ import { MEMBERSHIP_ITEM, NAV } from "./profile-shell";
  * (1) the navigation (14-item menu → 6 buckets) and (2) the account page itself
  * (page-per-setting → grouped inline edit), plus a full old→new mapping.
  */
-const meta: Meta = { title: "Profile/*Architecture*", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/*Architecture*", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

@@ -16,7 +16,7 @@ import { ProfileShell } from "./profile-shell";
  * any event opens a compact info modal (a lightweight version of the event details
  * page) so members can peek without leaving the profile.
  */
-const meta: Meta = { title: "Profile/Events", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/Events", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

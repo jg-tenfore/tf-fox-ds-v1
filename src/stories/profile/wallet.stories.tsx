@@ -5,7 +5,7 @@ import { WalletExperience } from "./wallet-experience";
  * "Profile / Wallet" — balance, gift cards, and punch cards. The gift-card purchase
  * and punch-card (activatable QR + timer) flows open in modals from this page.
  */
-const meta: Meta = { title: "Profile/Wallet", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Profile ∕ Account/Wallet", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 
