@@ -32,12 +32,13 @@ const CheckoutHeader = () => (
 );
 
 /**
- * "Tenfore Fox / Checkout" — the per-player checkout, a faithful recreation of
+ * "Tenfore Fox / Tee Time Details" — the per-player checkout, a faithful recreation of
  * Tenfore's checkout screen: editable players + transportation, a live booking
- * summary, a hold countdown, and a common-questions accordion.
+ * summary, a hold countdown, and a common-questions accordion. The 1 / 2 / 4 Person
+ * stories show the flow pre-populated for different group sizes.
  */
 const meta: Meta = {
-    title: "Tee Time Checkout/Checkout",
+    title: "Tee Time Checkout/Tee Time Details",
     parameters: { layout: "fullscreen" },
 };
 
@@ -71,6 +72,17 @@ interface PlayerInfo {
 const ME: PlayerInfo = { first: "Justin", last: "girard", email: "hello@girardjustin.com", phone: "6174707879" };
 const EMPTY_PLAYER: PlayerInfo = { first: "", last: "", email: "", phone: "" };
 const initialsOf = (p: PlayerInfo) => (p.first ? `${p.first[0]}${p.last[0] ?? ""}`.toUpperCase() : undefined);
+
+// Sample guests so the 2- and 4-Person stories show completed player cards out of the box.
+const GUESTS: PlayerInfo[] = [
+    { first: "Marcus", last: "Lee", email: "marcus.lee@example.com", phone: "6175550142" },
+    { first: "Priya", last: "Shah", email: "priya.shah@example.com", phone: "6175550188" },
+    { first: "Danny", last: "OConnor", email: "danny.oconnor@example.com", phone: "6175550119" },
+];
+
+/** Seed the four player slots for a given group size: host first, then filled guests, then empties. */
+const seedDetails = (players: number): PlayerInfo[] =>
+    Array.from({ length: 4 }, (_, i) => (i === 0 ? ME : i < players ? GUESTS[i - 1] : EMPTY_PLAYER));
 
 /** Common booking questions, shown as an FAQ-02 style accordion above the disclaimer. */
 const FAQ_ITEMS = [
@@ -134,12 +146,12 @@ const FaqAccordion = () => {
     );
 };
 
-const CheckoutScreen = () => {
+const CheckoutScreen = ({ initialPlayers = 1 }: { initialPlayers?: number }) => {
     const holes = 9; // checkout doesn't switch holes
 
-    const [players, setPlayers] = useState(1);
+    const [players, setPlayers] = useState(initialPlayers);
     const [transport, setTransport] = useState<Transport>("walking");
-    const [details, setDetails] = useState<PlayerInfo[]>([ME, EMPTY_PLAYER, EMPTY_PLAYER, EMPTY_PLAYER]);
+    const [details, setDetails] = useState<PlayerInfo[]>(() => seedDetails(initialPlayers));
 
     const [openFact, setOpenFact] = useState<null | "players" | "transport">(null);
     const closeFact = () => setOpenFact(null);
@@ -410,7 +422,17 @@ const CheckoutScreen = () => {
     );
 };
 
-export const Default: Story = {
-    name: "Checkout",
-    render: () => <CheckoutScreen />,
+export const OnePerson: Story = {
+    name: "1 Person",
+    render: () => <CheckoutScreen initialPlayers={1} />,
+};
+
+export const TwoPeople: Story = {
+    name: "2 People",
+    render: () => <CheckoutScreen initialPlayers={2} />,
+};
+
+export const FourPeople: Story = {
+    name: "4 People",
+    render: () => <CheckoutScreen initialPlayers={4} />,
 };

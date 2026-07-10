@@ -13,7 +13,7 @@ import { SiteFooter } from "./tenfore-chrome";
  * like" grid of Pro Shop products the golfer can add, with an "add $X for free
  * shipping" progress bar and a running cart summary. Continues to checkout.
  */
-const meta: Meta = { title: "Shop Checkout/Add More", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Shop Checkout/2. Add More", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

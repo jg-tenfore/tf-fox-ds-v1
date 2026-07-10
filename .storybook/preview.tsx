@@ -23,6 +23,7 @@ const preview: Preview = {
                     ["Tee Times", "Pro Shop", "Events", "Calendar", "Clinics", "Restaurant"],
                     "Shop Checkout",
                     "Tee Time Checkout",
+                    ["Tee Time Details", "Confirmation - Tee Time"],
                     "Explorations",
                     "Design Systems",
                     ["Overview", "Colorways", "Color Theory", "Kettle Hills", "Sagamore", "FloGolf Indoor"],

@@ -16,7 +16,7 @@ import { SiteFooter } from "./tenfore-chrome";
  * placement). No hold countdown — this is a merchandise cart.
  */
 const meta: Meta = {
-    title: "Shop Checkout/Cart",
+    title: "Shop Checkout/1. Cart",
     parameters: { layout: "fullscreen" },
 };
 

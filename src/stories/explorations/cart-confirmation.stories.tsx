@@ -16,7 +16,7 @@ import { SiteFooter } from "./tenfore-chrome";
  * number, item list, delivery, payment details, returns info, and help, with
  * confetti on load. Uses fictional customer / card data.
  */
-const meta: Meta = { title: "Shop Checkout/Confirmation - Purchase", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Shop Checkout/4. Confirmation - Purchase", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 
