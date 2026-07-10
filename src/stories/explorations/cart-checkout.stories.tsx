@@ -17,7 +17,7 @@ import { SiteFooter } from "./tenfore-chrome";
  * summary with points/rewards, a discount field, and totals. Uses native Untitled
  * UI radios and fictional customer / card data. Re-skinned with design tokens.
  */
-const meta: Meta = { title: "Shop Checkout/Checkout", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Shop Checkout/3. Checkout", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

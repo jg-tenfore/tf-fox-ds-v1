@@ -29,7 +29,8 @@ import { PlayerAvatar, SiteFooter } from "./tenfore-chrome";
 /**
  * "Tenfore Fox / Confirmation" — a centered receipt-style page for a completed
  * reservation: a black centered header, course carousel, tee-time details,
- * who's going, payment details, and help links, with confetti on load.
+ * who's going, payment details, and help links, with confetti on load. The
+ * 1 / 2 / 4 Person stories show the receipt for different group sizes.
  */
 const meta: Meta = {
     title: "Tee Time Checkout/Confirmation - Tee Time",
@@ -93,11 +94,26 @@ const COURSE_PHOTOS = sagamoreImagesByCategory("photography");
 const carouselArrow =
     "absolute top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-fg-secondary shadow-md ring-1 ring-primary transition duration-100 ease-linear hover:bg-primary_hover";
 
-const ConfirmationScreen = () => {
-    const golfers = [
-        { first: "Justin", last: "Girard", email: "hello@girardjustin.com" },
-        { first: "Sam", last: "Carter", email: "sam.carter@example.com" },
-    ];
+/** Up to four golfers; each story slices the first N. */
+const ALL_GOLFERS = [
+    { first: "Justin", last: "Girard", email: "hello@girardjustin.com" },
+    { first: "Sam", last: "Carter", email: "sam.carter@example.com" },
+    { first: "Marcus", last: "Lee", email: "marcus.lee@example.com" },
+    { first: "Priya", last: "Shah", email: "priya.shah@example.com" },
+];
+
+const fmt = (n: number) => `$${n.toFixed(2)}`;
+
+const ConfirmationScreen = ({ players = 2 }: { players?: number }) => {
+    const golfers = ALL_GOLFERS.slice(0, players);
+
+    // Per-player pricing (reproduces the original $13.00 total at 2 players).
+    const greenFee = 20.7 * players;
+    const convenienceFee = 3.49 * players;
+    const donation = 0.34 * players;
+    const passCredit = -18.03 * players;
+    const subtotal = greenFee + convenienceFee + donation + passCredit;
+    const total = subtotal;
 
     // Celebrate the booking on load.
     useEffect(() => {
@@ -180,7 +196,7 @@ const ConfirmationScreen = () => {
                             <tbody className="divide-y divide-secondary">
                                 <ConfRow icon={Calendar} label="Date" value="Tuesday, April 21, 2026" />
                             <ConfRow icon={Clock} label="Tee time" value="6:00 PM" />
-                            <ConfRow icon={Users01} label="Players" value="2 golfers" />
+                            <ConfRow icon={Users01} label="Players" value={`${players} ${players === 1 ? "golfer" : "golfers"}`} />
                             <ConfRow icon={Flag01} label="Holes" value="9 holes" />
                             <ConfRow
                                 label="Rate type"
@@ -231,7 +247,7 @@ const ConfirmationScreen = () => {
                     <div className="mt-4 flex items-center justify-between gap-3">
                         <span className="text-2xl font-semibold text-primary">Total</span>
                         <span className="flex items-center gap-2.5">
-                            <span className="text-2xl font-semibold tabular-nums text-primary">$13.00</span>
+                            <span className="text-2xl font-semibold tabular-nums text-primary">{fmt(total)}</span>
                             <Badge color="success" size="md" type="pill-color">
                                 Paid
                             </Badge>
@@ -240,14 +256,14 @@ const ConfirmationScreen = () => {
 
                     {/* Line items */}
                     <div className="mt-4 flex flex-col divide-y divide-secondary border-t border-secondary text-sm">
-                        <PayRow label="Twilight green fee — 9 holes × 2" value="$41.40" />
-                        <PayRow label="Convenience fee" value="$6.98" />
-                        <PayRow label="Youth On Course donation" value="$0.68" />
-                        <PayRow label="Sagamore Pass credit" value="−$36.06" />
+                        <PayRow label={`Twilight green fee — 9 holes × ${players}`} value={fmt(greenFee)} />
+                        <PayRow label="Convenience fee" value={fmt(convenienceFee)} />
+                        <PayRow label="Youth On Course donation" value={fmt(donation)} />
+                        <PayRow label="Sagamore Pass credit" value={`−${fmt(Math.abs(passCredit))}`} />
                         <div className="py-3.5">
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary">Subtotal</span>
-                                <span className="tabular-nums text-primary">$13.00</span>
+                                <span className="tabular-nums text-primary">{fmt(subtotal)}</span>
                             </div>
                             <div className="mt-1 flex items-center justify-between text-xs text-tertiary">
                                 <span>Tax</span>
@@ -262,14 +278,14 @@ const ConfirmationScreen = () => {
                     <div className="mt-4 border-t border-secondary pt-4">
                         <div className="flex items-center justify-between">
                             <span className="text-base font-semibold text-primary">Total charged</span>
-                            <span className="text-base font-semibold tabular-nums text-primary">$13.00</span>
+                            <span className="text-base font-semibold tabular-nums text-primary">{fmt(total)}</span>
                         </div>
                         <div className="mt-2 flex items-center justify-between">
                             <span className="flex items-center gap-2.5 text-sm text-secondary">
                                 <img src="card-images/Visa.svg" alt="Visa" className="h-6 w-auto" />
                                 Visa ending in 4242
                             </span>
-                            <span className="tabular-nums text-sm text-secondary">$13.00</span>
+                            <span className="tabular-nums text-sm text-secondary">{fmt(total)}</span>
                         </div>
                     </div>
 
@@ -348,7 +364,17 @@ const ConfirmationScreen = () => {
     );
 };
 
-export const Default: Story = {
-    name: "Confirmation - Tee Time",
-    render: () => <ConfirmationScreen />,
+export const OnePerson: Story = {
+    name: "1 Person",
+    render: () => <ConfirmationScreen players={1} />,
+};
+
+export const TwoPeople: Story = {
+    name: "2 People",
+    render: () => <ConfirmationScreen players={2} />,
+};
+
+export const FourPeople: Story = {
+    name: "4 People",
+    render: () => <ConfirmationScreen players={4} />,
 };
