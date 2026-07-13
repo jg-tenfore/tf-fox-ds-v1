@@ -11,7 +11,7 @@ import { Button } from "@/components/base/buttons/button";
  * while success, warning, and error keep their hues so intent stays legible.
  */
 const meta = {
-    title: "Application Components/Alerts",
+    title: "Components/Feedback & Status/Alerts",
     component: Alert,
     parameters: { layout: "centered" },
     argTypes: {

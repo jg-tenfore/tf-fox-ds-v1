@@ -9,7 +9,7 @@ import { SocialButton } from "@/components/base/buttons/social-button";
  * called for.
  */
 const meta = {
-    title: "Base Components/Social Button",
+    title: "Components/Actions/Social Button",
     component: SocialButton,
     parameters: { layout: "centered" },
     argTypes: {

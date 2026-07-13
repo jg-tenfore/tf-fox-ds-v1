@@ -9,7 +9,7 @@ import { Input } from "@/components/base/input/input";
  * Sagamore member sign-up — native HTML validation fires on submit.
  */
 const meta = {
-    title: "Base Components/Form",
+    title: "Components/Forms/Form",
     component: Form,
     parameters: { layout: "centered" },
 } satisfies Meta<typeof Form>;

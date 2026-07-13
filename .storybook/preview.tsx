@@ -13,8 +13,8 @@ const preview: Preview = {
                 order: [
                     "Introduction",
                     "Foundations",
-                    "Base Components",
-                    "Application Components",
+                    "Components",
+                    ["Actions", "Forms", "Feedback & Status", "Layout & Structure", "Media & Visuals", "Navigation"],
                     "Sign in ∕ Sign up",
                     "Profile ∕ Account",
                     ["*Architecture*", "Overview", "My Account", "Activity", "Wallet", "Golf Buddies", "Events", "Memberships"],

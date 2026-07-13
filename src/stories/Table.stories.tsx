@@ -14,7 +14,7 @@ import { BadgeWithDot } from "@/components/base/badges/badges";
  * board do the talking.
  */
 const meta = {
-    title: "Application Components/Table",
+    title: "Components/Layout & Structure/Table",
     component: Table,
     parameters: {
         layout: "padded",

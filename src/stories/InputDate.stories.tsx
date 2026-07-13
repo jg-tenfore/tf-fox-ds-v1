@@ -8,7 +8,7 @@ import { InputDate } from "@/components/base/input/input-date";
  * the active segment flips to the club's near-black.
  */
 const meta = {
-    title: "Base Components/Inputs/Input Date",
+    title: "Components/Forms/Inputs/Input Date",
     component: InputDate,
     parameters: { layout: "centered" },
     argTypes: {

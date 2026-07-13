@@ -11,7 +11,7 @@ import type { Step } from "@/components/application/progress-steps/progress-step
  * booking advances.
  */
 const meta = {
-    title: "Application Components/Progress Steps",
+    title: "Components/Feedback & Status/Progress Steps",
     component: ProgressSteps,
     parameters: { layout: "centered" },
 } satisfies Meta<typeof ProgressSteps>;
