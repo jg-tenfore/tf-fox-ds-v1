@@ -8,7 +8,7 @@ import { ButtonGroup, ButtonGroupItem } from "@/components/base/button-group/but
  * near-black in the selected state under the monochromatic theme.
  */
 const meta = {
-    title: "Base Components/Button Group",
+    title: "Components/Actions/Button Group",
     component: ButtonGroup,
     parameters: { layout: "centered" },
     argTypes: {

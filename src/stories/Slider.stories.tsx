@@ -12,7 +12,7 @@ import { Slider } from "@/components/base/slider/slider";
  * without it the value renders as a percentage.
  */
 const meta = {
-    title: "Base Components/Slider",
+    title: "Components/Forms/Slider",
     component: Slider,
     parameters: { layout: "centered" },
     argTypes: {

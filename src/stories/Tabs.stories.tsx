@@ -8,7 +8,7 @@ import { COURSES, TEE_TIMES, formatPrice, RATE_LABELS, STATUS_LABELS } from "@/d
  * courses. The monochromatic theme renders every variant in greyscale.
  */
 const meta = {
-    title: "Application Components/Tabs",
+    title: "Components/Navigation/Tabs",
     component: Tabs,
     parameters: { layout: "centered" },
 } satisfies Meta<typeof Tabs>;

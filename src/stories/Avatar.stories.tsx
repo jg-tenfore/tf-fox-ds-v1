@@ -18,7 +18,7 @@ const LANA = "https://www.untitledui.com/images/avatars/lana-steiner?fm=webp&q=8
  * a photo, an icon, a status dot, a verified tick, or a company badge.
  */
 const meta = {
-    title: "Base Components/Avatar",
+    title: "Components/Media & Visuals/Avatar",
     component: Avatar,
     parameters: { layout: "centered" },
     argTypes: {

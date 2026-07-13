@@ -8,7 +8,7 @@ import { Input } from "@/components/base/input/input";
  * border, ink focus ring, no fill.
  */
 const meta = {
-    title: "Base Components/Inputs/Input",
+    title: "Components/Forms/Inputs/Input",
     component: Input,
     parameters: { layout: "centered" },
     argTypes: {
