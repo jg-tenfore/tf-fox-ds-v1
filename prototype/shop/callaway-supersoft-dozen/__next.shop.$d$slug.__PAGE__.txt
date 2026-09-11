@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[57094,["/tf-fox-ds-v1/prototype/_next/static/chunks/0_8krzx5y1w-u.js","/tf-fox-ds-v1/prototype/_next/static/chunks/0d3shmwh5_nmn.js","/tf-fox-ds-v1/prototype/_next/static/chunks/15k.d6su.0vxs.js","/tf-fox-ds-v1/prototype/_next/static/chunks/009u-l_1skid5.js","/tf-fox-ds-v1/prototype/_next/static/chunks/060~8fm2aeg4k.js","/tf-fox-ds-v1/prototype/_next/static/chunks/0_nn9ly4h_9v..js"],"ProductScreen"]
+3:I[97367,["/tf-fox-ds-v1/prototype/_next/static/chunks/0_8krzx5y1w-u.js","/tf-fox-ds-v1/prototype/_next/static/chunks/0d3shmwh5_nmn.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"callaway-supersoft-dozen"}],[["$","script","script-0",{"src":"/tf-fox-ds-v1/prototype/_next/static/chunks/15k.d6su.0vxs.js","async":true}],["$","script","script-1",{"src":"/tf-fox-ds-v1/prototype/_next/static/chunks/009u-l_1skid5.js","async":true}],["$","script","script-2",{"src":"/tf-fox-ds-v1/prototype/_next/static/chunks/060~8fm2aeg4k.js","async":true}],["$","script","script-3",{"src":"/tf-fox-ds-v1/prototype/_next/static/chunks/0_nn9ly4h_9v..js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"LmMM-LRw27KVJGPkOpcUO"}
+5:null

@@ -1,0 +1,4 @@
+:HL["/tf-fox-ds-v1/prototype/_next/static/chunks/02usadrux6us3.css","style"]
+:HL["/tf-fox-ds-v1/prototype/_next/static/chunks/04sgki9qqvlu..css","style"]
+:HL["/tf-fox-ds-v1/prototype/_next/static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"tee-times","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"LmMM-LRw27KVJGPkOpcUO"}

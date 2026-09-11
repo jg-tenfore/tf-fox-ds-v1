@@ -1,0 +1,4 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";import{d as t}from"./iframe-BbsIfxGP.js";import{i as n,r}from"./wallet-experience-idFEBGPw.js";var i,a,o,s;e((()=>{i=t(),n(),a={title:`Profile ∕ Account/Wallet`,parameters:{layout:`fullscreen`,docs:{description:{component:`"Profile / Wallet · Buy Gift Card" — the gift-card purchase flow, opened in a modal.`}}}},o={name:`Buy Gift Card`,render:()=>(0,i.jsx)(r,{initialModal:`gift`})},o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`{
+  name: "Buy Gift Card",
+  render: () => <WalletExperience initialModal="gift" />
+}`,...o.parameters?.docs?.source}}},s=[`BuyGiftCard`]}))();export{o as BuyGiftCard,s as __namedExportsOrder,a as default};

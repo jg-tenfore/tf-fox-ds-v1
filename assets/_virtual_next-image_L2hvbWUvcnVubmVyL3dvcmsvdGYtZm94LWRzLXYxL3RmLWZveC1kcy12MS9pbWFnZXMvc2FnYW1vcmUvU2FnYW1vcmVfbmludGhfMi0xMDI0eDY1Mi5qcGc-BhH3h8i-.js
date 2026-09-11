@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/Sagamore_ninth_2-1024x652-CVtbRfEq.jpg?ignore`})),r;e((()=>{n(),r={src:t,height:652,width:1024,blurDataURL:t}}))();export{r as default};

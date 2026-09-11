@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/sagamore-logo-BmRcFbNM.jpeg?ignore`})),r;e((()=>{n(),r={src:t,height:955,width:1e3,blurDataURL:t}}))();export{r as default};

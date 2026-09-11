@@ -1,0 +1,6 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";import{d as t}from"./iframe-BbsIfxGP.js";import{g as n,l as r,p as i,u as a}from"./tenfore-chrome-DMSNa9Ju.js";import{i as o,r as s}from"./membership-ad-banners-C-Ef8Mnm.js";var c,l,u,d;e((()=>{c=t(),o(),n(),l={title:`Global Nav/Tee Times/18 Holes + Membership Ads`,parameters:{layout:`fullscreen`,docs:{description:{component:`"Global Nav / Tee Times / 18 Holes + Membership Ads" — a duplicate of the
+Sagamore 18-hole tee sheet with the dismissible membership ad banners stacked
+between the Course / Date / Players selector and the tee-time results.`}}}},u={name:`18 Holes + Membership Ads`,render:()=>(0,c.jsx)(i,{club:r,nines:a,banner:(0,c.jsx)(`div`,{className:`mb-6`,children:(0,c.jsx)(s,{})})})},u.parameters={...u.parameters,docs:{...u.parameters?.docs,source:{originalSource:`{
+  name: "18 Holes + Membership Ads",
+  render: () => <TeeTimesScreen club={SAGAMORE_CLUB} nines={SAGAMORE_NINES} banner={<div className="mb-6"><MembershipAdBanners /></div>} />
+}`,...u.parameters?.docs?.source}}},d=[`Default`]}))();export{u as Default,d as __namedExportsOrder,l as default};

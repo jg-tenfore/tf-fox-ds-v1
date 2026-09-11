@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/dish-burger-BjJP2NER.avif?ignore`})),r;e((()=>{n(),r={src:t,height:2880,width:3840,blurDataURL:t}}))();export{r as default};
