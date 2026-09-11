@@ -1,3 +1,5 @@
-import { HomeScreen } from "./home-screen";
+import { HomePage } from "@/components/mcg/home-page";
 
-export default HomeScreen;
+export default function Page() {
+    return <HomePage />;
+}

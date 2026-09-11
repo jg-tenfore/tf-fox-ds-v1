@@ -91,7 +91,21 @@ export const FLOGOLF_BAYS = Array.from({ length: 10 }, (_, i) => `Bay ${i + 1}`)
 
 const NAV_ITEMS = ["Tee Times", "Shop", "Events", "Calendar", "Clinics", "Restaurant"] as const;
 
-export const TopNav = ({ active = "Tee Times", club = SAGAMORE_CLUB, accountLabel = "Sign in" }: { active?: string; club?: Club; accountLabel?: string }) => (
+/** The MCG Academy screens add an Instruction item between Events and Calendar. */
+export const NAV_ITEMS_WITH_INSTRUCTION = ["Tee Times", "Shop", "Events", "Instruction", "Calendar", "Clinics", "Restaurant"];
+
+export const TopNav = ({
+    active = "Tee Times",
+    club = SAGAMORE_CLUB,
+    accountLabel = "Sign in",
+    items = NAV_ITEMS as readonly string[],
+}: {
+    active?: string;
+    club?: Club;
+    accountLabel?: string;
+    /** Override the primary nav — e.g. to add "Instruction" for the Academy screens. */
+    items?: readonly string[];
+}) => (
     <header
         className={cx("w-full border-b border-white/10 text-white", !club.navColor && "bg-primary-solid")}
         style={club.navColor ? { backgroundColor: club.navColor } : undefined}
@@ -126,7 +140,7 @@ export const TopNav = ({ active = "Tee Times", club = SAGAMORE_CLUB, accountLabe
                 <span className="text-lg font-semibold text-white">{club.name}</span>
             </div>
             <nav className="flex items-center gap-7 text-sm font-medium">
-                {NAV_ITEMS.map((item) => (
+                {items.map((item) => (
                     <a
                         key={item}
                         href="#"

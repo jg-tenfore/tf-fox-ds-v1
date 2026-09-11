@@ -1,0 +1,70 @@
+name: Deploy Storybook + MCG Prototype
+
+# Publishes both artifacts to the same GitHub Pages site:
+#   https://jg-tenfore.github.io/tf-fox-ds-v1/            → Storybook
+#   https://jg-tenfore.github.io/tf-fox-ds-v1/prototype/  → MCG prototype
+#
+# They build from the same `src/`, so the prototype can never drift from the
+# component library — there is no copy step between them.
+
+on:
+    push:
+        branches: [main, setup/scaffold]
+    workflow_dispatch:
+        inputs:
+            ref:
+                description: "Branch or SHA to deploy"
+                required: false
+                type: string
+
+concurrency:
+    group: pages-deploy
+    cancel-in-progress: true
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.ref || github.ref }}
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: npm
+
+            - name: Install
+              run: npm ci
+
+            - name: Typecheck
+              run: npx tsc --noEmit --incremental false -p tsconfig.json
+
+            - name: Build Storybook
+              run: npm run build-storybook -- -o dist
+
+            - name: Build MCG prototype
+              run: npm run build:prototype
+
+            - name: Combine into one site
+              run: |
+                  rm -rf dist/prototype
+                  cp -r out dist/prototype
+                  # Stop GitHub Pages running the output through Jekyll, which would
+                  # drop Next's _next/ directory.
+                  touch dist/.nojekyll
+                  echo "Deployed $(date -u +%FT%TZ) from ${GITHUB_SHA::7}" > dist/BUILD.txt
+
+            - name: Publish to gh-pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./dist
+                  publish_branch: gh-pages
+                  force_orphan: true
+                  commit_message: "Deploy Storybook + prototype (${{ github.sha }})"

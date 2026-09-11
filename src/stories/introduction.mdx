@@ -2,6 +2,64 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 <Meta title="Introduction" />
 
+{/*
+  The prototype is a sibling of this Storybook: deployed it sits at /prototype/ on the
+  same GitHub Pages site, and locally it's a separate dev server on :3000. Resolve the
+  base at render time so the links below work in both places rather than only one.
+*/}
+
+export const protoBase = () => {
+  if (typeof window === "undefined") return "https://jg-tenfore.github.io/tf-fox-ds-v1/prototype";
+  const { origin, pathname } = window.location;
+  // Deployed (or previewed from a static build): the prototype is a sibling of this
+  // Storybook under the same base path, whatever that base happens to be.
+  const i = pathname.indexOf("/iframe.html");
+  const base = i > 0 ? pathname.slice(0, i + 1) : "/";
+  if (base !== "/") return `${origin}${base}prototype`;
+  // Storybook dev server at the domain root: the prototype is its own dev server.
+  return "http://localhost:3000";
+};
+
+export const Proto = ({ path = "/", children }) => (
+  <a href={`${protoBase()}${path}`} target="_blank" rel="noreferrer" style={{ fontWeight: 600 }}>
+    {children}
+  </a>
+);
+
+export const TABS = [
+  ["Home", "/", "Quick-book across all nine courses, the course portfolio with green fees, the Academy"],
+  ["Tee Times", "/tee-times/", "All nine sheets intertwined into one board sorted by the clock, course pills, a resident-rate switch, per-course rate card → checkout → confirmation"],
+  ["Shop", "/shop/", "A 53-SKU county pro shop (25 of them MCG crest merchandise) → product → cart → pickup-at-course checkout"],
+  ["Events", "/events/", "27 county events — leagues, the County Amateur, junior tour qualifiers, charity scrambles"],
+  ["Instruction", "/instruction/", "The MCG Academy — 23 real instructors across nine courses; pick a pro, pick their lesson, then time, details and payment"],
+  ["Calendar", "/calendar/", "One month view across all nine courses — events, clinics and Academy programs"],
+  ["Clinics", "/clinics/", "14 county clinic programs, filtered by level, age and course"],
+  ["Grill", "/grill/", "Course grills and snack bars, with order-ahead for the turn"],
+  ["Sign up", "/signup/", "Sign up → verify → account, plus sign in and password reset"],
+  ["Account", "/account/", "Profile hub, activity history, lesson-credit wallet, settings"],
+];
+
+export const TabTable = () => (
+  <table style={{ width: "100%", borderCollapse: "collapse", margin: "16px 0 0" }}>
+    <thead>
+      <tr>
+        <th style={{ textAlign: "left", padding: "8px 12px 8px 0", borderBottom: "1px solid #e4e7ec", fontSize: 13, color: "#667085", width: 140 }}>Tab</th>
+        <th style={{ textAlign: "left", padding: "8px 0", borderBottom: "1px solid #e4e7ec", fontSize: 13, color: "#667085" }}>What's there</th>
+      </tr>
+    </thead>
+    <tbody>
+      {TABS.map(([label, path, detail]) => (
+        <tr key={path}>
+          <td style={{ padding: "10px 12px 10px 0", borderBottom: "1px solid #f2f4f7", verticalAlign: "top", whiteSpace: "nowrap" }}>
+            <Proto path={path}>{label} ↗</Proto>
+          </td>
+          <td style={{ padding: "10px 0", borderBottom: "1px solid #f2f4f7", fontSize: 14, lineHeight: 1.55, color: "#475467" }}>{detail}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
+
 <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#667085", margin: "0 0 6px" }}>
   Tenfore Golf
 </p>
@@ -14,40 +72,103 @@ import { Meta } from "@storybook/addon-docs/blocks";
 </p>
 
 <p style={{ fontSize: 14, color: "#98a2b3", margin: "18px 0 0" }}>
-  430+ stories &nbsp;·&nbsp; 8 categories &nbsp;·&nbsp; 3 club colorways &nbsp;·&nbsp; WCAG AA
+  562 stories &nbsp;·&nbsp; 13 categories &nbsp;·&nbsp; 4 club colorways &nbsp;·&nbsp; WCAG AA
 </p>
 
-## What this is
+<div style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "28px 0 0" }}>
+  <div style={{ flex: "1 1 320px", border: "1px solid #e4e7ec", borderRadius: 12, padding: "18px 20px", background: "#fff" }}>
+    <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#667085", margin: 0 }}>
+      You are here
+    </p>
+    <p style={{ fontSize: 17, fontWeight: 600, color: "#101828", margin: "8px 0 4px" }}>Storybook — the library</p>
+    <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
+      Every component and screen in isolation, with all of its states. The place to review and validate a change.
+    </p>
+  </div>
+  <div style={{ flex: "1 1 320px", border: "1px solid #1e8e4e", borderRadius: 12, padding: "18px 20px", background: "#f6fef9" }}>
+    <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1e8e4e", margin: 0 }}>
+      New
+    </p>
+    <p style={{ fontSize: 17, fontWeight: 600, color: "#101828", margin: "8px 0 4px" }}>
+      <Proto path="/">MCG Prototype — the product ↗</Proto>
+    </p>
+    <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
+      A clickable seven-tab booking experience for Montgomery County Golf. Real URLs, real navigation, and a session
+      that carries a cart and a booking history across the whole app.
+    </p>
+  </div>
+</div>
 
-This Storybook is the single source of truth for **Tenfore Fox** — a golf club booking and commerce
-product — and the design system it stands on. It spans four layers: the **foundations** (design tokens),
-a full **component library**, the **product experiences** assembled from them, and a **theming system** that
-re-skins the whole thing per club. Everything below is live and interactive in the sidebar.
+## The MCG Prototype
+
+**Montgomery County Golf** is a nine-course public county system in Maryland — Falls Road, Northwest,
+Hampshire Greens, Laytonsville, Little Bennett, Needwood, The Crossvines, Rattlewood, and Sligo Creek. The prototype is the whole
+product assembled around it, and it's the artifact to put in front of a stakeholder when a Storybook story
+isn't enough.
+
+Every tab in the global nav works. Browsing is open — nothing is gated — and **any credentials sign you in**.
+
+<TabTable />
+
+### State that carries
+
+The prototype keeps one object in `localStorage`, so a walkthrough behaves like an application rather than a
+slide deck:
+
+- **Add to cart** → the nav badge and total update, and the cart survives a refresh
+- **Book a tee time or a lesson** → it shows up in **Account → Activity**
+- **Buy a lesson package** → credits land in **Account → Wallet** and can be spent at lesson checkout
+- **Set county residency** anywhere → every course reprices to the resident rate
+- **Account → Settings → Reset prototype data** clears it all for the next demo
+
+### Why it can't drift from this Storybook
+
+Both are built from the same source tree — there is no copy step between them. Each screen's UI lives in
+**one file** under `src/components/`, and neither the route nor the story contains any markup of its own:
+
+```
+src/components/mcg/tee-times/tee-sheet-screen.tsx     ← the screen (one copy)
+        │
+        ├── src/app/tee-times/page.tsx                ← the route: a thin wrapper
+        └── src/stories/mcg/tee-times.stories.tsx     ← the story: renders the same component
+```
+
+Validate a change in either place and the other already has it. The **MCG Prototype** category in the
+sidebar is those same screens, story by story.
+
+Two details make it work: `asset()` resolves brand imagery for both hosts (Storybook serves images at the
+site root, the prototype from a nested base path), and `useSession()` returns an inert session when no
+provider is present, so a component that reads the cart renders unchanged inside a story.
 
 ## The map
 
 | Category | Stories | What's inside |
 | --- | --- | --- |
-| **Foundations** | 42 | Design tokens & primitives — Colors, Typography, Spacing, Radius, Border, Effect Styles, Icons, Logos, and Golf Courses brand data. |
-| **Base Components** | 180 | The Untitled UI core kit — buttons, inputs, selects, checkboxes, badges, avatars, tooltips, and more. |
-| **Application Components** | 75 | Complex patterns — tables, modals, date pickers, pagination, tabs, navigation, and page sections. |
-| **Account** | 9 | Authentication flows — Log in, Sign up, Forgot password, Verification. |
-| **Booking** | 31 | The tee-time booking engine — Molecules (search, calendars, slot cards) and full Pages. |
-| **Tenfore Fox** | 10 | The flagship product — Tee Times, Pro Shop, Restaurant, Checkout, Confirmation. |
-| **Explorations** | 13 | Alternate concepts & integrations — GolfNow, Google, SevenRooms, and combined flows. |
+| **Foundations** | 45 | Design tokens & primitives — Colors, Typography, Spacing, Radius, Border, Effect Styles, Icons, Logos, and Golf Courses brand data. |
+| **MCG Prototype** | 54 | Every screen in the prototype above, rendered from the same components the routes use. |
+| **Instruction** | 32 | The MCG Academy — lesson catalog, instructor selection, facility calendar, waitlists, and three package pricing models with a comparison page. |
+| **Components** | 255 | The Untitled UI core and application kit, in semantic sub-folders — Actions, Forms, Navigation, Feedback & Status, Layout & Structure, Media & Visuals. |
 | **Design Systems** | 70 | Colorways, color-theory combinations, and per-club style guides (Kettle Hills, Sagamore, FloGolf). |
+| **Booking** | 31 | The tee-time booking engine — molecules (search, calendars, slot cards) and full pages. |
+| **Global Nav** | 27 | The Sagamore/Kettle-Hills product surfaces — Tee Times, Pro Shop, Events, Calendar, Clinics, Restaurant. |
+| **Profile ∕ Account** | 15 | Overview, Activity, Wallet, Memberships, Golf Buddies, My Account. |
+| **Explorations** | 13 | Alternate concepts & integrations — GolfNow, Google, SevenRooms, and combined flows. |
+| **Sign in ∕ Sign up** | 9 | Authentication screens — log in, sign up, verification, forgot password. |
+| **Tee Time Checkout · Shop Checkout** | 10 | The earlier per-club checkout and confirmation flows. |
 
-## The product — Tenfore Fox
+## The Instruction category
 
-The **Tenfore Fox** category is the assembled product: a member books a tee time, shops the **Pro Shop**,
-reserves at the **Restaurant**, and completes **Checkout** to a **Confirmation**. It's the proof that the
-component library and booking molecules compose into a real, branded end-to-end experience.
+**Instruction** is the MCG Academy, and the most recent product work. It answers a live question: whether
+Tenfore can replace CoachNow for a 25-instructor county academy. Two flows, built to be argued over:
 
-## The booking engine
+- **Book a Lesson** — service-first, so privates and multi-week clinics share one catalog and one checkout.
+  "Any available instructor" is a first-class choice rather than a fallback, which is the fix for landing on
+  one pro's empty calendar and starting over.
+- **Packages & Credits** — three pricing models side by side (a credit book, a volume discount, a monthly
+  plan), with a **Model Comparison** page scoring them across ten dimensions.
 
-**Booking** holds the reusable machinery — the search bar, date/rate calendars, tee-time slot cards, and
-player selectors as **Molecules**, then the full **Pages** that arrange them. These same parts power the
-Tenfore Fox tee-time flow and every club style guide.
+Pricing is one academy menu plus a per-instructor adjustment, not a catalog per pro — see
+**Instruction → Elements → Pricing Model** for the argument in one table.
 
 ## Multi-club theming & Design Systems
 
@@ -55,17 +176,19 @@ A single helper, `clubBrandStyle(color)`, re-points the brand namespace tokens s
 club's color with no per-component edits. The **Design Systems** category showcases this:
 
 - **Colorways** — the full booking style guide rendered in each hue of the utility palette.
-- **Color Theory** — analogous, complementary, and triadic harmonies derived from real OKLCH hue, across every chromatic base.
-- **Kettle Hills · Sagamore · FloGolf** — the live per-club colorways (blue, near-black, green).
+- **Color Theory** — analogous, complementary, and triadic harmonies derived from real OKLCH hue.
+- **Kettle Hills · Sagamore · FloGolf · MCG** — the live per-club colorways (blue, near-black, green, green).
 - **Accessibility** — every brand surface uses the `-700` shade and clears **WCAG AA (4.5:1)**; each guide badges its worst-case contrast.
 
-Start at **Design Systems → Overview** for a deeper tour of that work.
+One known limit: `clubBrandStyle` re-points the mid and solid brand tokens but not the light ones
+(`bg-brand-primary` / `bg-brand-secondary` resolve through `--color-brand-50/100` at `:root`), so a
+re-skinned club still shows the default ramp's light tints behind selected states.
 
 ## Foundations & components
 
 **Foundations** documents the tokens everything is built from — the semantic color system (`text-primary`,
 `bg-brand-solid`, `fg-success-primary`, …), the type scale, spacing, radius, and the brand logos for each
-golf course. **Base** and **Application Components** are the Untitled UI library those tokens dress.
+golf course. **Components** is the Untitled UI library those tokens dress.
 
 ## How it's built
 
@@ -73,16 +196,18 @@ golf course. **Base** and **Application Components** are the Untitled UI library
 - **Tailwind CSS v4** with a semantic, light/dark-aware token system (`src/styles/theme.css`, `palette.css`)
 - **React Aria Components** as the accessibility foundation (imported as `Aria*`)
 - **Storybook 10** (`@storybook/nextjs-vite`) for documentation and visual testing
+- **Next.js 16** static export for the prototype — both deploy to the same GitHub Pages site in one build
+
+### Running it locally
+
+```bash
+npm run storybook   # this library      → http://localhost:6017
+npm run dev         # the MCG prototype → http://localhost:3000
+npm run build:pages # both, combined exactly as CI publishes them
+```
 
 ### Conventions
 
 - Files are **kebab-case**; React Aria imports are prefixed **`Aria*`**.
 - Style with **semantic tokens** (`text-secondary`, `bg-primary`) — never literal color classes.
-- Per-club accent colors live in the theming helper, not in component code.
-
----
-
-<p style={{ fontSize: 13, color: "#667085" }}>
-  Tip: use the sidebar to browse, or press <kbd>/</kbd> to search. Most stories have a <strong>Controls</strong> tab
-  to tweak props live, and a <strong>Docs</strong> tab for usage.
-</p>
+- Screens live in `src/components/`; routes and stories are thin wrappers that render them.
