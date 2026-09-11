@@ -44,3 +44,9 @@ storybook-static
 
 # Design reference screenshots (not build artifacts)
 references/
+out/
+dist/
+
+# Mirrored from images/ by scripts/copy-assets.mjs
+public/*-images/
+public/card-images/

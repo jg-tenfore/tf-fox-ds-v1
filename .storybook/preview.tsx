@@ -7,12 +7,19 @@ import "../src/styles/globals.css";
 const preview: Preview = {
     parameters: {
         layout: "centered",
+        // The MCG Prototype stories render the very same components the Next routes
+        // do, so they call useRouter / usePathname. Mounting the App Router mock
+        // globally means a shared screen works in a story without a per-story opt-in.
+        nextjs: { appDirectory: true },
         options: {
             storySort: {
                 method: "alphabetical",
                 order: [
                     "Introduction",
                     "Foundations",
+                    "MCG Prototype",
+                    ["Home", "Tee Times", "Shop", "Events & Clinics", "Grill", "Account"],
+                    "Instruction",
                     "Components",
                     ["Actions", "Forms", "Feedback & Status", "Layout & Structure", "Media & Visuals", "Navigation"],
                     "Sign in ∕ Sign up",

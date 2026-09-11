@@ -7,7 +7,11 @@
         "build": "next build",
         "start": "next start",
         "storybook": "storybook dev -p 6017",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "predev": "node scripts/copy-assets.mjs",
+        "prebuild": "node scripts/copy-assets.mjs",
+        "build:prototype": "PAGES=1 node scripts/copy-assets.mjs && PAGES=1 next build",
+        "build:pages": "npm run build-storybook -- -o dist && npm run build:prototype && rm -rf dist/prototype && cp -r out dist/prototype && touch dist/.nojekyll"
     },
     "dependencies": {
         "@tailwindcss/postcss": "^4.2.2",
