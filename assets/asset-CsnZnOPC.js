@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n,r=e((()=>{t=`/`,n=e=>`${t}${e.replace(/^\//,``)}`}));export{r as n,n as t};

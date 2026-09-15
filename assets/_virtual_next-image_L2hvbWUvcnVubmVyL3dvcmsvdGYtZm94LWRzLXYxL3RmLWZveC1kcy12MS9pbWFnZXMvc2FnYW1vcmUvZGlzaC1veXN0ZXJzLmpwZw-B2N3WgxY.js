@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/dish-oysters-DTKQoBtY.jpg?ignore`})),r;e((()=>{n(),r={src:t,height:450,width:338,blurDataURL:t}}))();export{r as default};

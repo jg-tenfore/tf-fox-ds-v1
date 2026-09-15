@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/flogolf-logo-BoUd3W53.png?ignore`})),r;e((()=>{n(),r={src:t,height:1e3,width:1e3,blurDataURL:t}}))();export{r as default};
