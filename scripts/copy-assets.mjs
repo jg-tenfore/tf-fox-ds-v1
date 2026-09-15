@@ -9,16 +9,20 @@ import { cp, mkdir, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+// Target `public/` folder: the root prototype by default, or another app's
+// (`node scripts/copy-assets.mjs prototype-2/public`).
+const PUBLIC = process.argv[2] ?? "public";
+
 const MAP = [
-    ["images/sagamore", "public/sagamore-images"],
-    ["images/kettleHills", "public/kettle-hills-images"],
-    ["images/flogolf", "public/flogolf-images"],
-    ["images/mcg", "public/mcg-images"],
-    ["images/store/images", "public/store-images"],
-    ["creditCards", "public/card-images"],
-    ["images/events", "public/events-images"],
-    ["images/mcg-academy", "public/mcg-academy-images"],
-    ["images/mcg-shop", "public/mcg-shop-images"],
+    ["images/sagamore", `${PUBLIC}/sagamore-images`],
+    ["images/kettleHills", `${PUBLIC}/kettle-hills-images`],
+    ["images/flogolf", `${PUBLIC}/flogolf-images`],
+    ["images/mcg", `${PUBLIC}/mcg-images`],
+    ["images/store/images", `${PUBLIC}/store-images`],
+    ["creditCards", `${PUBLIC}/card-images`],
+    ["images/events", `${PUBLIC}/events-images`],
+    ["images/mcg-academy", `${PUBLIC}/mcg-academy-images`],
+    ["images/mcg-shop", `${PUBLIC}/mcg-shop-images`],
 ];
 
 for (const [from, to] of MAP) {

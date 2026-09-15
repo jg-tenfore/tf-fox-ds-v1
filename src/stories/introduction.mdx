@@ -3,25 +3,32 @@ import { Meta } from "@storybook/addon-docs/blocks";
 <Meta title="Introduction" />
 
 {/*
-  The prototype is a sibling of this Storybook: deployed it sits at /prototype/ on the
-  same GitHub Pages site, and locally it's a separate dev server on :3000. Resolve the
-  base at render time so the links below work in both places rather than only one.
+  Both prototypes are siblings of this Storybook: deployed they sit at /prototype/ and
+  /prototype-2/ on the same GitHub Pages site, and locally they're separate dev servers
+  on :3000 and :3001. Resolve the base at render time so the links below work in both
+  places rather than only one.
 */}
 
-export const protoBase = () => {
-  if (typeof window === "undefined") return "https://jg-tenfore.github.io/tf-fox-ds-v1/prototype";
+export const PROTOTYPES = {
+  1: { folder: "prototype", port: 3000 },
+  2: { folder: "prototype-2", port: 3001 },
+};
+
+export const protoBase = (which = 1) => {
+  const { folder, port } = PROTOTYPES[which];
+  if (typeof window === "undefined") return `https://jg-tenfore.github.io/tf-fox-ds-v1/${folder}`;
   const { origin, pathname } = window.location;
   // Deployed (or previewed from a static build): the prototype is a sibling of this
   // Storybook under the same base path, whatever that base happens to be.
   const i = pathname.indexOf("/iframe.html");
   const base = i > 0 ? pathname.slice(0, i + 1) : "/";
-  if (base !== "/") return `${origin}${base}prototype`;
-  // Storybook dev server at the domain root: the prototype is its own dev server.
-  return "http://localhost:3000";
+  if (base !== "/") return `${origin}${base}${folder}`;
+  // Storybook dev server at the domain root: each prototype is its own dev server.
+  return `http://localhost:${port}`;
 };
 
-export const Proto = ({ path = "/", children }) => (
-  <a href={`${protoBase()}${path}`} target="_blank" rel="noreferrer" style={{ fontWeight: 600 }}>
+export const Proto = ({ path = "/", which = 1, children }) => (
+  <a href={`${protoBase(which)}${path}`} target="_blank" rel="noreferrer" style={{ fontWeight: 600 }}>
     {children}
   </a>
 );
@@ -44,14 +51,20 @@ export const TabTable = () => (
     <thead>
       <tr>
         <th style={{ textAlign: "left", padding: "8px 12px 8px 0", borderBottom: "1px solid #e4e7ec", fontSize: 13, color: "#667085", width: 140 }}>Tab</th>
+        <th style={{ textAlign: "left", padding: "8px 12px 8px 0", borderBottom: "1px solid #e4e7ec", fontSize: 13, color: "#667085", width: 150 }}>Open in</th>
         <th style={{ textAlign: "left", padding: "8px 0", borderBottom: "1px solid #e4e7ec", fontSize: 13, color: "#667085" }}>What's there</th>
       </tr>
     </thead>
     <tbody>
       {TABS.map(([label, path, detail]) => (
         <tr key={path}>
+          <td style={{ padding: "10px 12px 10px 0", borderBottom: "1px solid #f2f4f7", verticalAlign: "top", whiteSpace: "nowrap", fontWeight: 600, color: "#101828" }}>
+            {label}
+          </td>
           <td style={{ padding: "10px 12px 10px 0", borderBottom: "1px solid #f2f4f7", verticalAlign: "top", whiteSpace: "nowrap" }}>
-            <Proto path={path}>{label} ↗</Proto>
+            <Proto path={path}>Prototype 1 ↗</Proto>
+            <br />
+            <Proto path={path} which={2}>Prototype 2 ↗</Proto>
           </td>
           <td style={{ padding: "10px 0", borderBottom: "1px solid #f2f4f7", fontSize: 14, lineHeight: 1.55, color: "#475467" }}>{detail}</td>
         </tr>
@@ -90,11 +103,23 @@ export const TabTable = () => (
       New
     </p>
     <p style={{ fontSize: 17, fontWeight: 600, color: "#101828", margin: "8px 0 4px" }}>
-      <Proto path="/">MCG Prototype — the product ↗</Proto>
+      <Proto path="/">MCG Prototype 1 — the product ↗</Proto>
     </p>
     <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
       A clickable seven-tab booking experience for Montgomery County Golf. Real URLs, real navigation, and a session
       that carries a cart and a booking history across the whole app.
+    </p>
+  </div>
+  <div style={{ flex: "1 1 320px", border: "1px solid #1e8e4e", borderRadius: 12, padding: "18px 20px", background: "#f6fef9" }}>
+    <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1e8e4e", margin: 0 }}>
+      New
+    </p>
+    <p style={{ fontSize: 17, fontWeight: 600, color: "#101828", margin: "8px 0 4px" }}>
+      <Proto path="/" which={2}>MCG Prototype 2 — the variant ↗</Proto>
+    </p>
+    <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
+      A separate copy of Prototype 1 for changes that shouldn't touch it. First change: Instruction and Clinics
+      combined into one tab, filtered by course and skill set, with a Square-style booking flow.
     </p>
   </div>
 </div>
@@ -107,6 +132,11 @@ product assembled around it, and it's the artifact to put in front of a stakehol
 isn't enough.
 
 Every tab in the global nav works. Browsing is open — nothing is gated — and **any credentials sign you in**.
+
+There are two prototypes. **Prototype 1** is the one the **MCG Prototype** stories below render. **Prototype 2**
+started as an exact copy and is where independent changes go: its screens live in `src/components/mcg-2` and
+`src/components/instruction-2`, its routes in `prototype-2/app`, and it keeps its own cart and session, so
+nothing done to it can change Prototype 1. Prototype 2 is linked here but has no stories of its own.
 
 <TabTable />
 
@@ -202,8 +232,9 @@ golf course. **Components** is the Untitled UI library those tokens dress.
 
 ```bash
 npm run storybook   # this library      → http://localhost:6017
-npm run dev         # the MCG prototype → http://localhost:3000
-npm run build:pages # both, combined exactly as CI publishes them
+npm run dev         # MCG prototype 1   → http://localhost:3000
+npm run dev:2       # MCG prototype 2   → http://localhost:3001
+npm run build:pages # all three, combined exactly as CI publishes them
 ```
 
 ### Conventions

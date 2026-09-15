@@ -3,6 +3,7 @@ name: Deploy Storybook + MCG Prototype
 # Publishes both artifacts to the same GitHub Pages site:
 #   https://jg-tenfore.github.io/tf-fox-ds-v1/            → Storybook
 #   https://jg-tenfore.github.io/tf-fox-ds-v1/prototype/  → MCG prototype
+#   https://jg-tenfore.github.io/tf-fox-ds-v1/prototype-2/ → MCG prototype 2
 #
 # They build from the same `src/`, so the prototype can never drift from the
 # component library — there is no copy step between them.
@@ -51,10 +52,14 @@ jobs:
             - name: Build MCG prototype
               run: npm run build:prototype
 
+            - name: Build MCG prototype 2
+              run: npm run build:prototype-2
+
             - name: Combine into one site
               run: |
-                  rm -rf dist/prototype
+                  rm -rf dist/prototype dist/prototype-2
                   cp -r out dist/prototype
+                  cp -r prototype-2/out dist/prototype-2
                   # Stop GitHub Pages running the output through Jekyll, which would
                   # drop Next's _next/ directory.
                   touch dist/.nojekyll

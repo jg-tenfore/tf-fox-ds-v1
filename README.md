@@ -1,14 +1,16 @@
 # Tenfore Golf — Fox Design System
 
 **▶ Storybook — the component library:** https://jg-tenfore.github.io/tf-fox-ds-v1/
-**▶ MCG Prototype — the clickable product:** https://jg-tenfore.github.io/tf-fox-ds-v1/prototype/
+**▶ MCG Prototype 1 — the clickable product:** https://jg-tenfore.github.io/tf-fox-ds-v1/prototype/
+**▶ MCG Prototype 2 — a separate copy for independent changes:** https://jg-tenfore.github.io/tf-fox-ds-v1/prototype-2/
 
 A design system **and** a working product prototype for Tenfore's golf booking platform, built around
 **Montgomery County Golf** — a nine-course public county system in Maryland (Falls Road, Northwest,
 Hampshire Greens, Laytonsville, Little Bennett, Needwood, The Crossvines, Rattlewood, and Sligo Creek).
 
-The two links above are built from **the same source tree**. There is no copy step between them, which is
-the point: a component fixed in the prototype is fixed in Storybook, and vice versa.
+Storybook and Prototype 1 are built from **the same source tree**. There is no copy step between them, which is
+the point: a component fixed in the prototype is fixed in Storybook, and vice versa. Prototype 2 is the
+exception by design — see [Prototype 2](#prototype-2).
 
 ---
 
@@ -53,11 +55,13 @@ Two details make this work:
 ```bash
 npm install
 
-npm run storybook        # component library      → http://localhost:6017
-npm run dev              # MCG prototype          → http://localhost:3000
+npm run storybook          # component library      → http://localhost:6017
+npm run dev                # MCG prototype 1        → http://localhost:3000
+npm run dev:2              # MCG prototype 2        → http://localhost:3001
 
-npm run build:prototype  # static export to out/
-npm run build:pages      # both, combined into dist/ exactly as CI publishes it
+npm run build:prototype    # prototype 1 static export to out/
+npm run build:prototype-2  # prototype 2 static export to prototype-2/out/
+npm run build:pages        # all three, combined into dist/ exactly as CI publishes it
 ```
 
 `predev` / `prebuild` mirror `images/` and `creditCards/` into `public/` using the same mapping as
@@ -66,7 +70,7 @@ npm run build:pages      # both, combined into dist/ exactly as CI publishes it
 ### Deploying
 
 `.github/workflows/deploy-pages.yml` runs on push to `main` (or on demand): typecheck → build Storybook →
-build the prototype → combine → publish to `gh-pages`. Both URLs update in one commit.
+build prototype 1 → build prototype 2 → combine → publish to `gh-pages`. All three URLs update in one commit.
 
 ---
 
@@ -109,6 +113,43 @@ slide deck:
 - **Account → Settings → Reset prototype data** clears everything for the next demo
 
 ---
+
+## Prototype 2
+
+A second, independent copy of the MCG prototype, for changes that must not affect Prototype 1.
+
+| | Prototype 1 | Prototype 2 |
+| --- | --- | --- |
+| **URL** | `/tf-fox-ds-v1/prototype/` | `/tf-fox-ds-v1/prototype-2/` |
+| **Local** | `npm run dev` → http://localhost:3000 | `npm run dev:2` → http://localhost:3001 |
+| **Screens** | `src/components/mcg`, `src/components/instruction` | `src/components/mcg-2`, `src/components/instruction-2` |
+| **Routes** | `src/app` | `prototype-2/app` (its own Next app) |
+| **Session** | `mcg-prototype-session-v1` | `mcg-p2-prototype-session-v1` |
+| **Storybook** | The **MCG Prototype** stories | Linked from the Introduction; no stories |
+
+Prototype 2 started as an exact copy of Prototype 1 on 2026-09-15 (including the Academy review, group
+pricing and sign-up-rule work).
+
+**What's different so far — combined Instruction (from the Sep 15 check-in with Weston):**
+
+- **One Instruction tab.** Clinics is no longer its own tab; `/clinics` opens Instruction filtered to group
+  clinics, and clinic pages light the Instruction tab.
+- **One catalog** (`src/components/mcg-2/instruction/offerings.ts`): Academy private lessons, Academy programs
+  and county clinics as one list of offerings — type (golf, ready for others), format (private or group),
+  instructors, courses, skill set, price.
+- **Filter step by step** on `/instruction`: course first, then browse by **Services** or **Instructors**, then
+  private/group and skill set (Beginner-friendly, Kid-friendly, Advanced, Short game & chipping, Putting,
+  On-course). Filters stay in the URL.
+- **Service first:** `/instruction/service/[id]` — choose an instructor or **Any available**, then book.
+- **Instructor first:** the profile opens with "What they offer" — private lessons, group clinics, packages.
+- **Square-style booking** (modelled on the Square Appointments screens in `references/091526`):
+  Service → Instructor → Extras → Date & time → Checkout. The instructor step is a radio list with "Any
+  available instructor" selected by default; Extras are optional add-ons (sample items); Date & time is a
+  week strip with Morning / Afternoon / Evening times, "Go to next available" and a waitlist; Checkout puts
+  contact info, golfers, payment (pay now, pay at the lesson, or a lesson credit), a note and the
+  cancellation policy on one page. A lesson summary with edit pencils sits beside every step. Everything below the screens — `base`, `application`, `foundations`, the
+tokens in `src/styles`, and the shared Explorations chrome — is still shared, so a design-system fix
+reaches both. Edit files under the `-2` folders to change Prototype 2 only.
 
 ## Known issues
 

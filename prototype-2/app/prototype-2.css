@@ -1,0 +1,5 @@
+/* Prototype 2 uses the shared design-system stylesheet. Tailwind scans the whole
+   `src/` tree plus this app, since the build runs from the `prototype-2/` folder. */
+@import "../../src/styles/globals.css";
+@source "../../src";
+@source "../app";

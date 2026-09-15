@@ -50,3 +50,10 @@ dist/
 # Mirrored from images/ by scripts/copy-assets.mjs
 public/*-images/
 public/card-images/
+
+# Prototype 2 (separate Next app)
+/prototype-2/.next/
+/prototype-2/out/
+/prototype-2/public/*-images/
+/prototype-2/public/card-images/
+/prototype-2/next-env.d.ts
