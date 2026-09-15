@@ -256,8 +256,22 @@ export const InstructorCard = ({ instructor }: { instructor: AcademyInstructor }
  * Hampshire Greens is the live case: it carries no Academy instructor of its own —
  * confirmed, not a gap in the data. So the page states that plainly and sends the
  * golfer to the nearest staffed courses, rather than implying a roster is pending.
+ *
+ * On the roster page the course filter is component state, so a link back to
+ * `/instruction` lands on the page already open and leaves the filter where it was —
+ * the button looked dead. The roster passes `onShowAll` to clear the filter instead;
+ * anywhere without a filter to clear, it stays a plain link.
  */
-export const AcademyCourseEmpty = ({ courseSlug, phone }: { courseSlug: string; phone: string }) => (
+export const AcademyCourseEmpty = ({ courseSlug, phone, onShowAll }: { courseSlug: string; phone: string; onShowAll?: () => void }) => {
+    const showAllClass = "flex items-center gap-1.5 text-sm font-semibold text-brand-secondary transition duration-100 ease-linear hover:underline";
+    const showAllLabel = (
+        <>
+            See instructors at the other courses
+            <ArrowRight className="size-4" aria-hidden="true" />
+        </>
+    );
+
+    return (
     <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-secondary bg-primary px-6 py-12 text-center">
         <img src={COURSE_LOGO[courseSlug]} alt="" className="size-14 rounded-full bg-primary object-contain" />
         <p className="text-md font-semibold text-primary">No Academy instructor based here</p>
@@ -265,13 +279,15 @@ export const AcademyCourseEmpty = ({ courseSlug, phone }: { courseSlug: string; 
             {ACADEMY_COURSE_NAME[courseSlug] ?? courseSlug} doesn&rsquo;t have a resident Academy instructor. You can still book a lesson at any other MCG
             course and play here — or call the shop and they&rsquo;ll point you to the nearest pro.
         </p>
-        <Link
-            href="/instruction"
-            className="flex items-center gap-1.5 text-sm font-semibold text-brand-secondary transition duration-100 ease-linear hover:underline"
-        >
-            See instructors at the other courses
-            <ArrowRight className="size-4" aria-hidden="true" />
-        </Link>
+        {onShowAll ? (
+            <button type="button" onClick={onShowAll} className={showAllClass}>
+                {showAllLabel}
+            </button>
+        ) : (
+            <Link href="/instruction" className={showAllClass}>
+                {showAllLabel}
+            </Link>
+        )}
         <a
             href={telHref(phone)}
             className="flex items-center gap-2 text-sm font-semibold text-brand-secondary transition duration-100 ease-linear hover:underline"
@@ -280,4 +296,5 @@ export const AcademyCourseEmpty = ({ courseSlug, phone }: { courseSlug: string; 
             <span className="tabular-nums">{phone}</span>
         </a>
     </div>
-);
+    );
+};

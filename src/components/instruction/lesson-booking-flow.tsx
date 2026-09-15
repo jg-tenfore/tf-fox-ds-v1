@@ -47,6 +47,8 @@ import { Input } from "@/components/base/input/input";
 import { RadioButtonBase } from "@/components/base/radio-buttons/radio-buttons";
 import { TextArea } from "@/components/base/textarea/textarea";
 import { mcgCourses } from "@/components/foundations/mcg/mcg-assets";
+import { BookingQuestions, EligibilityFields, EligibilityProblems } from "@/components/mcg/registration/registration-ui";
+import { ageOn, ageRangeLabel, checkEligibility, genderLimitLabel, missingBookingAnswers } from "@/components/mcg/registration-rules";
 import { newId, useSession } from "@/components/mcg/session";
 import { asset } from "@/utils/asset";
 import { cx } from "@/utils/cx";
@@ -145,6 +147,8 @@ export interface LessonBookingFlowProps {
      * "back" to the instructor's profile rather than to a catalog the golfer never saw.
      */
     locked?: boolean;
+    /** Stories: who is on the booking, replacing the host + sample guests. */
+    participants?: Participant[];
 }
 
 const PRIVATE_RAIL = ["Lesson", "Instructor", "Time", "Details", "Payment"];
@@ -188,6 +192,7 @@ export const LessonBookingFlow = ({
     filter: initialFilter = "all",
     highlightCourseSwitcher = false,
     locked = false,
+    participants: initialParticipants,
 }: LessonBookingFlowProps) => {
     const { addActivity } = useSession();
 
@@ -214,10 +219,11 @@ export const LessonBookingFlow = ({
     const [waitDays, setWaitDays] = useState<string[]>(["Sat", "Sun"]);
 
     const [participants, setParticipants] = useState<Participant[]>(() =>
-        Array.from({ length: 4 }, (_, i) => (i === 0 ? HOST_PARTICIPANT : i < initialPlayers ? SAMPLE_GUESTS[i - 1] : EMPTY_PARTICIPANT)),
+        Array.from({ length: 4 }, (_, i) => initialParticipants?.[i] ?? (i === 0 ? HOST_PARTICIPANT : i < initialPlayers ? SAMPLE_GUESTS[i - 1] : EMPTY_PARTICIPANT)),
     );
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [note, setNote] = useState("");
+    const [bookingAnswers, setBookingAnswers] = useState<Record<string, string>>({});
 
     const closeCell = () => setOpenCell(null);
     const toggleCell = (k: "course" | "date" | "lesson") => setOpenCell((p) => (p === k ? null : k));
@@ -491,6 +497,7 @@ export const LessonBookingFlow = ({
                                             key={s.id}
                                             service={s}
                                             coach={coach}
+                                            showGroupPrices
                                             selected={s.id === serviceId}
                                             onBook={() => {
                                                 setServiceId(s.id);
@@ -881,8 +888,15 @@ export const LessonBookingFlow = ({
     if (step === "details") {
         const coach = resolvedCoach ?? COACHES[0];
         const maxPlayers = service.maxPlayers;
-        const isJunior = service.audience === "junior";
+        const rules = service.rules;
         const setParticipant = (i: number, patch: Partial<Participant>) => setParticipants((list) => list.map((p, idx) => (idx === i ? { ...p, ...patch } : p)));
+        // Age is judged on the lesson date, so a golfer who turns 18 next week still books a junior lesson today.
+        const asOf = isoOf(date);
+        const attending = participants.slice(0, isGroup ? 1 : players);
+        const eligibility = attending.map((p) => checkEligibility(rules, p, asOf, p.first || "This golfer"));
+        const blocked = eligibility.some((r) => r.problems.length > 0);
+        const incomplete = eligibility.some((r) => r.incomplete) || missingBookingAnswers(rules, bookingAnswers).length > 0;
+        const eligibilitySub = [ageRangeLabel(rules?.age), genderLimitLabel(rules ?? {})].filter(Boolean).join(" · ");
 
         return (
             <InstructionShell>
@@ -963,8 +977,8 @@ export const LessonBookingFlow = ({
                             <section className="flex flex-col gap-4 rounded-2xl bg-primary p-6 ring-1 ring-secondary ring-inset">
                                 <SectionTitle
                                     sub={
-                                        isJunior
-                                            ? "Junior sessions collect an age so the instructor can plan around it."
+                                        eligibilitySub
+                                            ? `${eligibilitySub}. Enter details for the person taking the lesson — date of birth is checked against the lesson date.`
                                             : isGroup
                                               ? "One seat per enrolment. Add another golfer by enrolling them separately."
                                               : "Everyone taking the lesson, so the instructor knows who to expect."
@@ -977,7 +991,13 @@ export const LessonBookingFlow = ({
                                         const filled = Boolean(p.first);
                                         const open = editIndex === i;
                                         return (
-                                            <div key={i} className={cx("flex flex-col rounded-xl ring-1 transition duration-100 ease-linear ring-inset", open ? "ring-2 ring-brand" : "ring-secondary")}>
+                                            <div
+                                                key={i}
+                                                className={cx(
+                                                    "flex flex-col rounded-xl ring-1 transition duration-100 ease-linear ring-inset",
+                                                    open ? "ring-2 ring-brand" : eligibility[i]?.problems.length ? "ring-2 ring-error" : "ring-secondary",
+                                                )}
+                                            >
                                                 <button type="button" onClick={() => setEditIndex(open ? null : i)} className="flex items-center gap-3 px-4 py-3.5 text-left">
                                                     <span
                                                         className={cx(
@@ -991,13 +1011,26 @@ export const LessonBookingFlow = ({
                                                     <span className="flex min-w-0 flex-1 flex-col">
                                                         <span className="truncate text-sm font-semibold text-primary">{filled ? `${p.first} ${p.last}` : `Golfer ${i + 1}`}</span>
                                                         <span className="truncate text-xs text-tertiary">
-                                                            {filled ? (isJunior && p.age ? `Age ${p.age} · ${p.email}` : p.email) : "Add their details"}
+                                                            {eligibility[i]?.problems.length
+                                                                ? "Can't be booked for this lesson"
+                                                                : eligibility[i]?.incomplete
+                                                                  ? "Details needed"
+                                                                  : filled
+                                                                    ? rules?.age && p.birthDate
+                                                                        ? `Age ${ageOn(p.birthDate, asOf)} · ${p.email}`
+                                                                        : p.email
+                                                                    : "Add their details"}
                                                         </span>
                                                     </span>
                                                     <span className="shrink-0 text-fg-quaternary">
                                                         {filled ? <Edit03 className="size-4" aria-hidden="true" /> : <Plus className="size-4" aria-hidden="true" />}
                                                     </span>
                                                 </button>
+                                                {eligibility[i]?.problems.length > 0 && (
+                                                    <div className="px-4 pb-4">
+                                                        <EligibilityProblems result={eligibility[i]} />
+                                                    </div>
+                                                )}
                                                 {open && (
                                                     <div className="flex flex-col gap-3 border-t border-secondary px-4 py-4">
                                                         <div className="grid gap-3 sm:grid-cols-2">
@@ -1005,10 +1038,8 @@ export const LessonBookingFlow = ({
                                                             <Input label="Last name" value={p.last} onChange={(v) => setParticipant(i, { last: v })} placeholder="Last" />
                                                         </div>
                                                         <Input label="Email" value={p.email} onChange={(v) => setParticipant(i, { email: v })} placeholder="name@example.com" />
-                                                        <div className="grid gap-3 sm:grid-cols-2">
-                                                            <Input label="Phone" value={p.phone} onChange={(v) => setParticipant(i, { phone: v })} placeholder="(240) 555-0100" />
-                                                            {isJunior && <Input label="Age" value={p.age ?? ""} onChange={(v) => setParticipant(i, { age: v })} placeholder="11" />}
-                                                        </div>
+                                                        <Input label="Phone" value={p.phone} onChange={(v) => setParticipant(i, { phone: v })} placeholder="(240) 555-0100" />
+                                                        <EligibilityFields rules={rules} value={p} onChange={(patch) => setParticipant(i, patch)} />
                                                         <div className="flex justify-end">
                                                             <Button size="sm" color="secondary" iconLeading={Check} onClick={() => setEditIndex(null)}>
                                                                 Done
@@ -1022,8 +1053,15 @@ export const LessonBookingFlow = ({
                                 </div>
                             </section>
 
+                            {(rules?.questions ?? []).some((q) => q.per === "booking") && (
+                                <section className="flex flex-col gap-4 rounded-2xl bg-primary p-6 ring-1 ring-secondary ring-inset">
+                                    <SectionTitle sub="Asked once for this booking, so the instructor can plan the session.">About this {isGroup ? "enrolment" : "lesson"}</SectionTitle>
+                                    <BookingQuestions rules={rules} answers={bookingAnswers} onChange={(id, v) => setBookingAnswers((a) => ({ ...a, [id]: v }))} />
+                                </section>
+                            )}
+
                             <section className="flex flex-col gap-4 rounded-2xl bg-primary p-6 ring-1 ring-secondary ring-inset">
-                                <SectionTitle sub="Optional — what you'd like to work on, or anything the instructor should know.">Note for {coach.name}</SectionTitle>
+                                <SectionTitle sub="Optional — anything else the instructor should know.">Note for {coach.name}</SectionTitle>
                                 <TextArea
                                     aria-label={`Note for ${coach.name}`}
                                     rows={3}
@@ -1046,9 +1084,22 @@ export const LessonBookingFlow = ({
                             total={lessonTotal + facilityFee}
                             matched={coachId === "any"}
                             cta={
-                                <Button size="lg" color="primary" iconTrailing={ArrowRight} isDisabled={isGroup && spotsLeft(service) === 0} onClick={() => setStep("checkout")}>
-                                    Continue to payment
-                                </Button>
+                                <div className="flex flex-col gap-2">
+                                    <Button
+                                        size="lg"
+                                        color="primary"
+                                        iconTrailing={ArrowRight}
+                                        isDisabled={(isGroup && spotsLeft(service) === 0) || blocked || incomplete}
+                                        onClick={() => setStep("checkout")}
+                                    >
+                                        Continue to payment
+                                    </Button>
+                                    {(blocked || incomplete) && (
+                                        <p className="text-center text-xs text-tertiary">
+                                            {blocked ? "Someone on this booking can't take this lesson." : "Fill in the required details to continue."}
+                                        </p>
+                                    )}
+                                </div>
                             }
                         />
                     </div>

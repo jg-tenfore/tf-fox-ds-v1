@@ -90,6 +90,7 @@ are accepted.
 | `/instruction/pro/[id]` | Instructor profile — gallery, one-off reservations, availability, packages, programs, reviews |
 | `/instruction/instructors/[id]` | The compact roster-faithful detail page (alternative layout, kept for comparison) |
 | `/instruction/book` | Time → details → payment, with instructor and lesson already chosen |
+| `/instruction/review` | Post-lesson review prompt — the only way a verified review is created |
 | `/instruction/packages` | Lesson packages, and the three pricing models under evaluation |
 | `/instruction/credits` | Lesson-credit wallet — balances per instructor |
 | `/grill`, `/grill/order` | Course grills and snack bars — order ahead for the turn, and the pickup receipt |

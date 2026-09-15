@@ -37,6 +37,8 @@ export interface ShopOrder {
     card: OrderCard;
     lines: CartLine[];
     subtotal: number;
+    /** Multi-session clinic discount taken off the subtotal, before tax. */
+    discount?: number;
     tax: number;
     total: number;
 }

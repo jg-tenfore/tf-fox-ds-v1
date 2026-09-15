@@ -25,7 +25,7 @@ import { ACADEMY_COURSE_NAME, ALL_COURSES, AcademyCourseEmpty, AcademyCourseStri
 const BOOKABLE = ACADEMY_ROSTER.filter((instructor) => !instructor.comingSoon).length;
 
 /** One course heading plus its cards — the unit the real site puts behind a tab. */
-const CourseSection = ({ slug }: { slug: string }) => {
+const CourseSection = ({ slug, onShowAll }: { slug: string; onShowAll: () => void }) => {
     const instructors = academyInstructorsAt(slug);
 
     return (
@@ -38,7 +38,7 @@ const CourseSection = ({ slug }: { slug: string }) => {
             </div>
 
             {instructors.length === 0 ? (
-                <AcademyCourseEmpty courseSlug={slug} phone={MCG.phone} />
+                <AcademyCourseEmpty courseSlug={slug} phone={MCG.phone} onShowAll={onShowAll} />
             ) : (
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {instructors.map((instructor) => (
@@ -53,6 +53,13 @@ const CourseSection = ({ slug }: { slug: string }) => {
 export const AcademyInstructorsScreen = ({ initialCourse = ALL_COURSES }: { initialCourse?: string }) => {
     const [course, setCourse] = useState(initialCourse);
     const slugs = course === ALL_COURSES ? ACADEMY_COURSE_ORDER : [course];
+
+    // From an empty course, "see the other courses" means: drop the filter and start
+    // from the top of the roster, since the golfer is scrolled down to the empty state.
+    const showAll = () => {
+        setCourse(ALL_COURSES);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     return (
         <McgShell>
@@ -87,7 +94,7 @@ export const AcademyInstructorsScreen = ({ initialCourse = ALL_COURSES }: { init
                     </div>
 
                     {slugs.map((slug) => (
-                        <CourseSection key={slug} slug={slug} />
+                        <CourseSection key={slug} slug={slug} onShowAll={showAll} />
                     ))}
                 </div>
             </McgPage>

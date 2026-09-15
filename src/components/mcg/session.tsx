@@ -14,6 +14,7 @@
  */
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { type MultiBuyDiscount, cartMultiBuySavings } from "./registration-rules";
 
 const KEY = "mcg-prototype-session-v1";
 
@@ -42,6 +43,11 @@ export interface CartLine {
     qty: number;
     /** Where it came from, for the "keep shopping" link. */
     href?: string;
+    /**
+     * A per-session clinic's "buy N, get X% off". Lines sharing a `groupId` count
+     * toward it together; the saving comes off `cartTotal`.
+     */
+    multiBuy?: MultiBuyDiscount & { groupId: string; groupName: string };
 }
 
 export type ActivityKind = "tee-time" | "lesson" | "clinic" | "event" | "purchase" | "package" | "dining";
@@ -58,6 +64,11 @@ export interface ActivityItem {
     courseSlug?: string;
     amount?: number;
     status: "Upcoming" | "Completed" | "Cancelled";
+    /**
+     * A completed lesson carries the booking a review attaches to, so its Activity row
+     * can offer "Leave a review" — the same link the post-lesson email sends.
+     */
+    review?: { coachId: string; serviceId: string };
 }
 
 export interface LessonCredit {
@@ -179,7 +190,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
     const api = useMemo<SessionApi>(() => {
         const cartCount = state.cart.reduce((n, l) => n + l.qty, 0);
-        const cartTotal = state.cart.reduce((n, l) => n + l.qty * l.unitPrice, 0);
+        const cartTotal = state.cart.reduce((n, l) => n + l.qty * l.unitPrice, 0) - cartMultiBuySavings(state.cart);
 
         return {
             ...state,

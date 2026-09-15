@@ -22,6 +22,8 @@ import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-ic
 import { McgHero, McgPage, McgShell } from "@/components/mcg/mcg-chrome";
 import { type CartLine, useSession } from "@/components/mcg/session";
 import { MCG_LOGO_PRODUCTS, money } from "@/components/mcg/shop-catalog";
+import { MultiBuyBanner } from "@/components/mcg/registration/registration-ui";
+import { cartMultiBuyGroups, multiBuyLabel } from "@/components/mcg/registration-rules";
 import { countOf, subtotalOf, taxOn } from "./order";
 import { Panel, ProductTile, QtyStepper, SummaryRow } from "./shop-ui";
 
@@ -111,8 +113,12 @@ export const CartScreen = ({ lines: fixture }: CartScreenProps) => {
 
     const count = countOf(lines);
     const subtotal = subtotalOf(lines);
-    const tax = taxOn(subtotal);
-    const total = subtotal + tax;
+    // Per-session clinics can earn "buy 3, get 50% off" — computed across the cart so
+    // adding a third Saturday from a different visit still counts.
+    const multiBuy = cartMultiBuyGroups(lines);
+    const savings = multiBuy.reduce((n, g) => n + g.quote.discount, 0);
+    const tax = taxOn(subtotal - savings);
+    const total = subtotal - savings + tax;
 
     return (
         <McgShell>
@@ -192,11 +198,32 @@ export const CartScreen = ({ lines: fixture }: CartScreenProps) => {
                             <Panel title="Order summary">
                                 <div className="flex flex-col gap-2.5 px-5 py-4 text-sm">
                                     <SummaryRow label={`Subtotal · ${count} ${count === 1 ? "item" : "items"}`} value={money(subtotal)} />
+                                    {multiBuy
+                                        .filter((g) => g.quote.discount > 0)
+                                        .map((g) => (
+                                            <SummaryRow key={g.groupId} label={`${multiBuyLabel(g.rule)} · ${g.groupName}`} value={`−${money(g.quote.discount)}`} tone="credit" />
+                                        ))}
                                     <SummaryRow label="Counter pickup" value="Free" tone="credit" />
                                     <SummaryRow label="Maryland sales tax (6%)" value={money(tax)} />
                                     <SummaryRow label="Total" value={money(total)} tone="total" />
                                 </div>
                             </Panel>
+
+                            {multiBuy
+                                .filter((g) => !g.quote.qualifies)
+                                .map((g) => {
+                                    const href = lines.find((l) => l.multiBuy?.groupId === g.groupId)?.href;
+                                    return (
+                                        <div key={g.groupId} className="flex flex-col gap-2">
+                                            <MultiBuyBanner rule={g.rule} quote={g.quote} />
+                                            {href && (
+                                                <Link href={`${href}#sessions`} className="text-sm font-semibold text-brand-secondary transition duration-100 ease-linear hover:underline">
+                                                    Add sessions of {g.groupName}
+                                                </Link>
+                                            )}
+                                        </div>
+                                    );
+                                })}
 
                             <Button href="/cart/checkout" color="primary" size="lg" iconTrailing={ArrowRight} className="w-full">
                                 Checkout

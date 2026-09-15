@@ -52,3 +52,15 @@ export const ComingSoon: Story = {
     name: "Jim Smithburger — profile coming soon",
     render: () => <InstructorProfileScreen instructorId="jim-smithburger" />,
 };
+
+/* ---- Verified reviews: the three states an instructor's profile can be in ---- */
+
+export const ReviewsCollecting: Story = {
+    name: "Reviews — collecting (under 5 verified)",
+    render: () => <InstructorProfileScreen instructorId="brandon-jarvis" />,
+};
+
+export const ReviewsOff: Story = {
+    name: "Reviews — switched off by the instructor",
+    render: () => <InstructorProfileScreen instructorId="john-ross" />,
+};

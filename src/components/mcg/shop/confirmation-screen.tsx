@@ -162,6 +162,7 @@ export const ConfirmationScreen = ({ order: fixture }: ConfirmationScreenProps) 
                         <h2 className="text-lg font-semibold text-primary">Payment</h2>
                         <div className="mt-4 flex flex-col divide-y divide-secondary border-y border-secondary text-sm">
                             <PayRow label={`Subtotal · ${count} ${count === 1 ? "item" : "items"}`} value={money(order.subtotal)} />
+                            {order.discount ? <PayRow label="Multi-session discount" value={`−${money(order.discount)}`} tone="credit" /> : null}
                             <PayRow label="Counter pickup" value="Free" tone="credit" />
                             <PayRow label="Maryland sales tax (6%)" value={money(order.tax)} />
                         </div>
