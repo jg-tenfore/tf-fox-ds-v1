@@ -29,6 +29,7 @@ import type { FC } from "react";
 import { Flag01, Gift01, Heart, Moon01, Trophy01, Users01 } from "@untitledui/icons";
 import { COURSE_NAME, GROUP_SERVICES, type LessonService } from "@/components/instruction/instruction-catalog";
 import { asset } from "@/utils/asset";
+import type { RegistrationRules } from "./registration-rules";
 
 /* ------------------------------------------------------------------ */
 /* Dates                                                               */
@@ -729,6 +730,13 @@ export interface McgClinic {
     bring: string[];
     provided: string[];
     image: string;
+    /** Age, gender, sign-up questions, equipment and multi-buy — see `registration-rules.ts`. */
+    rules?: RegistrationRules;
+    /**
+     * Set when sessions are sold one at a time (Fox's session table) rather than as a
+     * series. `price` is then per session and the golfer picks which dates they want.
+     */
+    perSession?: { price: number };
 }
 
 /** Badge colour per skill level, so the five read apart at a glance. */
@@ -749,6 +757,42 @@ const DIANE = { name: "Diane Whitlock, PGA", title: "MCG Teaching Professional",
 const ANDRE = { name: "Andre Sills, PGA", title: "MCG Teaching Professional", initials: "AS", bio: "Hampshire Greens-based instructor working mostly with competitive juniors and tournament players. Coaches three MCPS teams in the fall." };
 
 export const MCG_CLINICS: McgClinic[] = [
+    {
+        id: "girls-golf-needwood",
+        title: "Girls Golf — Saturday Skills",
+        level: "Beginner",
+        audience: "Juniors",
+        isoDate: "2026-06-20",
+        time: "10:00 AM – 11:30 AM",
+        schedule: "Saturdays from Jun 20 — pick your dates",
+        sessions: 6,
+        courseSlug: "needwood",
+        location: "Needwood learning centre",
+        instructor: KAYLA,
+        price: 45,
+        priceUnit: "per session",
+        capacity: 12,
+        registered: 5,
+        description:
+            "Saturday mornings for girls, coached by women, at Needwood. Each session stands on its own — a new skill, a game, and a hole or two to finish — so families book the Saturdays that work. Choose three or more and every session is half price.",
+        learn: ["Full swing, chipping and putting basics", "Games that build real scoring skills", "Playing a hole from tee to cup", "Etiquette and confidence on the course"],
+        prerequisites: "Girls aged 7–16. No experience needed; clubs are provided.",
+        bring: ["Sneakers or golf shoes", "Water and sunscreen"],
+        provided: ["Junior clubs in every size", "All balls and tees", "A Girls Golf visor on the first session"],
+        image: img(3),
+        rules: {
+            age: { min: 7, max: 16 },
+            genders: ["female"],
+            genderLabel: "Girls",
+            equipmentProvided: true,
+            multiBuy: { buy: 3, percentOff: 50 },
+            questions: [
+                { id: "shirt", label: "Visor or T-shirt size", type: "choice", options: ["Youth S", "Youth M", "Youth L", "Adult S"], required: true, per: "golfer" },
+                { id: "emergency", label: "Emergency contact phone", type: "text", required: true, per: "booking" },
+            ],
+        },
+        perSession: { price: 45 },
+    },
     {
         id: "ggr-northwest",
         title: "Get Golf Ready — Five-Week Starter",
@@ -820,6 +864,13 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Your clubs if you have them", "Golf or athletic shoes", "A friend, if it helps"],
         provided: ["Loaner clubs on request", "Range balls each week", "Nine holes on the final week, cart included"],
         image: img(2),
+        rules: {
+            age: { min: 18 },
+            genders: ["female", "non-binary"],
+            genderLabel: "Women and non-binary golfers",
+            equipmentProvided: false,
+            questions: [{ id: "on-course", label: "Rounds played in the last year", type: "choice", options: ["None", "1–5", "6–10", "More than 10"], required: true, per: "golfer" }],
+        },
     },
     {
         id: "senior-swing-laytonsville",
@@ -844,6 +895,11 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Your own clubs", "Comfortable shoes", "Water"],
         provided: ["Range balls each week", "Mobility bands", "A printed distance chart at the end"],
         image: img(4),
+        rules: {
+            age: { min: 55 },
+            equipmentProvided: false,
+            questions: [{ id: "mobility", label: "Anything the instructor should know about mobility or injuries?", type: "text", required: false, per: "golfer" }],
+        },
     },
     {
         id: "first-tee-summer-northwest",
@@ -868,6 +924,16 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Sneakers", "A water bottle", "Sunscreen"],
         provided: ["Junior loaner clubs", "All balls and tees", "A First Tee shirt and certificate"],
         image: img(1),
+        rules: {
+            age: { min: 7, max: 14 },
+            equipmentProvided: true,
+            questions: [
+                { id: "shirt", label: "T-shirt size", type: "choice", options: ["Youth S", "Youth M", "Youth L", "Adult S", "Adult M"], required: true, per: "golfer" },
+                { id: "medical", label: "Allergies or medical notes", type: "text", required: false, per: "golfer" },
+                { id: "scholarship", label: "Would you like to apply for a scholarship?", type: "yes-no", required: true, per: "booking" },
+                { id: "emergency", label: "Emergency contact phone", type: "text", required: true, per: "booking" },
+            ],
+        },
     },
     {
         id: "junior-pathway-little-bennett",
@@ -892,6 +958,14 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Your own junior clubs", "Golf shoes", "Water and a snack"],
         provided: ["Range and short-game balls", "Nine holes on weeks six and eight", "Junior tour entry guidance"],
         image: img(3),
+        rules: {
+            age: { min: 9, max: 14 },
+            equipmentProvided: false,
+            questions: [
+                { id: "completed", label: "Completed First Tee or a starter clinic?", type: "yes-no", required: true, per: "golfer" },
+                { id: "emergency", label: "Emergency contact phone", type: "text", required: true, per: "booking" },
+            ],
+        },
     },
     {
         id: "play-nine-sligo",
@@ -940,6 +1014,11 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Your full set", "Golf shoes and rain gear", "A rangefinder if you own one"],
         provided: ["Range balls and practice green access", "Nine tournament holes each week", "A USGA rules pocket guide"],
         image: img(2),
+        rules: {
+            age: { min: 13, max: 18 },
+            equipmentProvided: false,
+            questions: [{ id: "score", label: "Most recent 18-hole score", type: "text", required: true, hint: "Bring the card to the first session.", per: "golfer" }],
+        },
     },
     {
         id: "family-saturday-rattlewood",
@@ -964,6 +1043,10 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Sunscreen and water", "Any clubs you already own"],
         provided: ["Junior and adult loaner clubs", "All range balls", "Three holes on the final two weeks"],
         image: img(1),
+        rules: {
+            equipmentProvided: true,
+            questions: [{ id: "family-size", label: "How many in your family will attend?", type: "choice", options: ["2", "3", "4", "5", "6+"], required: true, per: "booking" }],
+        },
     },
     {
         id: "short-game-school-needwood",
@@ -972,21 +1055,23 @@ export const MCG_CLINICS: McgClinic[] = [
         audience: "Adults",
         isoDate: "2026-07-11",
         time: "9:00 AM – 11:00 AM",
-        schedule: "One Saturday morning",
-        sessions: 1,
+        schedule: "Saturdays from Jul 11 — pick your dates",
+        sessions: 4,
         courseSlug: "needwood",
         location: "Needwood short-game area",
         instructor: DIANE,
         price: 45,
-        priceUnit: "per player",
+        priceUnit: "per session",
         capacity: 16,
         registered: 6,
         description:
-            "Two hours inside forty yards, which is where most county golfers give away the majority of their strokes. One session, no series commitment, and you leave with three shots you can actually repeat.",
+            "Two hours inside forty yards, which is where most county golfers give away the majority of their strokes. Every Saturday stands on its own — book one, or book three and take half off all of them — and you leave each one with a shot you can actually repeat.",
         learn: ["A single chipping motion for most lies", "The pitch you can trust from thirty yards", "Getting out of a greenside bunker every time", "Speed control on Needwood's slower greens"],
         prerequisites: "Any ability. Genuinely useful whether you shoot 78 or 118.",
         bring: ["Your wedges and putter", "Golf shoes"],
         provided: ["Short-game and bunker balls", "Loaner wedges on request", "A one-page practice plan"],
+        rules: { age: { min: 16 }, equipmentProvided: false, multiBuy: { buy: 3, percentOff: 50 } },
+        perSession: { price: 45 },
         image: img(4),
     },
     {
@@ -1036,6 +1121,10 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Whatever equipment you already use", "Comfortable clothing"],
         provided: ["Adaptive carts and single-rider seats", "Modified and loaner clubs", "One-to-one coaching, free of charge"],
         image: img(7),
+        rules: {
+            equipmentProvided: true,
+            questions: [{ id: "support", label: "Equipment or support we should have ready", type: "text", required: false, per: "golfer" }],
+        },
     },
     {
         id: "league-ready-crossvines",
@@ -1084,6 +1173,14 @@ export const MCG_CLINICS: McgClinic[] = [
         bring: ["Your full set", "Golf shoes and rain gear", "A packed lunch for Thursday"],
         provided: ["Range balls each morning", "Nine holes daily with cart", "A written evaluation to hand your coach"],
         image: img(3),
+        rules: {
+            age: { min: 14, max: 18 },
+            equipmentProvided: false,
+            questions: [
+                { id: "school", label: "High school", type: "text", required: true, per: "golfer" },
+                { id: "grade", label: "Grade this fall", type: "choice", options: ["9", "10", "11", "12"], required: true, per: "golfer" },
+            ],
+        },
     },
 ];
 
@@ -1130,6 +1227,23 @@ export const clinicById = (id: string): McgClinic | undefined => MCG_CLINICS.fin
 /** Spots left is always derived — a catalog that stores it drifts the moment anyone registers. */
 export const spotsLeft = (item: { capacity: number; registered: number }) => Math.max(0, item.capacity - item.registered);
 export const isFull = (item: { capacity: number; registered: number }) => spotsLeft(item) === 0;
+
+/**
+ * Seats taken on each date of a per-session clinic. Sessions fill independently — the
+ * first Saturday and the Fourth of July weekend go first — so each gets its own count,
+ * derived from the clinic id so a story renders the same table every time.
+ */
+export const sessionRegistered = (clinic: McgClinic, index: number): number => {
+    let h = 2166136261;
+    const key = `${clinic.id}|${index}`;
+    for (let i = 0; i < key.length; i++) {
+        h ^= key.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+    }
+    // The second date is always full, so the sold-out row is part of every table.
+    if (index === 1) return clinic.capacity;
+    return Math.min(clinic.capacity, clinic.registered + ((h >>> 0) % Math.max(1, clinic.capacity - clinic.registered)));
+};
 
 /** Every month that has programming, oldest first — drives the month filter. */
 export const EVENT_MONTHS: string[] = [...new Set(MCG_EVENTS.map((e) => monthKey(e.isoDate)))].sort();

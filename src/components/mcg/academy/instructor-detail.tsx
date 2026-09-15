@@ -37,6 +37,7 @@ import { academyDisplayName, academyInstructor, instructorPhoto } from "@/compon
 import { McgPage, McgShell } from "@/components/mcg/mcg-chrome";
 import { DEFAULT_DATE } from "@/stories/explorations/tee-search-popovers";
 import { ACADEMY_COURSE_NAME, InstructorContact, InstructorCourseList } from "./academy-ui";
+import { bookHref } from "./book-screen";
 
 /* ------------------------------------------------------------------ */
 /* Panels                                                              */
@@ -188,12 +189,18 @@ export const AcademyInstructorDetailScreen = ({ instructorId }: { instructorId: 
                             )}
 
                             <Panel>
-                                <SectionTitle sub={`Academy rates, adjusted for ${instructor.name}. Prices shown are for one golfer.`}>
+                                <SectionTitle sub={`Academy rates, adjusted for ${instructor.name}, for each group size.`}>
                                     Lesson menu
                                 </SectionTitle>
                                 <div className="flex flex-col gap-3">
                                     {privates.map((service) => (
-                                        <MenuItemRow key={service.id} service={service} coach={coach} />
+                                        <MenuItemRow
+                                            key={service.id}
+                                            service={service}
+                                            coach={coach}
+                                            showGroupPrices
+                                            href={bookHref({ coachId: instructor.id, serviceId: service.id, courseSlug: instructor.courseSlugs[0] })}
+                                        />
                                     ))}
                                 </div>
                             </Panel>

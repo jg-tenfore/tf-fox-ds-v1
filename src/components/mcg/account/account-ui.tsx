@@ -34,6 +34,7 @@ import { Badge } from "@/components/base/badges/badges";
 import { Button } from "@/components/base/buttons/button";
 import { mcgLogo } from "@/components/foundations/mcg/mcg-assets";
 import { CREDIT_BALANCES, type CreditBalance, coachById, money } from "@/components/instruction/instruction-catalog";
+import { reviewHref } from "@/components/mcg/academy/instructor-reviews";
 import { cx } from "@/utils/cx";
 import { type ActivityItem, type ActivityKind, type LessonCredit, type SessionUser, useSession } from "../session";
 
@@ -195,6 +196,7 @@ export const DEMO_ACTIVITY: ActivityItem[] = [
         timeLabel: "5:15 PM",
         courseSlug: "little-bennett",
         status: "Completed",
+        review: { coachId: "doug-hamilton", serviceId: "private-45" },
     },
     {
         id: "act-tee-crossvines",
@@ -388,6 +390,16 @@ export const ActivityRow = ({ item, showStatus = true }: { item: ActivityItem; s
             </div>
             {item.amount !== undefined && (
                 <span className="hidden shrink-0 text-sm font-semibold text-primary tabular-nums sm:block">{money(item.amount)}</span>
+            )}
+            {item.review && item.status === "Completed" && (
+                <Button
+                    size="sm"
+                    color="secondary"
+                    href={reviewHref({ ...item.review, courseSlug: item.courseSlug, dateLabel: item.dateLabel })}
+                    className="shrink-0"
+                >
+                    Leave a review
+                </Button>
             )}
             {showStatus && <StatusBadge status={item.status} />}
         </div>

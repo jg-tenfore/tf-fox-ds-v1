@@ -28,6 +28,7 @@ import { McgPage, McgShell } from "@/components/mcg/mcg-chrome";
 import { type ActivityItem, type CartLine, DEMO_USER, newId, useSession } from "@/components/mcg/session";
 import { PICKUP_HOURS, PICKUP_READY, money } from "@/components/mcg/shop-catalog";
 import { cx } from "@/utils/cx";
+import { cartMultiBuySavings } from "@/components/mcg/registration-rules";
 import { SAVED_CARDS, type ShopOrder, countOf, nextOrderNumber, subtotalOf, taxOn, writeOrder } from "./order";
 import { MicroLabel, Panel, SummaryRow } from "./shop-ui";
 
@@ -88,8 +89,9 @@ export const CheckoutScreen = ({ lines: fixture }: CheckoutScreenProps) => {
 
     const count = countOf(lines);
     const subtotal = subtotalOf(lines);
-    const tax = taxOn(subtotal);
-    const total = subtotal + tax;
+    const discount = cartMultiBuySavings(lines);
+    const tax = taxOn(subtotal - discount);
+    const total = subtotal - discount + tax;
 
     const course = mcgCourses.find((c) => c.slug === courseSlug) ?? mcgCourses[0];
     const card = SAVED_CARDS.find((c) => c.id === cardId) ?? SAVED_CARDS[0];
@@ -108,6 +110,7 @@ export const CheckoutScreen = ({ lines: fixture }: CheckoutScreenProps) => {
             card: { brand: card.brand, last4: card.last4, logo: card.logo },
             lines,
             subtotal,
+            discount,
             tax,
             total,
         };
@@ -340,6 +343,7 @@ export const CheckoutScreen = ({ lines: fixture }: CheckoutScreenProps) => {
 
                             <div className="flex flex-col gap-2.5 px-5 py-4 text-sm">
                                 <SummaryRow label={`Subtotal · ${count} ${count === 1 ? "item" : "items"}`} value={money(subtotal)} />
+                                {discount > 0 && <SummaryRow label="Multi-session discount" value={`−${money(discount)}`} tone="credit" />}
                                 <SummaryRow label="Counter pickup" value="Free" tone="credit" />
                                 <SummaryRow label="Maryland sales tax (6%)" value={money(tax)} />
                                 <SummaryRow label="Total" value={money(total)} tone="total" />

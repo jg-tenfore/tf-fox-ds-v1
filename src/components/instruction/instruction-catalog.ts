@@ -8,10 +8,10 @@
  *     30/45/60-minute privates, playing lessons, multi-week clinics and junior camps,
  *     separated by `kind` and filtered by tag — not two parallel systems. This is the
  *     "build lessons into the existing clinics structure" route.
- *  2. **Price is a base service rate plus a per-instructor adjustment** (`priceAdj`),
- *     not a private catalog per instructor. A club publishes one lesson menu and marks
- *     its producers up; MCG's rate bands fall out of the adjustment rather than
- *     requiring nine duplicate menus.
+ *  2. **Price is an Academy table per group size, adjusted per instructor.** Each
+ *     lesson has a total for 1, 2, 3 and 4 golfers that the Academy types in; an
+ *     instructor either takes it plus their rate adjustment (`priceAdj`) or sets their
+ *     own table for that lesson (`priceOverrides`). One menu, not nine duplicate menus.
  *  3. **Course is a dimension of a service, not a copy of it.** A coach teaching at
  *     three courses has one menu and three calendars.
  *
@@ -21,6 +21,7 @@
 
 import { mcgCourses } from "@/components/foundations/mcg/mcg-assets";
 import { ACADEMY_ROSTER, type AcademyInstructor } from "@/components/mcg/academy-roster";
+import type { EligibilityAnswers, RegistrationRules } from "@/components/mcg/registration-rules";
 import { asset } from "@/utils/asset";
 
 /* ------------------------------------------------------------------ */
@@ -90,9 +91,20 @@ export interface LessonService {
     maxPlayers: number;
     /** Price at one golfer, before any instructor adjustment. */
     basePrice: number;
-    /** Total price by party size — per-golfer cost falls as the group grows. */
+    /**
+     * The Academy's price for each group size: the **total** for 1, 2, 3 or 4 golfers,
+     * typed in by the Academy one size at a time. Not derived from a multiplier — a
+     * pro shop sets "$90 for one, $125 for two" as two separate numbers, so the model
+     * stores it that way.
+     */
     priceByPlayers: Record<number, number>;
     guardrails?: Guardrails;
+    /**
+     * Who can book it and what they're asked — the same rules clinics use
+     * (`registration-rules.ts`), so a junior private and a junior clinic check age the
+     * same way.
+     */
+    rules?: RegistrationRules;
     /** Filter-chip tags. */
     tags: string[];
     /** Catalog section heading. */
@@ -133,6 +145,12 @@ export interface Coach {
      * Derived from the Academy title, NOT from real MCG rates — we don't have those.
      */
     priceAdj: number;
+    /**
+     * An instructor's own group-size table for a lesson, keyed by service id, replacing
+     * the Academy table **and** `priceAdj` for that lesson. Most instructors don't have
+     * one; it's the escape hatch for a pro who prices groups differently from the house.
+     */
+    priceOverrides?: Record<string, Record<number, number>>;
     email: string | null;
     phone: string | null;
     /** Only where the Academy publishes one. Never invented for a real person. */
@@ -292,6 +310,17 @@ const initialsOfName = (name: string) =>
  * courses, contact. Everything commercial (rate adjustment, availability, packages) is
  * modelled on top of it here.
  */
+/**
+ * Instructor-set group-size tables. Like `TITLE_ADJ`, these are a model of the
+ * structure — one instructor who prices groups their own way — not real MCG rates.
+ */
+const PRICE_OVERRIDES: Record<string, Coach["priceOverrides"]> = {
+    "doug-hamilton": {
+        "private-45": { 1: 95, 2: 120, 3: 135, 4: 150 },
+        "private-60": { 1: 120, 2: 150, 3: 170, 4: 185 },
+    },
+};
+
 export const COACHES: Coach[] = ACADEMY_ROSTER.map((instructor) => ({
     id: instructor.id,
     name: instructor.name,
@@ -300,6 +329,7 @@ export const COACHES: Coach[] = ACADEMY_ROSTER.map((instructor) => ({
     initials: initialsOfName(instructor.name),
     courseSlugs: instructor.courseSlugs,
     priceAdj: adjFor(instructor),
+    priceOverrides: PRICE_OVERRIDES[instructor.id],
     email: instructor.email,
     phone: instructor.phone,
     bio: instructor.bio,
@@ -325,25 +355,62 @@ export const adjLabel = (adj: number): string => (adj > 0 ? `+$${adj} premier ra
 const to5 = (n: number) => Math.round(n / 5) * 5;
 
 /**
- * Total price by party size. The instructor invests the same hour either way, so the
- * total climbs slowly and the per-golfer cost drops sharply — the "you get that third
- * person for free" effect MCG already prices for.
+ * Sign-up rules per service. Every private asks what the golfer wants to work on
+ * (replacing the free-text note as the instructor's first read) and, optionally, which
+ * hand they play; junior and senior lessons add an age range. Programs carry the
+ * limits and questions their audience needs.
  */
-const partyPricing = (base: number, maxPlayers: number): Record<number, number> => {
-    const step = [1, 1.36, 1.55, 1.7];
-    const out: Record<number, number> = {};
-    for (let n = 1; n <= maxPlayers; n++) out[n] = to5(base * step[n - 1]);
-    return out;
+const PRIVATE_QUESTIONS: RegistrationRules["questions"] = [
+    {
+        id: "focus",
+        label: "What would you like to work on?",
+        type: "choice",
+        options: ["Full swing", "Short game", "Putting", "Course management", "Not sure yet"],
+        required: true,
+        per: "booking",
+    },
+    { id: "hand", label: "Plays", type: "choice", options: ["Right-handed", "Left-handed"], required: false, per: "golfer" },
+];
+
+const LESSON_RULES: Record<string, RegistrationRules> = {
+    "private-45": { questions: PRIVATE_QUESTIONS },
+    "private-60": { questions: PRIVATE_QUESTIONS },
+    "playing-9": { questions: PRIVATE_QUESTIONS },
+    "private-30": { questions: PRIVATE_QUESTIONS },
+    "junior-30": { age: { min: 7, max: 17 }, questions: PRIVATE_QUESTIONS },
+    "senior-45": { age: { min: 62 }, questions: PRIVATE_QUESTIONS },
+    "clinic-adult-l2": { age: { min: 18 }, equipmentProvided: false },
+    "clinic-get-golf-ready": { age: { min: 18 }, equipmentProvided: true },
+    "clinic-junior-first": {
+        age: { min: 7, max: 10 },
+        equipmentProvided: true,
+        questions: [{ id: "shirt", label: "T-shirt size", type: "choice", options: ["Youth XS", "Youth S", "Youth M", "Youth L"], required: true, per: "golfer" }],
+    },
+    "camp-junior-summer": {
+        age: { min: 6, max: 12 },
+        equipmentProvided: true,
+        questions: [
+            { id: "medical", label: "Allergies or medical notes", type: "text", required: false, per: "golfer" },
+            { id: "emergency", label: "Emergency contact phone", type: "text", required: true, per: "booking" },
+        ],
+    },
 };
 
+/**
+ * A private lesson, priced by the Academy for each group size.
+ *
+ * `prices` is the table exactly as staff would enter it: the total for one golfer,
+ * then for two, and so on. Its length *is* the maximum group size, so a lesson can't
+ * be offered to a group size nobody priced. The instructor invests the same hour
+ * either way, so totals climb slowly and the per-golfer cost falls.
+ */
 const priv = (
     id: string,
     name: string,
     audience: Audience,
     meta: string,
     durationMin: number,
-    maxPlayers: number,
-    basePrice: number,
+    prices: number[],
     desc: string,
     tags: string[],
     extra: Partial<LessonService> = {},
@@ -356,9 +423,10 @@ const priv = (
     desc,
     durationMin,
     minPlayers: 1,
-    maxPlayers,
-    basePrice,
-    priceByPlayers: partyPricing(basePrice, maxPlayers),
+    maxPlayers: prices.length,
+    basePrice: prices[0],
+    priceByPlayers: Object.fromEntries(prices.map((price, i) => [i + 1, price])),
+    rules: LESSON_RULES[id],
     tags,
     section: "Private lessons",
     ...extra,
@@ -393,6 +461,7 @@ const group = (
     maxPlayers: 1,
     basePrice: price,
     priceByPlayers: { 1: price },
+    rules: LESSON_RULES[id],
     tags,
     section: "Group clinics & programs",
     coachIds: [coachId],
@@ -412,24 +481,24 @@ const group = (
  */
 export const LESSON_SERVICES: LessonService[] = [
     /* ---- privates: taught by every golf instructor ---- */
-    priv("private-45", "45-Minute Private", "adult", "45 min · 1–4 golfers", 45, 4, 90, "The standard lesson. Full swing, short game, or whatever you bring to the tee that day.", ["private", "adult"], {
+    priv("private-45", "45-Minute Private", "adult", "45 min · 1–4 golfers", 45, [90, 125, 140, 155], "The standard lesson. Full swing, short game, or whatever you bring to the tee that day.", ["private", "adult"], {
         featured: true,
         section: "Featured",
     }),
-    priv("private-60", "60-Minute Private", "adult", "60 min · 1–4 golfers", 60, 4, 115, "An extra fifteen minutes — enough to work on two things instead of one.", ["private", "adult"], {
+    priv("private-60", "60-Minute Private", "adult", "60 min · 1–4 golfers", 60, [115, 155, 180, 195], "An extra fifteen minutes — enough to work on two things instead of one.", ["private", "adult"], {
         featured: true,
         section: "Featured",
     }),
-    priv("playing-9", "9-Hole Playing Lesson", "adult", "~2 hr · on-course", 120, 3, 170, "Nine holes with your instructor — course management, and lies you never get on the range.", ["private", "playing", "adult"], {
+    priv("playing-9", "9-Hole Playing Lesson", "adult", "~2 hr · on-course", 120, [170, 230, 265], "Nine holes with your instructor — course management, and lies you never get on the range.", ["private", "playing", "adult"], {
         featured: true,
         section: "Featured",
         guardrails: { timeWindow: { start: 14 * 60, end: 17 * 60 }, season: "April – October" },
     }),
-    priv("private-30", "30-Minute Tune-Up", "adult", "30 min · 1–2 golfers", 30, 2, 60, "A focused half hour on one thing — putting, chipping, bunker play, or driver tempo.", ["private", "adult"]),
-    priv("junior-30", "Junior Private", "junior", "30 min · ages 7–17", 30, 2, 55, "Thirty minutes is the right attention span for most juniors. Clubs available if they need them.", ["private", "junior"], {
+    priv("private-30", "30-Minute Tune-Up", "adult", "30 min · 1–2 golfers", 30, [60, 80], "A focused half hour on one thing — putting, chipping, bunker play, or driver tempo.", ["private", "adult"]),
+    priv("junior-30", "Junior Private", "junior", "30 min · ages 7–17", 30, [55, 75], "Thirty minutes is the right attention span for most juniors. Clubs available if they need them.", ["private", "junior"], {
         guardrails: { daysOfWeek: [0, 6] },
     }),
-    priv("senior-45", "Senior Private", "senior", "45 min · ages 62+", 45, 2, 75, "Built around what still works, not what used to. Weekday mornings, at a gentler pace.", ["private", "senior"], {
+    priv("senior-45", "Senior Private", "senior", "45 min · ages 62+", 45, [75, 100], "Built around what still works, not what used to. Weekday mornings, at a gentler pace.", ["private", "senior"], {
         guardrails: { daysOfWeek: [1, 2, 3, 4], timeWindow: { start: 9 * 60, end: 12 * 60 } },
     }),
 
@@ -590,15 +659,40 @@ export const coachesForService = (service: LessonService, courseSlug?: string): 
     return COACHES.filter((c) => (courseSlug ? c.courseSlugs.includes(courseSlug) : true));
 };
 
-/* ---- pricing: base service rate + instructor adjustment ---- */
+/* ---- pricing: the Academy's group-size table, adjusted per instructor ---- */
 
-/** What this service costs with this instructor, at this party size. */
+/** True when this instructor has typed in their own group-size table for this lesson. */
+export const hasOwnPricing = (service: LessonService, coach?: Coach): boolean => Boolean(coach?.priceOverrides?.[service.id]);
+
+/**
+ * What this service costs with this instructor, at this party size.
+ *
+ * Resolution order: the instructor's own table for the lesson, if they set one; else
+ * the Academy's table plus the instructor's rate adjustment.
+ */
 export const servicePrice = (service: LessonService, coach?: Coach, players = 1): number => {
-    const base = service.priceByPlayers[Math.min(players, service.maxPlayers)] ?? service.basePrice;
+    const size = Math.min(players, service.maxPlayers);
+    const base = service.priceByPlayers[size] ?? service.basePrice;
     // A scheduled program is priced by the Academy, not by who happens to teach it.
     if (service.kind === "group") return base;
+    const own = coach?.priceOverrides?.[service.id]?.[size];
+    if (own !== undefined) return own;
     return base + (coach?.priceAdj ?? 0);
 };
+
+export interface GroupSizePrice {
+    players: number;
+    total: number;
+    each: number;
+}
+
+/** The full 1…max table for a lesson with an instructor, as a golfer would compare it. */
+export const groupSizePrices = (service: LessonService, coach?: Coach): GroupSizePrice[] =>
+    Array.from({ length: service.maxPlayers - service.minPlayers + 1 }, (_, i) => {
+        const players = service.minPlayers + i;
+        const total = servicePrice(service, coach, players);
+        return { players, total, each: total / players };
+    });
 
 /** Per-golfer cost at a given party size. */
 export const perPlayer = (service: LessonService, coach: Coach | undefined, players: number): number => servicePrice(service, coach, players) / players;
@@ -997,13 +1091,15 @@ export const VOLUME_PROGRESS: VolumeProgress = {
 /* Booking-flow helpers                                                */
 /* ------------------------------------------------------------------ */
 
-export interface Participant {
+/**
+ * One golfer on a booking. Date of birth, gender and question answers come from
+ * `EligibilityAnswers` and are only collected when the service's rules ask for them.
+ */
+export interface Participant extends EligibilityAnswers {
     first: string;
     last: string;
     email: string;
     phone: string;
-    /** Junior lessons collect an age; adult and senior don't. */
-    age?: string;
 }
 
 export const EMPTY_PARTICIPANT: Participant = { first: "", last: "", email: "", phone: "" };
@@ -1017,9 +1113,9 @@ export const HOST_PARTICIPANT: Participant = {
 
 /** Sample guests so multi-person stories open with completed cards. */
 export const SAMPLE_GUESTS: Participant[] = [
-    { first: "Casey", last: "Girard", email: "casey.g@example.com", phone: "(240) 555-0142", age: "11" },
-    { first: "Rowan", last: "Ellis", email: "rowan.ellis@example.com", phone: "(240) 555-0188", age: "12" },
-    { first: "Sam", last: "Okafor", email: "sam.okafor@example.com", phone: "(240) 555-0119", age: "10" },
+    { first: "Casey", last: "Girard", email: "casey.g@example.com", phone: "(240) 555-0142", birthDate: "2015-03-02" },
+    { first: "Rowan", last: "Ellis", email: "rowan.ellis@example.com", phone: "(240) 555-0188", birthDate: "2014-05-19" },
+    { first: "Sam", last: "Okafor", email: "sam.okafor@example.com", phone: "(240) 555-0119", birthDate: "2016-01-08" },
 ];
 
 export const initialsOf = (p: Participant): string | undefined => (p.first ? `${p.first[0]}${p.last[0] ?? ""}`.toUpperCase() : undefined);

@@ -17,10 +17,11 @@
  *    and Mike Dickson's bio) and otherwise leans on structural facts: the lesson menu
  *    priced for them, their calendar, their packs, their programs. No specialisms, no
  *    years teaching, no playing history, no philosophy.
- *  - **The reviews are openly fake.** The product layout needs a reviews block to be
- *    worth evaluating, so it has one — sourced from `instructor-reviews.ts`, written to
- *    be about the lesson experience rather than the person, attributed to initials, and
- *    carrying an undismissable notice in the section header saying exactly what it is.
+ *  - **The reviews are openly fake.** The block models Tenfore's verified post-lesson
+ *    reviews — optional per instructor, hidden until `REVIEW_MINIMUM` are in — but the
+ *    content is sample data from `instructor-reviews.ts`, written about the lesson
+ *    experience rather than the person, attributed to initials, and carrying an
+ *    undismissable notice in the section header saying exactly what it is.
  */
 import { type ReactNode, useEffect, useState } from "react";
 import {
@@ -29,6 +30,7 @@ import {
     ArrowRight,
     Calendar,
     CalendarCheck01,
+    CheckVerified01,
     ChevronLeft,
     ChevronRight,
     Clock,
@@ -70,7 +72,14 @@ import { DEFAULT_DATE } from "@/stories/explorations/tee-search-popovers";
 import { asset } from "@/utils/asset";
 import { cx } from "@/utils/cx";
 import { ACADEMY_COURSE_NAME, InstructorContact } from "./academy-ui";
-import { type InstructorReview, SAMPLE_REVIEW_NOTICE, SAMPLE_REVIEW_NOTICE_SHORT, instructorReviews } from "./instructor-reviews";
+import {
+    type InstructorReview,
+    REVIEW_MINIMUM,
+    REVIEW_SOURCE,
+    SAMPLE_REVIEW_NOTICE,
+    SAMPLE_REVIEW_NOTICE_SHORT,
+    instructorReviews,
+} from "./instructor-reviews";
 
 /* ------------------------------------------------------------------ */
 /* Gallery composition                                                 */
@@ -334,7 +343,43 @@ const ReviewCard = ({ review }: { review: InstructorReview }) => (
         <div className="mt-auto flex items-center gap-2.5 pt-1">
             <Avatar size="xs" initials={review.initials} />
             {/* The avatar already carries the initials — the byline only needs the date. */}
-            <span className="text-xs text-tertiary">{review.date}</span>
+            <div className="flex min-w-0 flex-col">
+                <span className="flex items-center gap-1 text-xs font-medium text-success-primary">
+                    <CheckVerified01 className="size-3.5 shrink-0" aria-hidden="true" />
+                    Verified lesson
+                </span>
+                <span className="truncate text-xs text-tertiary">
+                    {review.lesson} · {review.date}
+                </span>
+            </div>
+        </div>
+    </div>
+);
+
+/** Where the reviews come from — the answer to "are these from Google?", said once, plainly. */
+const ReviewSourceLine = () => (
+    <p className="flex items-start gap-2 text-sm text-tertiary">
+        <CheckVerified01 className="mt-0.5 size-4 shrink-0 text-fg-success-secondary" aria-hidden="true" />
+        {REVIEW_SOURCE}
+    </p>
+);
+
+/**
+ * Reviews switched on but under the minimum. No stars, no partial average and no cards —
+ * a rating of three reviews says more about three golfers than about the instructor.
+ */
+const ReviewsCollecting = ({ count, name }: { count: number; name: string }) => (
+    <div className="flex flex-col gap-4 rounded-xl bg-secondary p-5 ring-1 ring-secondary ring-inset sm:flex-row sm:items-center sm:gap-6">
+        <div className="flex flex-1 flex-col gap-1">
+            <p className="text-md font-semibold text-primary">Collecting reviews</p>
+            <p className="text-sm text-tertiary">
+                {`${name}'s rating appears once ${REVIEW_MINIMUM} golfers have reviewed a completed lesson. ${count} of ${REVIEW_MINIMUM} so far.`}
+            </p>
+        </div>
+        <div className="flex items-center gap-1.5" aria-label={`${count} of ${REVIEW_MINIMUM} reviews`}>
+            {Array.from({ length: REVIEW_MINIMUM }, (_, i) => (
+                <span key={i} className={cx("h-2 w-8 rounded-full", i < count ? "bg-brand-solid" : "bg-quaternary")} />
+            ))}
         </div>
     </div>
 );
@@ -365,7 +410,8 @@ const ReviewsFlyout = ({ summary, onClose }: { summary: ReturnType<typeof instru
 
                     <h2 className="mt-4 text-display-xs font-semibold text-primary">Reviews</h2>
 
-                    <div className="mt-4">
+                    <div className="mt-4 flex flex-col gap-3">
+                        <ReviewSourceLine />
                         <SampleReviewNotice />
                     </div>
 
@@ -373,7 +419,7 @@ const ReviewsFlyout = ({ summary, onClose }: { summary: ReturnType<typeof instru
                         <div className="flex shrink-0 flex-col items-start gap-1">
                             <span className="text-display-sm font-semibold text-primary tabular-nums">{summary.average.toFixed(1)}</span>
                             <StarRating rating={summary.average} />
-                            <span className="text-sm text-tertiary tabular-nums">{summary.count} ratings</span>
+                            <span className="text-sm text-tertiary tabular-nums">{summary.count} verified reviews</span>
                         </div>
                         <Bars distribution={summary.distribution} />
                     </div>
@@ -525,18 +571,26 @@ export const InstructorProfileScreen = ({ instructorId }: { instructorId: string
                         <h1 className="text-display-xs font-semibold text-primary">{academyDisplayName(instructor)}</h1>
                         <p className="mt-1 text-md text-tertiary">{instructor.role}</p>
 
-                        {/* Rating — sample data, and labelled as such right here */}
-                        <button
-                            type="button"
-                            onClick={() => setReviewsOpen(true)}
-                            className="mt-3 flex w-fit flex-wrap items-center gap-2 text-left transition duration-100 ease-linear hover:opacity-80"
-                        >
-                            <StarRating rating={reviews.average} />
-                            <span className="text-sm text-tertiary tabular-nums underline underline-offset-2">{reviews.count} ratings</span>
-                            <Badge color="warning" size="sm" type="pill-color">
-                                {SAMPLE_REVIEW_NOTICE_SHORT}
-                            </Badge>
-                        </button>
+                        {/* Rating — only once published; sample data, labelled as such right here.
+                            Reviews switched off shows nothing at all. */}
+                        {reviews.status === "published" && (
+                            <button
+                                type="button"
+                                onClick={() => setReviewsOpen(true)}
+                                className="mt-3 flex w-fit flex-wrap items-center gap-2 text-left transition duration-100 ease-linear hover:opacity-80"
+                            >
+                                <StarRating rating={reviews.average} />
+                                <span className="text-sm text-tertiary tabular-nums underline underline-offset-2">{reviews.count} verified reviews</span>
+                                <Badge color="warning" size="sm" type="pill-color">
+                                    {SAMPLE_REVIEW_NOTICE_SHORT}
+                                </Badge>
+                            </button>
+                        )}
+                        {reviews.status === "collecting" && (
+                            <a href="#reviews" className="mt-3 w-fit text-sm text-tertiary transition duration-100 ease-linear hover:text-secondary">
+                                New to online booking · collecting reviews
+                            </a>
+                        )}
 
                         {/* Price */}
                         <div className="mt-4 flex items-baseline gap-2">
@@ -606,31 +660,19 @@ export const InstructorProfileScreen = ({ instructorId }: { instructorId: string
                             One-off reservations
                         </SectionTitle>
                         {/*
-                         * `MenuItemRow` already carries the duration, the party-size range, the
-                         * per-golfer price at capacity and the guardrail line, so the strip under
-                         * it only adds what the row rounds off — the exact split at full party —
-                         * and the action that takes you into the booking flow.
+                         * The whole row is the link: golfers click the box, not the small
+                         * text under it. Each row carries its own group-size table, so the
+                         * price for bringing a friend is visible before checkout.
                          */}
                         <div className="flex flex-col gap-3">
                             {privates.map((service) => (
-                                <div key={service.id} className="flex flex-col gap-2">
-                                    <MenuItemRow service={service} coach={coach} />
-                                    <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-1 px-4">
-                                        <span className="text-xs text-tertiary tabular-nums">
-                                            {service.maxPlayers > 1
-                                                ? `Booked for ${service.maxPlayers}: ${money(servicePrice(service, coach, service.maxPlayers) / service.maxPlayers)} per golfer`
-                                                : "One golfer, one instructor"}
-                                        </span>
-                                        <Button
-                                            size="sm"
-                                            color="link-color"
-                                            href={bookHref({ coachId: instructor.id, serviceId: service.id, courseSlug: homeCourse })}
-                                            iconTrailing={ArrowRight}
-                                        >
-                                            Book this lesson
-                                        </Button>
-                                    </div>
-                                </div>
+                                <MenuItemRow
+                                    key={service.id}
+                                    service={service}
+                                    coach={coach}
+                                    showGroupPrices
+                                    href={bookHref({ coachId: instructor.id, serviceId: service.id, courseSlug: homeCourse })}
+                                />
                             ))}
                         </div>
                     </Panel>
@@ -769,32 +811,45 @@ export const InstructorProfileScreen = ({ instructorId }: { instructorId: string
                         </Panel>
                     )}
 
-                    {/* ---- Reviews ---- */}
-                    <Panel id="reviews">
-                        <div className="flex flex-col gap-4">
-                            <h2 className="text-lg font-semibold text-primary">Reviews</h2>
-                            <SampleReviewNotice />
-                        </div>
-
-                        <div className="flex flex-col gap-8 sm:flex-row sm:items-center">
-                            <div className="flex shrink-0 flex-col items-start gap-1">
-                                <span className="text-display-sm font-semibold text-primary tabular-nums">{reviews.average.toFixed(1)}</span>
-                                <StarRating rating={reviews.average} />
-                                <span className="text-sm text-tertiary tabular-nums">{reviews.count} ratings</span>
+                    {/* ---- Reviews: hidden entirely when the instructor turned them off ---- */}
+                    {reviews.status === "collecting" && (
+                        <Panel id="reviews">
+                            <div className="flex flex-col gap-3">
+                                <h2 className="text-lg font-semibold text-primary">Reviews</h2>
+                                <ReviewSourceLine />
                             </div>
-                            <Bars distribution={reviews.distribution} />
-                        </div>
+                            <ReviewsCollecting count={reviews.count} name={instructor.name} />
+                        </Panel>
+                    )}
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {reviews.reviews.slice(0, 3).map((review) => (
-                                <ReviewCard key={review.id} review={review} />
-                            ))}
-                        </div>
+                    {reviews.status === "published" && (
+                        <Panel id="reviews">
+                            <div className="flex flex-col gap-3">
+                                <h2 className="text-lg font-semibold text-primary">Reviews</h2>
+                                <ReviewSourceLine />
+                                <SampleReviewNotice />
+                            </div>
 
-                        <Button color="secondary" size="lg" className="w-full" onClick={() => setReviewsOpen(true)}>
-                            Read more reviews
-                        </Button>
-                    </Panel>
+                            <div className="flex flex-col gap-8 sm:flex-row sm:items-center">
+                                <div className="flex shrink-0 flex-col items-start gap-1">
+                                    <span className="text-display-sm font-semibold text-primary tabular-nums">{reviews.average.toFixed(1)}</span>
+                                    <StarRating rating={reviews.average} />
+                                    <span className="text-sm text-tertiary tabular-nums">{reviews.count} verified reviews</span>
+                                </div>
+                                <Bars distribution={reviews.distribution} />
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                {reviews.reviews.slice(0, 3).map((review) => (
+                                    <ReviewCard key={review.id} review={review} />
+                                ))}
+                            </div>
+
+                            <Button color="secondary" size="lg" className="w-full" onClick={() => setReviewsOpen(true)}>
+                                Read more reviews
+                            </Button>
+                        </Panel>
+                    )}
                 </div>
             </McgPage>
 

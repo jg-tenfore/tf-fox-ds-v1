@@ -13,11 +13,13 @@
  * childcare around.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Backpack, Calendar, CheckCircle, Clock, MarkerPin01, Package, ShoppingCart01, Users01 } from "@untitledui/icons";
+import { ArrowLeft, Backpack, Calendar, CheckCircle, Clock, MarkerPin01, Package, ShoppingCart01, Users01, XClose } from "@untitledui/icons";
 import { Badge } from "@/components/base/badges/badges";
 import { Button } from "@/components/base/buttons/button";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
+import { Input } from "@/components/base/input/input";
 import { McgPage, McgShell } from "@/components/mcg/mcg-chrome";
 import {
     clinicById,
@@ -29,8 +31,20 @@ import {
     MCG_CLINICS,
     type McgClinic,
     money0,
+    sessionRegistered,
     spotsLeft,
 } from "@/components/mcg/events-catalog";
+import { BookingQuestions, EligibilityFields, MultiBuyBanner, RequirementsPanel } from "@/components/mcg/registration/registration-ui";
+import {
+    type EligibilityAnswers,
+    ageRangeLabel,
+    checkEligibility,
+    collectsEligibility,
+    genderLimitLabel,
+    missingBookingAnswers,
+    multiBuyLabel,
+    quoteMultiBuy,
+} from "@/components/mcg/registration-rules";
 import { useSession } from "@/components/mcg/session";
 import { cx } from "@/utils/cx";
 import { Capacity, CourseChip, MetaLine, SectionTitle, Stepper } from "./events-ui";
@@ -52,19 +66,249 @@ const sessionDates = (clinic: McgClinic): string[] => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Registration                                                        */
+/* ------------------------------------------------------------------ */
+
+/** One person being signed up: who they are, plus whatever the clinic's rules ask. */
+export interface Registrant extends EligibilityAnswers {
+    first: string;
+    last: string;
+}
+
+const EMPTY_REGISTRANT: Registrant = { first: "", last: "", birthDate: "", gender: "", answers: {} };
+
+/** Seats left on one date of a per-session clinic. */
+const seatsOn = (clinic: McgClinic, index: number) => Math.max(0, clinic.capacity - sessionRegistered(clinic, index));
+
+/**
+ * Fox's session table: every date, its time, the seats left and the price, each row
+ * selectable on its own. Only rendered for a clinic sold per session.
+ */
+const SessionTable = ({ clinic, dates, selected, onToggle }: { clinic: McgClinic; dates: string[]; selected: number[]; onToggle: (i: number) => void }) => (
+    <div className="overflow-x-auto rounded-xl ring-1 ring-secondary ring-inset">
+        <table className="w-full min-w-[520px] text-left text-sm">
+            <thead className="bg-secondary">
+                <tr>
+                    <th className="w-12 px-4 py-2.5">
+                        <span className="sr-only">Select</span>
+                    </th>
+                    <th className="px-4 py-2.5 text-xs font-semibold text-tertiary">Date</th>
+                    <th className="px-4 py-2.5 text-xs font-semibold text-tertiary">Time</th>
+                    <th className="px-4 py-2.5 text-xs font-semibold text-tertiary">Spots left</th>
+                    <th className="px-4 py-2.5 text-right text-xs font-semibold text-tertiary">Price</th>
+                </tr>
+            </thead>
+            <tbody className="divide-y divide-secondary bg-primary">
+                {dates.map((iso, i) => {
+                    const left = seatsOn(clinic, i);
+                    const full = left === 0;
+                    const on = selected.includes(i);
+                    return (
+                        <tr
+                            key={iso}
+                            onClick={() => !full && onToggle(i)}
+                            className={cx("transition duration-100 ease-linear", full ? "opacity-50" : "cursor-pointer hover:bg-primary_hover", on && "bg-brand-primary")}
+                        >
+                            <td className="px-4 py-3">
+                                <Checkbox isSelected={on} isDisabled={full} onChange={() => onToggle(i)} aria-label={`Select ${fmtDate(iso)}`} />
+                            </td>
+                            <td className="px-4 py-3 font-medium text-primary">{fmtDate(iso)}</td>
+                            <td className="px-4 py-3 text-tertiary">{clinic.time}</td>
+                            <td className="px-4 py-3 tabular-nums">
+                                {full ? <span className="font-semibold text-error-primary">Full</span> : <span className="text-secondary">{left}</span>}
+                            </td>
+                            <td className="px-4 py-3 text-right font-semibold text-primary tabular-nums">{money(clinic.perSession?.price ?? clinic.price)}</td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+    </div>
+);
+
+/**
+ * The sign-up sheet. Opens from the enrol card with the places and sessions already
+ * chosen, and collects one block per person — name, then only what this clinic's
+ * rules ask: date of birth, gender, per-golfer questions — plus any booking-level
+ * questions once at the bottom.
+ *
+ * Nothing reaches the cart until every person is eligible and every required answer
+ * is in. A golfer outside the age range or gender limit gets the reason inline, next
+ * to their name, rather than a refund call a week later.
+ */
+const RegistrationSheet = ({
+    clinic,
+    places,
+    sessionIndexes,
+    dates,
+    initialPeople,
+    onClose,
+    onDone,
+}: {
+    clinic: McgClinic;
+    places: number;
+    sessionIndexes: number[];
+    dates: string[];
+    initialPeople?: Registrant[];
+    onClose: () => void;
+    onDone: () => void;
+}) => {
+    const { addToCart } = useSession();
+    const rules = clinic.rules;
+    const [people, setPeople] = useState<Registrant[]>(() => Array.from({ length: places }, (_, i) => initialPeople?.[i] ?? EMPTY_REGISTRANT));
+    const [bookingAnswers, setBookingAnswers] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [onClose]);
+
+    const perSession = Boolean(clinic.perSession);
+    // Eligibility is judged on the first session the golfer is actually attending.
+    const firstIso = perSession && sessionIndexes.length ? dates[Math.min(...sessionIndexes)] : clinic.isoDate;
+    const results = people.map((p) => checkEligibility(rules, p, firstIso, p.first || "This golfer"));
+    const namesMissing = people.some((p) => !p.first.trim() || !p.last.trim());
+    const blocked = results.some((r) => r.problems.length > 0);
+    const incomplete = namesMissing || results.some((r) => r.incomplete) || missingBookingAnswers(rules, bookingAnswers).length > 0;
+
+    const unit = clinic.perSession?.price ?? clinic.price;
+    const sessionCount = perSession ? sessionIndexes.length : 1;
+    const quote = quoteMultiBuy(unit * places, sessionCount, perSession ? rules?.multiBuy : undefined);
+
+    const update = (i: number, patch: Partial<Registrant>) => setPeople((list) => list.map((p, idx) => (idx === i ? { ...p, ...patch } : p)));
+
+    const submit = () => {
+        const who = people.map((p) => `${p.first} ${p.last}`).join(", ");
+        if (perSession) {
+            for (const i of sessionIndexes) {
+                addToCart({
+                    id: `clinic-${clinic.id}-${dates[i]}`,
+                    kind: "clinic",
+                    name: `${clinic.title} — ${fmtDateShort(dates[i])}`,
+                    detail: `${COURSE_NAME[clinic.courseSlug]} · ${who}`,
+                    image: clinic.image,
+                    unitPrice: unit,
+                    qty: places,
+                    href: `/clinics/${clinic.id}`,
+                    multiBuy: rules?.multiBuy ? { ...rules.multiBuy, groupId: clinic.id, groupName: clinic.title } : undefined,
+                });
+            }
+        } else {
+            addToCart({
+                id: `clinic-${clinic.id}`,
+                kind: "clinic",
+                name: clinic.title,
+                detail: `${clinic.schedule} · ${COURSE_NAME[clinic.courseSlug]} · ${who}`,
+                image: clinic.image,
+                unitPrice: clinic.price,
+                qty: places,
+                href: `/clinics/${clinic.id}`,
+            });
+        }
+        onDone();
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex justify-end">
+            <button type="button" aria-label="Close registration" onClick={onClose} className="absolute inset-0 bg-overlay/70" />
+            <div role="dialog" aria-label={`Register for ${clinic.title}`} className="relative flex h-full w-full max-w-xl flex-col bg-primary shadow-xl duration-300 animate-in slide-in-from-right">
+                <div className="flex items-start justify-between gap-4 border-b border-secondary p-6">
+                    <div className="flex flex-col gap-1">
+                        <h2 className="text-lg font-semibold text-primary">Register</h2>
+                        <p className="text-sm text-tertiary">
+                            {clinic.title}
+                            {perSession ? ` · ${sessionCount} ${sessionCount === 1 ? "session" : "sessions"}` : ""} · {places} {places === 1 ? "place" : "places"}
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        aria-label="Close"
+                        onClick={onClose}
+                        className="flex size-10 shrink-0 items-center justify-center rounded-full text-fg-secondary ring-1 ring-secondary transition duration-100 ease-linear hover:bg-secondary_hover"
+                    >
+                        <XClose className="size-5" aria-hidden="true" />
+                    </button>
+                </div>
+
+                <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
+                    {collectsEligibility(rules) && (
+                        <p className="text-sm text-tertiary">
+                            {[ageRangeLabel(rules?.age), genderLimitLabel(rules ?? {})].filter(Boolean).join(" · ")}. Enter details for the person attending, not the person paying.
+                        </p>
+                    )}
+
+                    {people.map((p, i) => (
+                        <section key={i} className="flex flex-col gap-3 rounded-xl p-4 ring-1 ring-secondary ring-inset">
+                            <p className="text-sm font-semibold text-primary">{places > 1 ? `Golfer ${i + 1}` : "Golfer"}</p>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                <Input label="First name" value={p.first} onChange={(v) => update(i, { first: v })} isRequired />
+                                <Input label="Last name" value={p.last} onChange={(v) => update(i, { last: v })} isRequired />
+                            </div>
+                            <EligibilityFields rules={rules} value={p} onChange={(patch) => update(i, patch)} result={results[i]} />
+                        </section>
+                    ))}
+
+                    {(rules?.questions ?? []).some((q) => q.per === "booking") && (
+                        <section className="flex flex-col gap-3">
+                            <p className="text-sm font-semibold text-primary">About this registration</p>
+                            <BookingQuestions rules={rules} answers={bookingAnswers} onChange={(id, v) => setBookingAnswers((a) => ({ ...a, [id]: v }))} />
+                        </section>
+                    )}
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-secondary p-6">
+                    {quote.discount > 0 && (
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-tertiary">{rules?.multiBuy && multiBuyLabel(rules.multiBuy)}</span>
+                            <span className="font-semibold text-success-primary tabular-nums">−{money(quote.discount)}</span>
+                        </div>
+                    )}
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-tertiary">Total</span>
+                        <span className="text-lg font-semibold text-primary tabular-nums">{money(quote.total)}</span>
+                    </div>
+                    <Button size="lg" color="primary" isDisabled={blocked || incomplete} onClick={submit}>
+                        Add to cart
+                    </Button>
+                    <p className="text-center text-xs text-tertiary">
+                        {blocked ? "Someone above can't be registered for this clinic." : incomplete ? "Fill in the required details to continue." : "You'll pay at checkout."}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/* ------------------------------------------------------------------ */
 /* Enrolment card                                                      */
 /* ------------------------------------------------------------------ */
 
-const EnrolCard = ({ clinic }: { clinic: McgClinic }) => {
-    const { addToCart, cart } = useSession();
-    const full = isFull(clinic);
+const EnrolCard = ({
+    clinic,
+    dates,
+    selectedSessions,
+    onRegister,
+    added,
+}: {
+    clinic: McgClinic;
+    dates: string[];
+    selectedSessions: number[];
+    onRegister: (places: number) => void;
+    added: boolean;
+}) => {
+    const { cart } = useSession();
+    const perSession = Boolean(clinic.perSession);
+    const full = perSession ? dates.every((_, i) => seatsOn(clinic, i) === 0) : isFull(clinic);
     const left = spotsLeft(clinic);
     const [qty, setQty] = useState(1);
     const [waitlisted, setWaitlisted] = useState(false);
 
-    const lineId = `clinic-${clinic.id}`;
-    const inCart = cart.find((l) => l.id === lineId);
-    const max = Math.min(left || 1, 4);
+    const inCart = cart.filter((l) => l.id === `clinic-${clinic.id}` || l.id.startsWith(`clinic-${clinic.id}-`));
+    const seatCap = perSession && selectedSessions.length ? Math.min(...selectedSessions.map((i) => seatsOn(clinic, i))) : left;
+    const max = Math.max(1, Math.min(seatCap || 1, 4));
+    const unit = clinic.perSession?.price ?? clinic.price;
+    const quote = quoteMultiBuy(unit * qty, perSession ? selectedSessions.length : 1, perSession ? clinic.rules?.multiBuy : undefined);
 
     if (waitlisted) {
         return (
@@ -85,10 +329,10 @@ const EnrolCard = ({ clinic }: { clinic: McgClinic }) => {
     return (
         <div className="sticky top-6 rounded-2xl bg-primary p-5 shadow-lg ring-1 ring-secondary">
             <div className="flex items-baseline gap-1.5">
-                <span className="text-display-xs font-semibold text-primary tabular-nums">{money0(clinic.price)}</span>
+                <span className="text-display-xs font-semibold text-primary tabular-nums">{money0(unit)}</span>
                 <span className="text-sm text-tertiary">{clinic.priceUnit}</span>
             </div>
-            {clinic.sessions > 1 && clinic.price > 0 && (
+            {!perSession && clinic.sessions > 1 && clinic.price > 0 && (
                 <p className="mt-1 text-xs text-tertiary tabular-nums">{money0(clinic.price / clinic.sessions)} a session across {clinic.sessions} weeks</p>
             )}
 
@@ -98,9 +342,11 @@ const EnrolCard = ({ clinic }: { clinic: McgClinic }) => {
                 <MetaLine icon={MarkerPin01}>{clinic.location}</MetaLine>
             </div>
 
-            <div className="mt-4 border-t border-secondary pt-4">
-                <Capacity capacity={clinic.capacity} registered={clinic.registered} />
-            </div>
+            {!perSession && (
+                <div className="mt-4 border-t border-secondary pt-4">
+                    <Capacity capacity={clinic.capacity} registered={clinic.registered} />
+                </div>
+            )}
 
             {full ? (
                 <>
@@ -112,48 +358,46 @@ const EnrolCard = ({ clinic }: { clinic: McgClinic }) => {
                 </>
             ) : (
                 <>
+                    {perSession && clinic.rules?.multiBuy && <MultiBuyBanner rule={clinic.rules.multiBuy} quote={quote} className="mt-4" />}
+
                     <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-secondary p-3">
                         <div>
                             <p className="text-sm font-semibold text-primary">Places</p>
-                            <p className="text-xs text-tertiary">Enrol a whole family at once</p>
+                            <p className="text-xs text-tertiary">{perSession ? "Per session" : "Enrol a whole family at once"}</p>
                         </div>
-                        <Stepper value={qty} max={max} onChange={setQty} label="places" />
+                        <Stepper value={Math.min(qty, max)} max={max} onChange={setQty} label="places" />
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between border-t border-secondary pt-4 text-sm">
-                        <span className="text-tertiary tabular-nums">
-                            {money(clinic.price)} × {qty}
-                        </span>
-                        <span className="font-semibold text-primary tabular-nums">{money(clinic.price * qty)}</span>
+                    <div className="mt-4 flex flex-col gap-1.5 border-t border-secondary pt-4 text-sm">
+                        <div className="flex items-center justify-between">
+                            <span className="text-tertiary tabular-nums">
+                                {perSession ? `${selectedSessions.length} ${selectedSessions.length === 1 ? "session" : "sessions"} × ${qty}` : `${money(clinic.price)} × ${qty}`}
+                            </span>
+                            <span className="text-primary tabular-nums">{money(quote.subtotal)}</span>
+                        </div>
+                        {quote.discount > 0 && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-tertiary">Multi-session discount</span>
+                                <span className="font-semibold text-success-primary tabular-nums">−{money(quote.discount)}</span>
+                            </div>
+                        )}
+                        <div className="flex items-center justify-between">
+                            <span className="font-semibold text-primary">Total</span>
+                            <span className="font-semibold text-primary tabular-nums">{money(quote.total)}</span>
+                        </div>
                     </div>
 
-                    <Button
-                        size="lg"
-                        color="primary"
-                        className="mt-4 w-full"
-                        onClick={() =>
-                            addToCart({
-                                id: lineId,
-                                kind: "clinic",
-                                name: clinic.title,
-                                detail: `${clinic.schedule} · ${COURSE_NAME[clinic.courseSlug]}`,
-                                image: clinic.image,
-                                unitPrice: clinic.price,
-                                qty,
-                                href: `/clinics/${clinic.id}`,
-                            })
-                        }
-                    >
-                        {inCart ? "Add another place" : clinic.price === 0 ? "Reserve a free place" : "Enrol"}
+                    <Button size="lg" color="primary" className="mt-4 w-full" isDisabled={perSession && selectedSessions.length === 0} onClick={() => onRegister(Math.min(qty, max))}>
+                        {perSession && selectedSessions.length === 0 ? "Choose sessions above" : clinic.price === 0 ? "Reserve a free place" : "Register"}
                     </Button>
 
-                    {inCart && (
+                    {(added || inCart.length > 0) && (
                         <Link
                             href="/cart"
                             className="mt-3 flex items-center justify-center gap-1.5 text-sm font-semibold text-brand-secondary transition duration-100 ease-linear hover:underline"
                         >
                             <ShoppingCart01 className="size-4" aria-hidden="true" />
-                            {inCart.qty} in your cart — check out
+                            {added ? "Added to your cart" : "In your cart"} — check out
                         </Link>
                     )}
                     <p className="mt-2.5 text-center text-xs text-tertiary">Scholarship places available — ask at any pro shop</p>
@@ -167,8 +411,19 @@ const EnrolCard = ({ clinic }: { clinic: McgClinic }) => {
 /* Screen                                                              */
 /* ------------------------------------------------------------------ */
 
-export const ClinicDetailScreen = ({ clinicId }: { clinicId: string }) => {
+export interface ClinicDetailScreenProps {
+    clinicId: string;
+    /** Stories: pre-select session rows (by index) on a per-session clinic. */
+    initialSessions?: number[];
+    /** Stories: open straight on the registration sheet with this many places. */
+    initialRegistration?: { places: number; people?: Registrant[] };
+}
+
+export const ClinicDetailScreen = ({ clinicId, initialSessions = [], initialRegistration }: ClinicDetailScreenProps) => {
     const clinic = clinicById(clinicId);
+    const [selectedSessions, setSelectedSessions] = useState<number[]>(initialSessions);
+    const [sheet, setSheet] = useState<{ places: number; people?: Registrant[] } | null>(initialRegistration ?? null);
+    const [added, setAdded] = useState(false);
 
     if (!clinic) {
         return (
@@ -278,6 +533,30 @@ export const ClinicDetailScreen = ({ clinicId }: { clinicId: string }) => {
                         </section>
 
                         <section className="border-t border-secondary pt-8">
+                            <SectionTitle>Registration details</SectionTitle>
+                            <div className="mt-4">
+                                <RequirementsPanel rules={clinic.rules} title="Who can register" />
+                                {!clinic.rules && <p className="text-sm text-tertiary">Open to everyone — no age, gender or sign-up questions.</p>}
+                            </div>
+                        </section>
+
+                        {clinic.perSession ? (
+                            <section id="sessions" className="border-t border-secondary pt-8">
+                                <SectionTitle sub="Each date is booked on its own. Choose the ones that work for you.">Sessions</SectionTitle>
+                                <div className="mt-4 flex flex-col gap-3">
+                                    <SessionTable
+                                        clinic={clinic}
+                                        dates={dates}
+                                        selected={selectedSessions}
+                                        onToggle={(i) => setSelectedSessions((list) => (list.includes(i) ? list.filter((x) => x !== i) : [...list, i].sort((a, b) => a - b)))}
+                                    />
+                                    {clinic.rules?.multiBuy && (
+                                        <MultiBuyBanner rule={clinic.rules.multiBuy} quote={quoteMultiBuy(clinic.perSession.price, selectedSessions.length, clinic.rules.multiBuy)} />
+                                    )}
+                                </div>
+                            </section>
+                        ) : (
+                        <section className="border-t border-secondary pt-8">
                             <SectionTitle sub={clinic.sessions > 1 ? "Every session, so you can check the whole run before you commit." : undefined}>Schedule</SectionTitle>
                             <ol className="mt-4 flex flex-col gap-2">
                                 {dates.map((iso, i) => (
@@ -291,6 +570,7 @@ export const ClinicDetailScreen = ({ clinicId }: { clinicId: string }) => {
                                 ))}
                             </ol>
                         </section>
+                        )}
 
                         <section className="border-t border-secondary pt-8">
                             <SectionTitle>Your instructor</SectionTitle>
@@ -321,7 +601,7 @@ export const ClinicDetailScreen = ({ clinicId }: { clinicId: string }) => {
                     </div>
 
                     <div className="lg:col-span-1">
-                        <EnrolCard clinic={clinic} />
+                        <EnrolCard clinic={clinic} dates={dates} selectedSessions={selectedSessions} added={added} onRegister={(places) => setSheet({ places })} />
                     </div>
                 </div>
 
@@ -353,6 +633,21 @@ export const ClinicDetailScreen = ({ clinicId }: { clinicId: string }) => {
                     </section>
                 )}
             </McgPage>
+
+            {sheet && (
+                <RegistrationSheet
+                    clinic={clinic}
+                    places={sheet.places}
+                    sessionIndexes={selectedSessions}
+                    dates={dates}
+                    initialPeople={sheet.people}
+                    onClose={() => setSheet(null)}
+                    onDone={() => {
+                        setSheet(null);
+                        setAdded(true);
+                    }}
+                />
+            )}
         </McgShell>
     );
 };

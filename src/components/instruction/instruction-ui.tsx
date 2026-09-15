@@ -14,7 +14,8 @@
  */
 
 import { createContext, useContext, type FC, type ReactNode } from "react";
-import { Award01, Calendar, CheckCircle, Clock, MarkerPin01, Star01, Ticket02, Users01, XClose, Zap } from "@untitledui/icons";
+import Link from "next/link";
+import { ArrowRight, Award01, Calendar, CheckCircle, Clock, MarkerPin01, Star01, Ticket02, Users01, XClose, Zap } from "@untitledui/icons";
 import { Badge } from "@/components/base/badges/badges";
 import { Button } from "@/components/base/buttons/button";
 import { McgLogo } from "@/components/foundations/mcg/mcg-logo";
@@ -34,7 +35,9 @@ import {
     adjLabel,
     byDaypart,
     coachById,
+    groupSizePrices,
     guardrailSummary,
+    hasOwnPricing,
     money,
     money0,
     packageById,
@@ -794,15 +797,75 @@ export const CourseStrip = ({ slugs, activeSlug, onSelect }: { slugs: string[]; 
 /** Location line with the course name spelled out. */
 export const CourseLine = ({ slug }: { slug: string }) => <MetaLine icon={MarkerPin01}>{COURSE_NAME[slug]}</MetaLine>;
 
-/** One service on an instructor's profile menu, priced for that instructor. */
-export const MenuItemRow = ({ service, coach, onBook, selected }: { service: LessonService; coach?: Coach; onBook?: () => void; selected?: boolean }) => {
+/**
+ * The price for every group size a lesson allows, side by side — the answer to "what
+ * does it cost if I bring a friend?" without opening checkout. Each cell is the total
+ * the Academy (or the instructor) set for that many golfers, with the per-golfer split
+ * underneath.
+ */
+export const GroupSizePriceTable = ({ service, coach, size = "sm" }: { service: LessonService; coach?: Coach; size?: "sm" | "md" }) => {
+    const rows = groupSizePrices(service, coach);
+    if (rows.length < 2) return null;
+    const own = hasOwnPricing(service, coach);
+
+    return (
+        <div className="flex flex-col gap-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+                <MicroLabel>Price by group size</MicroLabel>
+                {own && (
+                    <Badge color="gray" size="sm" type="pill-color">
+                        Instructor&rsquo;s own rates
+                    </Badge>
+                )}
+            </div>
+            <div className={cx("grid gap-1.5", rows.length === 2 && "grid-cols-2", rows.length === 3 && "grid-cols-3", rows.length >= 4 && "grid-cols-2 sm:grid-cols-4")}>
+                {rows.map((row) => (
+                    <div key={row.players} className={cx("flex flex-col rounded-lg bg-secondary ring-1 ring-secondary ring-inset", size === "md" ? "px-3 py-2.5" : "px-2.5 py-1.5")}>
+                        <span className="text-xs text-tertiary">
+                            {row.players} {row.players === 1 ? "golfer" : "golfers"}
+                        </span>
+                        <span className={cx("font-semibold text-primary tabular-nums", size === "md" ? "text-md" : "text-sm")}>{money0(row.total)}</span>
+                        {row.players > 1 && <span className="text-xs text-tertiary tabular-nums">{money0(row.each)} each</span>}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+/**
+ * One service on an instructor's profile menu, priced for that instructor.
+ *
+ * Pass `href` and the **whole row** is the link — the box is what golfers click, so a
+ * small "Book" link under it was a miss target. With `href` set the row holds no other
+ * interactive element (a button inside a link is invalid and eats the click).
+ */
+export const MenuItemRow = ({
+    service,
+    coach,
+    onBook,
+    selected,
+    href,
+    showGroupPrices,
+}: {
+    service: LessonService;
+    coach?: Coach;
+    onBook?: () => void;
+    selected?: boolean;
+    href?: string;
+    /** Show the 1…4 golfer price table under the description. */
+    showGroupPrices?: boolean;
+}) => {
     const rails = guardrailSummary(service);
     const one = servicePrice(service, coach, 1);
+    const Root = href ? Link : "div";
     return (
-        <div
+        <Root
+            href={href as string}
             className={cx(
                 "flex flex-col gap-3 rounded-xl p-4 ring-1 transition duration-100 ease-linear ring-inset sm:flex-row sm:items-center sm:gap-5",
                 selected ? "bg-brand-primary ring-2 ring-brand" : "bg-primary ring-secondary",
+                href && "group cursor-pointer hover:bg-primary_hover hover:ring-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
             )}
         >
             <div className="flex min-w-0 flex-1 flex-col gap-1.5">
@@ -823,23 +886,36 @@ export const MenuItemRow = ({ service, coach, onBook, selected }: { service: Les
                         </span>
                     )}
                 </div>
+                {showGroupPrices && (
+                    <div className="mt-1.5 max-w-xl">
+                        <GroupSizePriceTable service={service} coach={coach} />
+                    </div>
+                )}
             </div>
             <div className="flex shrink-0 items-center justify-between gap-4 sm:flex-col sm:items-end sm:gap-2">
                 <div className="flex flex-col sm:items-end">
                     <span className="text-lg font-semibold text-primary tabular-nums">{money0(one)}</span>
-                    {service.maxPlayers > 1 && (
+                    {service.maxPlayers > 1 && !showGroupPrices && (
                         <span className="text-xs text-tertiary tabular-nums">
                             {money0(perPlayer(service, coach, service.maxPlayers))} ea. at {service.maxPlayers}
                         </span>
                     )}
+                    {showGroupPrices && service.maxPlayers > 1 && <span className="text-xs text-tertiary">for 1 golfer</span>}
                 </div>
-                {onBook && (
-                    <Button size="sm" color="primary" onClick={onBook}>
-                        Book
-                    </Button>
+                {href ? (
+                    <span className="flex items-center gap-1.5 text-sm font-semibold text-brand-secondary group-hover:underline">
+                        Book this lesson
+                        <ArrowRight className="size-4" aria-hidden="true" />
+                    </span>
+                ) : (
+                    onBook && (
+                        <Button size="sm" color="primary" onClick={onBook}>
+                            Book
+                        </Button>
+                    )
                 )}
             </div>
-        </div>
+        </Root>
     );
 };
 

@@ -184,3 +184,22 @@ export const JuniorLesson: Story = {
     name: "Junior Lesson",
     args: { step: "details", serviceId: "junior-30", coachId: "kate-schanuel", players: 2 },
 };
+
+/**
+ * Sign-up rules on a lesson. The junior private is for ages 7–17, checked against the
+ * date of birth on the lesson date — the second golfer here is 19, so they're blocked
+ * inline and Continue stays disabled until they're removed.
+ */
+export const JuniorLessonIneligible: Story = {
+    name: "Junior Lesson — golfer outside the age range",
+    args: {
+        step: "details",
+        serviceId: "junior-30",
+        coachId: "kate-schanuel",
+        players: 2,
+        participants: [
+            { first: "Casey", last: "Girard", email: "casey.g@example.com", phone: "(240) 555-0142", birthDate: "2015-03-02", answers: { hand: "Right-handed" } },
+            { first: "Jordan", last: "Ellis", email: "jordan.ellis@example.com", phone: "(240) 555-0171", birthDate: "2007-02-11" },
+        ],
+    },
+};
