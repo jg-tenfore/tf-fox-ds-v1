@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/kettle-homegolf-scaled-1-D4RBiE05.webp?ignore`})),r;e((()=>{n(),r={src:t,height:1970,width:2560,blurDataURL:t}}))();export{r as default};

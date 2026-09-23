@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/images_Sagamore-SPRING_Header-Slider-Images_spring-22-DXfUtwJu.webp?ignore`})),r;e((()=>{n(),r={src:t,height:500,width:1920,blurDataURL:t}}))();export{r as default};

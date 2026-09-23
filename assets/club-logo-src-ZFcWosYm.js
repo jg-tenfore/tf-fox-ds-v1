@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";import{n as t,t as n}from"./asset-CsnZnOPC.js";var r,i,a,o=e((()=>{t(),r=n(`sagamore-images/sagamore-logo.jpeg`),i=n(`kettle-hills-images/kettleHills-logo.png`),a=n(`flogolf-images/flogolf-logo.png`)}));export{r as i,o as n,i as r,a as t};
