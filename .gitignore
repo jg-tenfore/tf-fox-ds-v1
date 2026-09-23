@@ -57,3 +57,10 @@ public/card-images/
 /prototype-2/public/*-images/
 /prototype-2/public/card-images/
 /prototype-2/next-env.d.ts
+
+# Prototype 3 (separate Next app)
+/prototype-3/.next/
+/prototype-3/out/
+/prototype-3/public/*-images/
+/prototype-3/public/card-images/
+/prototype-3/next-env.d.ts

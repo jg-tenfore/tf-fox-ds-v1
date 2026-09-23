@@ -40,7 +40,7 @@ import {
     ageRangeLabel,
     checkEligibility,
     collectsEligibility,
-    genderLimitLabel,
+    genderNote,
     missingBookingAnswers,
     multiBuyLabel,
     quoteMultiBuy,
@@ -234,7 +234,7 @@ const RegistrationSheet = ({
                 <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
                     {collectsEligibility(rules) && (
                         <p className="text-sm text-tertiary">
-                            {[ageRangeLabel(rules?.age), genderLimitLabel(rules ?? {})].filter(Boolean).join(" · ")}. Enter details for the person attending, not the person paying.
+                            {[ageRangeLabel(rules?.age), genderNote(rules)].filter(Boolean).join(" · ")}. Enter details for the person attending, not the person paying.
                         </p>
                     )}
 
@@ -377,7 +377,7 @@ const EnrolCard = ({
                         </div>
                         {quote.discount > 0 && (
                             <div className="flex items-center justify-between">
-                                <span className="text-tertiary">Multi-session discount</span>
+                                <span className="text-tertiary">Registration discount</span>
                                 <span className="font-semibold text-success-primary tabular-nums">−{money(quote.discount)}</span>
                             </div>
                         )}

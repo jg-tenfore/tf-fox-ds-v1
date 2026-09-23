@@ -782,8 +782,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(3),
         rules: {
             age: { min: 7, max: 16 },
-            genders: ["female"],
-            genderLabel: "Girls",
+            gender: "female",
             equipmentProvided: true,
             multiBuy: { buy: 3, percentOff: 50 },
             questions: [
@@ -866,8 +865,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(2),
         rules: {
             age: { min: 18 },
-            genders: ["female", "non-binary"],
-            genderLabel: "Women and non-binary golfers",
+            gender: "female",
             equipmentProvided: false,
             questions: [{ id: "on-course", label: "Rounds played in the last year", type: "choice", options: ["None", "1–5", "6–10", "More than 10"], required: true, per: "golfer" }],
         },
@@ -897,6 +895,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(4),
         rules: {
             age: { min: 55 },
+            gender: "any",
             equipmentProvided: false,
             questions: [{ id: "mobility", label: "Anything the instructor should know about mobility or injuries?", type: "text", required: false, per: "golfer" }],
         },
@@ -926,6 +925,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(1),
         rules: {
             age: { min: 7, max: 14 },
+            gender: "any",
             equipmentProvided: true,
             questions: [
                 { id: "shirt", label: "T-shirt size", type: "choice", options: ["Youth S", "Youth M", "Youth L", "Adult S", "Adult M"], required: true, per: "golfer" },
@@ -960,6 +960,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(3),
         rules: {
             age: { min: 9, max: 14 },
+            gender: "any",
             equipmentProvided: false,
             questions: [
                 { id: "completed", label: "Completed First Tee or a starter clinic?", type: "yes-no", required: true, per: "golfer" },
@@ -1016,6 +1017,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(2),
         rules: {
             age: { min: 13, max: 18 },
+            gender: "any",
             equipmentProvided: false,
             questions: [{ id: "score", label: "Most recent 18-hole score", type: "text", required: true, hint: "Bring the card to the first session.", per: "golfer" }],
         },
@@ -1044,6 +1046,7 @@ export const MCG_CLINICS: McgClinic[] = [
         provided: ["Junior and adult loaner clubs", "All range balls", "Three holes on the final two weeks"],
         image: img(1),
         rules: {
+            gender: "any",
             equipmentProvided: true,
             questions: [{ id: "family-size", label: "How many in your family will attend?", type: "choice", options: ["2", "3", "4", "5", "6+"], required: true, per: "booking" }],
         },
@@ -1070,7 +1073,7 @@ export const MCG_CLINICS: McgClinic[] = [
         prerequisites: "Any ability. Genuinely useful whether you shoot 78 or 118.",
         bring: ["Your wedges and putter", "Golf shoes"],
         provided: ["Short-game and bunker balls", "Loaner wedges on request", "A one-page practice plan"],
-        rules: { age: { min: 16 }, equipmentProvided: false, multiBuy: { buy: 3, percentOff: 50 } },
+        rules: { age: { min: 16 }, gender: "any", equipmentProvided: false, multiBuy: { buy: 3, percentOff: 50 } },
         perSession: { price: 45 },
         image: img(4),
     },
@@ -1122,6 +1125,7 @@ export const MCG_CLINICS: McgClinic[] = [
         provided: ["Adaptive carts and single-rider seats", "Modified and loaner clubs", "One-to-one coaching, free of charge"],
         image: img(7),
         rules: {
+            gender: "any",
             equipmentProvided: true,
             questions: [{ id: "support", label: "Equipment or support we should have ready", type: "text", required: false, per: "golfer" }],
         },
@@ -1175,6 +1179,7 @@ export const MCG_CLINICS: McgClinic[] = [
         image: img(3),
         rules: {
             age: { min: 14, max: 18 },
+            gender: "any",
             equipmentProvided: false,
             questions: [
                 { id: "school", label: "High school", type: "text", required: true, per: "golfer" },

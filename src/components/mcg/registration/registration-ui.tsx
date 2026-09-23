@@ -21,13 +21,13 @@ import {
     type CustomQuestion,
     type EligibilityAnswers,
     type EligibilityResult,
-    GENDER_LABEL,
-    type Gender,
+    GENDER_CHOICES,
     type MultiBuyDiscount,
     type MultiBuyQuote,
     type RegistrationRules,
     ageRangeLabel,
     genderLimitLabel,
+    genderNote,
     multiBuyDetail,
     multiBuyLabel,
     multiBuyNudge,
@@ -71,6 +71,9 @@ export const RequirementsPanel = ({ rules, title = "Registration details" }: { r
                 {gender && (
                     <Row icon={Users01} label="Gender">
                         {gender}
+                        <span className="block text-xs font-normal text-tertiary">
+                            {gender === "Any" ? "Open to everyone" : `Run for ${gender.toLowerCase()} golfers — the course manages this, we don't check it`}
+                        </span>
                     </Row>
                 )}
                 {rules.equipmentProvided !== undefined && (
@@ -178,12 +181,11 @@ export const EligibilityFields = ({
 }) => {
     if (!rules) return null;
     const perGolfer = (rules.questions ?? []).filter((q) => q.per === "golfer");
-    const genders: Gender[] = ["female", "male", "non-binary"];
-    if (!rules.age && !rules.genders?.length && !perGolfer.length) return null;
+    if (!rules.age && !rules.gender && !perGolfer.length) return null;
 
     return (
         <div className="flex flex-col gap-3">
-            {(rules.age || rules.genders?.length) && (
+            {(rules.age || rules.gender) && (
                 <div className="grid gap-3 sm:grid-cols-2">
                     {rules.age && (
                         <Input
@@ -195,14 +197,19 @@ export const EligibilityFields = ({
                             isRequired
                         />
                     )}
-                    {rules.genders?.length ? (
-                        <NativeSelect
-                            label="Gender"
-                            value={value.gender ?? ""}
-                            onChange={(e) => onChange({ gender: e.target.value as Gender | "" })}
-                            hint={genderLimitLabel(rules) ? `Open to ${genderLimitLabel(rules)?.toLowerCase()}` : undefined}
-                            options={[{ label: "Choose…", value: "" }, ...genders.map((g) => ({ label: GENDER_LABEL[g], value: g }))]}
-                        />
+                    {rules.gender ? (
+                        <div className="flex flex-col gap-3">
+                            <NativeSelect
+                                label="Gender (optional)"
+                                value={value.gender ?? ""}
+                                onChange={(e) => onChange({ gender: e.target.value })}
+                                hint={genderNote(rules) ?? undefined}
+                                options={[{ label: "Prefer not to say", value: "" }, ...GENDER_CHOICES.map((g) => ({ label: g, value: g }))]}
+                            />
+                            {value.gender === "Prefer to self-describe" && (
+                                <Input label="How would you describe it?" value={value.genderSelfDescribed ?? ""} onChange={(v) => onChange({ genderSelfDescribed: v })} />
+                            )}
+                        </div>
                     ) : null}
                 </div>
             )}
@@ -237,7 +244,7 @@ export const MultiBuyBanner = ({ rule, quote, className }: { rule: MultiBuyDisco
             <Tag01 className={cx("mt-0.5 size-5 shrink-0", quote.qualifies ? "text-fg-success-primary" : "text-fg-brand-primary")} aria-hidden="true" />
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <p className="text-sm font-semibold text-primary">{quote.qualifies ? `${multiBuyLabel(rule)} — applied` : multiBuyLabel(rule)}</p>
-                <p className="text-sm text-tertiary">{quote.qualifies ? `You're saving ${money(quote.discount)} on these sessions.` : nudge}</p>
+                <p className="text-sm text-tertiary">{quote.qualifies ? `${rule.percentOff}% off your whole registration — you're saving ${money(quote.discount)}.` : nudge}</p>
             </div>
             {!quote.qualifies && (
                 <div className="flex shrink-0 items-center gap-1 pt-1" aria-hidden="true">

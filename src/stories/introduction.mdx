@@ -12,6 +12,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 export const PROTOTYPES = {
   1: { folder: "prototype", port: 3000 },
   2: { folder: "prototype-2", port: 3001 },
+  3: { folder: "prototype-3", port: 3002 },
 };
 
 export const protoBase = (which = 1) => {
@@ -65,6 +66,8 @@ export const TabTable = () => (
             <Proto path={path}>Prototype 1 ↗</Proto>
             <br />
             <Proto path={path} which={2}>Prototype 2 ↗</Proto>
+            <br />
+            <Proto path={path} which={3}>Prototype 3 ↗</Proto>
           </td>
           <td style={{ padding: "10px 0", borderBottom: "1px solid #f2f4f7", fontSize: 14, lineHeight: 1.55, color: "#475467" }}>{detail}</td>
         </tr>
@@ -120,6 +123,18 @@ export const TabTable = () => (
     <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
       A separate copy of Prototype 1 for changes that shouldn't touch it. First change: Instruction and Clinics
       combined into one tab, filtered by course and skill set, with a Square-style booking flow.
+    </p>
+  </div>
+  <div style={{ flex: "1 1 320px", border: "1px solid #1e8e4e", borderRadius: 12, padding: "18px 20px", background: "#f6fef9" }}>
+    <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1e8e4e", margin: 0 }}>
+      New
+    </p>
+    <p style={{ fontSize: 17, fontWeight: 600, color: "#101828", margin: "8px 0 4px" }}>
+      <Proto path="/" which={3}>MCG Prototype 3 — the hybrid ↗</Proto>
+    </p>
+    <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
+      MCG's pick of both: Prototype 2's one-step search and result tiles, Prototype 1's time board and waitlist,
+      multi-select filters with dates and days up front, and an account required at checkout.
     </p>
   </div>
 </div>
@@ -234,7 +249,8 @@ golf course. **Components** is the Untitled UI library those tokens dress.
 npm run storybook   # this library      → http://localhost:6017
 npm run dev         # MCG prototype 1   → http://localhost:3000
 npm run dev:2       # MCG prototype 2   → http://localhost:3001
-npm run build:pages # all three, combined exactly as CI publishes them
+npm run dev:3       # MCG prototype 3   → http://localhost:3002
+npm run build:pages # all four, combined exactly as CI publishes them
 ```
 
 ### Conventions

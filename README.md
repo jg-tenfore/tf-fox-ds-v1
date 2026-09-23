@@ -3,6 +3,7 @@
 **▶ Storybook — the component library:** https://jg-tenfore.github.io/tf-fox-ds-v1/
 **▶ MCG Prototype 1 — the clickable product:** https://jg-tenfore.github.io/tf-fox-ds-v1/prototype/
 **▶ MCG Prototype 2 — a separate copy for independent changes:** https://jg-tenfore.github.io/tf-fox-ds-v1/prototype-2/
+**▶ MCG Prototype 3 — the hybrid of 1 and 2:** https://jg-tenfore.github.io/tf-fox-ds-v1/prototype-3/
 
 A design system **and** a working product prototype for Tenfore's golf booking platform, built around
 **Montgomery County Golf** — a nine-course public county system in Maryland (Falls Road, Northwest,
@@ -58,10 +59,12 @@ npm install
 npm run storybook          # component library      → http://localhost:6017
 npm run dev                # MCG prototype 1        → http://localhost:3000
 npm run dev:2              # MCG prototype 2        → http://localhost:3001
+npm run dev:3              # MCG prototype 3        → http://localhost:3002
 
 npm run build:prototype    # prototype 1 static export to out/
 npm run build:prototype-2  # prototype 2 static export to prototype-2/out/
-npm run build:pages        # all three, combined into dist/ exactly as CI publishes it
+npm run build:prototype-3  # prototype 3 static export to prototype-3/out/
+npm run build:pages        # all four, combined into dist/ exactly as CI publishes it
 ```
 
 `predev` / `prebuild` mirror `images/` and `creditCards/` into `public/` using the same mapping as
@@ -70,7 +73,8 @@ npm run build:pages        # all three, combined into dist/ exactly as CI publis
 ### Deploying
 
 `.github/workflows/deploy-pages.yml` runs on push to `main` (or on demand): typecheck → build Storybook →
-build prototype 1 → build prototype 2 → combine → publish to `gh-pages`. All three URLs update in one commit.
+build prototype 1 → build prototype 2 → build prototype 3 → combine → publish to `gh-pages`. All four URLs
+update in one commit.
 
 ---
 
@@ -118,14 +122,14 @@ slide deck:
 
 A second, independent copy of the MCG prototype, for changes that must not affect Prototype 1.
 
-| | Prototype 1 | Prototype 2 |
-| --- | --- | --- |
-| **URL** | `/tf-fox-ds-v1/prototype/` | `/tf-fox-ds-v1/prototype-2/` |
-| **Local** | `npm run dev` → http://localhost:3000 | `npm run dev:2` → http://localhost:3001 |
-| **Screens** | `src/components/mcg`, `src/components/instruction` | `src/components/mcg-2`, `src/components/instruction-2` |
-| **Routes** | `src/app` | `prototype-2/app` (its own Next app) |
-| **Session** | `mcg-prototype-session-v1` | `mcg-p2-prototype-session-v1` |
-| **Storybook** | The **MCG Prototype** stories | Linked from the Introduction; no stories |
+| | Prototype 1 | Prototype 2 | Prototype 3 |
+| --- | --- | --- | --- |
+| **URL** | `/tf-fox-ds-v1/prototype/` | `/tf-fox-ds-v1/prototype-2/` | `/tf-fox-ds-v1/prototype-3/` |
+| **Local** | `npm run dev` → :3000 | `npm run dev:2` → :3001 | `npm run dev:3` → :3002 |
+| **Screens** | `src/components/mcg`, `instruction` | `src/components/mcg-2`, `instruction-2` | `src/components/mcg-3`, `instruction-3` |
+| **Routes** | `src/app` | `prototype-2/app` | `prototype-3/app` |
+| **Session** | `mcg-prototype-session-v1` | `mcg-p2-…` | `mcg-p3-…` |
+| **Storybook** | **MCG Prototype** stories | Linked only | **MCG Prototype 3** stories |
 
 Prototype 2 started as an exact copy of Prototype 1 on 2026-09-15 (including the Academy review, group
 pricing and sign-up-rule work).
@@ -150,6 +154,26 @@ pricing and sign-up-rule work).
   cancellation policy on one page. A lesson summary with edit pencils sits beside every step. Everything below the screens — `base`, `application`, `foundations`, the
 tokens in `src/styles`, and the shared Explorations chrome — is still shared, so a design-system fix
 reaches both. Edit files under the `-2` folders to change Prototype 2 only.
+
+## Prototype 3 — the hybrid
+
+Built after MCG reviewed both prototypes: Prototype 2's search and result tiles, Prototype 1's time board and
+waitlist, plus their own asks. It started as a copy of Prototype 2 on 2026-09-23.
+
+- **One search step that gathers everything.** Multi-select courses, formats, skill sets and days of the week,
+  plus a date range — so nobody filters their way to an empty calendar three screens later. The search lives in
+  the query string and is carried into the booking steps.
+- **More formats:** private lessons, group clinics, junior camps, junior league and Op 36. The last three are
+  **sample programs** MCG doesn't run today, each labelled as such on its page.
+- **Services / Instructors** moved out of the right-hand corner to above the search.
+- **Result tiles and instructor pricing** kept exactly as Prototype 2 had them.
+- **No Extras step.** Extras are a field on the checkout screen instead.
+- **Prototype 1's time board**, pre-filled from the search, with open times tinted and bordered so they stand
+  out from booked ones.
+- **Prototype 1's waitlist**, plus a date range, times of day and days of the week.
+- **An account is required to book.** Sign-in sits inside checkout, so nothing already chosen is lost, and
+  signing in fills the contact details.
+- **Lesson packages** get a banner at the top of Instruction — bought ahead, then spent at checkout.
 
 ## Known issues
 
