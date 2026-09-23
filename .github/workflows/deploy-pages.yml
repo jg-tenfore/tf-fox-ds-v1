@@ -4,6 +4,7 @@ name: Deploy Storybook + MCG Prototype
 #   https://jg-tenfore.github.io/tf-fox-ds-v1/            → Storybook
 #   https://jg-tenfore.github.io/tf-fox-ds-v1/prototype/  → MCG prototype
 #   https://jg-tenfore.github.io/tf-fox-ds-v1/prototype-2/ → MCG prototype 2
+#   https://jg-tenfore.github.io/tf-fox-ds-v1/prototype-3/ → MCG prototype 3
 #
 # They build from the same `src/`, so the prototype can never drift from the
 # component library — there is no copy step between them.
@@ -30,12 +31,12 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   ref: ${{ inputs.ref || github.ref }}
 
             - name: Setup Node
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "20"
                   cache: npm
@@ -55,11 +56,15 @@ jobs:
             - name: Build MCG prototype 2
               run: npm run build:prototype-2
 
+            - name: Build MCG prototype 3
+              run: npm run build:prototype-3
+
             - name: Combine into one site
               run: |
-                  rm -rf dist/prototype dist/prototype-2
+                  rm -rf dist/prototype dist/prototype-2 dist/prototype-3
                   cp -r out dist/prototype
                   cp -r prototype-2/out dist/prototype-2
+                  cp -r prototype-3/out dist/prototype-3
                   # Stop GitHub Pages running the output through Jekyll, which would
                   # drop Next's _next/ directory.
                   touch dist/.nojekyll

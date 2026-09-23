@@ -343,7 +343,7 @@ export const CheckoutScreen = ({ lines: fixture }: CheckoutScreenProps) => {
 
                             <div className="flex flex-col gap-2.5 px-5 py-4 text-sm">
                                 <SummaryRow label={`Subtotal · ${count} ${count === 1 ? "item" : "items"}`} value={money(subtotal)} />
-                                {discount > 0 && <SummaryRow label="Multi-session discount" value={`−${money(discount)}`} tone="credit" />}
+                                {discount > 0 && <SummaryRow label="Registration discount" value={`−${money(discount)}`} tone="credit" />}
                                 <SummaryRow label="Counter pickup" value="Free" tone="credit" />
                                 <SummaryRow label="Maryland sales tax (6%)" value={money(tax)} />
                                 <SummaryRow label="Total" value={money(total)} tone="total" />

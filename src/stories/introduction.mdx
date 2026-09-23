@@ -12,6 +12,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 export const PROTOTYPES = {
   1: { folder: "prototype", port: 3000 },
   2: { folder: "prototype-2", port: 3001 },
+  3: { folder: "prototype-3", port: 3002 },
 };
 
 export const protoBase = (which = 1) => {
@@ -65,6 +66,8 @@ export const TabTable = () => (
             <Proto path={path}>Prototype 1 ↗</Proto>
             <br />
             <Proto path={path} which={2}>Prototype 2 ↗</Proto>
+            <br />
+            <Proto path={path} which={3}>Prototype 3 ↗</Proto>
           </td>
           <td style={{ padding: "10px 0", borderBottom: "1px solid #f2f4f7", fontSize: 14, lineHeight: 1.55, color: "#475467" }}>{detail}</td>
         </tr>
@@ -122,6 +125,18 @@ export const TabTable = () => (
       combined into one tab, filtered by course and skill set, with a Square-style booking flow.
     </p>
   </div>
+  <div style={{ flex: "1 1 320px", border: "1px solid #1e8e4e", borderRadius: 12, padding: "18px 20px", background: "#f6fef9" }}>
+    <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1e8e4e", margin: 0 }}>
+      New
+    </p>
+    <p style={{ fontSize: 17, fontWeight: 600, color: "#101828", margin: "8px 0 4px" }}>
+      <Proto path="/" which={3}>MCG Prototype 3 — the hybrid ↗</Proto>
+    </p>
+    <p style={{ fontSize: 14, lineHeight: 1.5, color: "#475467", margin: 0 }}>
+      MCG's pick of both: Prototype 2's one-step search and result tiles, Prototype 1's time board and waitlist,
+      multi-select filters with dates and days up front, and an account required at checkout.
+    </p>
+  </div>
 </div>
 
 ## The MCG Prototype
@@ -133,10 +148,19 @@ isn't enough.
 
 Every tab in the global nav works. Browsing is open — nothing is gated — and **any credentials sign you in**.
 
-There are two prototypes. **Prototype 1** is the one the **MCG Prototype** stories below render. **Prototype 2**
-started as an exact copy and is where independent changes go: its screens live in `src/components/mcg-2` and
-`src/components/instruction-2`, its routes in `prototype-2/app`, and it keeps its own cart and session, so
-nothing done to it can change Prototype 1. Prototype 2 is linked here but has no stories of its own.
+There are **three prototypes**, each with its own screens, routes and session, so nothing done to one can change
+another. **Prototype 1** is what the **MCG Prototype** stories below render. **Prototype 2** combined Instruction
+and Clinics and introduced the Square-style booking flow. **Prototype 3** is the hybrid MCG asked for after
+seeing both: one search step that takes courses, formats, dates, days and skill sets up front, Prototype 1's
+time board and waitlist, and an account required before anything is booked.
+
+| | Screens | Routes | Local | Stories |
+| --- | --- | --- | --- | --- |
+| **Prototype 1** | `src/components/mcg`, `instruction` | `src/app` | :3000 | **MCG Prototype** |
+| **Prototype 2** | `src/components/mcg-2`, `instruction-2` | `prototype-2/app` | :3001 | linked only |
+| **Prototype 3** | `src/components/mcg-3`, `instruction-3` | `prototype-3/app` | :3002 | **MCG Prototype 3** |
+
+Every tab below links to all three, so the same screen can be compared side by side.
 
 <TabTable />
 
@@ -177,6 +201,7 @@ provider is present, so a component that reads the cart renders unchanged inside
 | **Foundations** | 45 | Design tokens & primitives — Colors, Typography, Spacing, Radius, Border, Effect Styles, Icons, Logos, and Golf Courses brand data. |
 | **MCG Prototype** | 54 | Every screen in the prototype above, rendered from the same components the routes use. |
 | **Instruction** | 32 | The MCG Academy — lesson catalog, instructor selection, facility calendar, waitlists, and three package pricing models with a comparison page. |
+| **MCG Prototype 3** | 15 | The hybrid: the one-step search with its filters, the instructor picker, Prototype 1's time board and waitlist, checkout with its sign-in gate, and the junior programs. |
 | **Components** | 255 | The Untitled UI core and application kit, in semantic sub-folders — Actions, Forms, Navigation, Feedback & Status, Layout & Structure, Media & Visuals. |
 | **Design Systems** | 70 | Colorways, color-theory combinations, and per-club style guides (Kettle Hills, Sagamore, FloGolf). |
 | **Booking** | 31 | The tee-time booking engine — molecules (search, calendars, slot cards) and full pages. |
@@ -234,7 +259,8 @@ golf course. **Components** is the Untitled UI library those tokens dress.
 npm run storybook   # this library      → http://localhost:6017
 npm run dev         # MCG prototype 1   → http://localhost:3000
 npm run dev:2       # MCG prototype 2   → http://localhost:3001
-npm run build:pages # all three, combined exactly as CI publishes them
+npm run dev:3       # MCG prototype 3   → http://localhost:3002
+npm run build:pages # all four, combined exactly as CI publishes them
 ```
 
 ### Conventions

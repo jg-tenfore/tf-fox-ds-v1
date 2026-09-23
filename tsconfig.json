@@ -37,10 +37,12 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
+    "dist",
     "node_modules",
+    "out",
     "prototype-2/.next",
     "prototype-2/out",
-    "out",
-    "dist"
+    "prototype-3/.next",
+    "prototype-3/out"
   ]
 }

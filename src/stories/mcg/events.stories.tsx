@@ -83,7 +83,7 @@ export const ClinicDetailWaitlist: Story = {
 
 /* ---- Sign-up rules: age, gender, questions, multi-buy ---------------- */
 
-/** Fox parity: a per-session clinic with an age range, a gender limit, questions and "Buy 3, get 50% off". */
+/** Fox parity: a per-session clinic with an age range, a gender setting, questions and "Buy 3, get 50% off". */
 export const ClinicPerSession: Story = {
     name: "Clinics — Per-session (Girls Golf), no sessions chosen",
     render: () => <ClinicDetailScreen clinicId="girls-golf-needwood" />,
@@ -95,7 +95,7 @@ export const ClinicPerSessionNudge: Story = {
 };
 
 export const ClinicPerSessionDiscount: Story = {
-    name: "Clinics — Per-session, 3 chosen (discount applied)",
+    name: "Clinics — Per-session, 3 chosen (50% off the registration)",
     render: () => <ClinicDetailScreen clinicId="girls-golf-needwood" initialSessions={[0, 2, 3]} />,
 };
 
@@ -105,7 +105,7 @@ export const ClinicRegistrationSheet: Story = {
 };
 
 export const ClinicRegistrationBlocked: Story = {
-    name: "Clinics — Registration, golfer blocked by age and gender",
+    name: "Clinics — Registration, golfer blocked by age (gender never blocks)",
     render: () => (
         <ClinicDetailScreen
             clinicId="girls-golf-needwood"
@@ -113,8 +113,9 @@ export const ClinicRegistrationBlocked: Story = {
             initialRegistration={{
                 places: 2,
                 people: [
-                    { first: "Casey", last: "Girard", birthDate: "2015-03-02", gender: "female", answers: { shirt: "Youth M" } },
-                    { first: "Sam", last: "Okafor", birthDate: "2008-01-08", gender: "male", answers: {} },
+                    { first: "Casey", last: "Girard", birthDate: "2015-03-02", gender: "Female", answers: { shirt: "Youth M" } },
+                    // Male on a girls' clinic: recorded, never blocked. The age is what stops this one.
+                    { first: "Sam", last: "Okafor", birthDate: "2008-01-08", gender: "Male", answers: {} },
                 ],
             }}
         />

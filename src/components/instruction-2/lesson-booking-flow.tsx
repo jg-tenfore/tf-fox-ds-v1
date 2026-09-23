@@ -48,7 +48,7 @@ import { RadioButtonBase } from "@/components/base/radio-buttons/radio-buttons";
 import { TextArea } from "@/components/base/textarea/textarea";
 import { mcgCourses } from "@/components/foundations/mcg/mcg-assets";
 import { BookingQuestions, EligibilityFields, EligibilityProblems } from "@/components/mcg-2/registration/registration-ui";
-import { ageOn, ageRangeLabel, checkEligibility, genderLimitLabel, missingBookingAnswers } from "@/components/mcg-2/registration-rules";
+import { ageOn, ageRangeLabel, checkEligibility, genderNote, missingBookingAnswers } from "@/components/mcg-2/registration-rules";
 import { SQUARE_RAIL } from "@/components/mcg-2/instruction/booking-rail";
 import { serviceHref } from "@/components/mcg-2/instruction/service-href";
 import { newId, useSession } from "@/components/mcg-2/session";
@@ -907,7 +907,7 @@ export const LessonBookingFlow = ({
         const eligibility = attending.map((p) => checkEligibility(rules, p, asOf, p.first || "This golfer"));
         const blocked = eligibility.some((r) => r.problems.length > 0);
         const incomplete = eligibility.some((r) => r.incomplete) || missingBookingAnswers(rules, bookingAnswers).length > 0;
-        const eligibilitySub = [ageRangeLabel(rules?.age), genderLimitLabel(rules ?? {})].filter(Boolean).join(" · ");
+        const eligibilitySub = [ageRangeLabel(rules?.age), genderNote(rules)].filter(Boolean).join(" · ");
 
         return (
             <InstructionShell>

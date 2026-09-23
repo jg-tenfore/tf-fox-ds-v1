@@ -3,8 +3,9 @@
  * the buy-several discount.
  *
  * Fox's Instructions & Clinics tool already lets a course set all four on a clinic
- * (fox.tenfore.golf/dunes/clinics): an age range, a gender limit, custom questions at
- * sign-up, and "Buy 3 get 50% off". The MCG prototype had none of them — a clinic was a
+ * (fox.tenfore.golf/dunes/clinics): an age range, a gender setting (Male, Female or
+ * Any), custom questions at sign-up, and "Buy 3 get 50% off" — which takes its percent
+ * off the whole registration, not off one session. The MCG prototype had none of them — a clinic was a
  * quantity stepper and a lesson only asked juniors for an age. This module is the one
  * definition both clinics (`events-catalog.ts`) and lessons (`instruction-catalog.ts`)
  * hang their rules on, so the two sign-up paths can't drift apart.
@@ -17,13 +18,24 @@
 /* Types                                                               */
 /* ------------------------------------------------------------------ */
 
-export type Gender = "female" | "male" | "non-binary";
+/**
+ * Who a program is *for*, as the course sets it — Fox's three options. "any" is the
+ * default and is stated plainly rather than hidden.
+ */
+export type GenderSetting = "male" | "female" | "any";
 
-export const GENDER_LABEL: Record<Gender, string> = {
-    female: "Female",
+export const GENDER_SETTING_LABEL: Record<GenderSetting, string> = {
     male: "Male",
-    "non-binary": "Non-binary",
+    female: "Female",
+    any: "Any",
 };
+
+/**
+ * What a golfer says about themselves. Free text behind the last option, because a
+ * golfer describes themselves however they see fit — Tenfore records it and never
+ * decides anything by it.
+ */
+export const GENDER_CHOICES = ["Male", "Female", "Prefer to self-describe"] as const;
 
 export interface AgeRange {
     min?: number;
@@ -48,8 +60,9 @@ export interface CustomQuestion {
 }
 
 /**
- * "Buy 3, get 50% off". Applies to sessions of the **same** clinic: once a golfer has
- * `buy` or more sessions selected, every selected session is `percentOff` off.
+ * "Buy 3, get 50% off". Counted in sessions of the **same** clinic; once `buy` or more
+ * are selected, `percentOff` comes off the **whole registration** — every session and
+ * every place on it — not off a single session.
  */
 export interface MultiBuyDiscount {
     buy: number;
@@ -59,10 +72,11 @@ export interface MultiBuyDiscount {
 export interface RegistrationRules {
     /** Checked against date of birth, as of the first session. */
     age?: AgeRange;
-    /** Who may register. Omit for anyone. */
-    genders?: Gender[];
-    /** Display name for the gender limit, e.g. "Girls", "Women". */
-    genderLabel?: string;
+    /**
+     * Who the program is for. **Never enforced**: the course handles that at the door,
+     * and Tenfore stays out of it, so this only ever labels the program.
+     */
+    gender?: GenderSetting;
     questions?: CustomQuestion[];
     /** Fox's "Equipment Provided" flag. */
     equipmentProvided?: boolean;
@@ -73,7 +87,10 @@ export interface RegistrationRules {
 export interface EligibilityAnswers {
     /** ISO yyyy-mm-dd. */
     birthDate?: string;
-    gender?: Gender | "";
+    /** As the golfer describes themselves — one of `GENDER_CHOICES`, or free text. */
+    gender?: string;
+    /** Their own words, when they chose to self-describe. */
+    genderSelfDescribed?: string;
     /** Custom question answers, keyed by question id. */
     answers?: Record<string, string>;
 }
@@ -90,17 +107,20 @@ export const ageRangeLabel = (age?: AgeRange): string | null => {
     return `Ages ${age.max} and under`;
 };
 
-export const genderLimitLabel = (rules: RegistrationRules): string | null => {
-    if (!rules.genders?.length) return null;
-    return rules.genderLabel ?? rules.genders.map((g) => GENDER_LABEL[g]).join(" or ");
-};
+/** "Female", "Male" or "Any" — what the course set this program to. */
+export const genderLimitLabel = (rules: RegistrationRules): string | null =>
+    rules.gender ? GENDER_SETTING_LABEL[rules.gender] : null;
+
+/** The same thing in a sentence, for the line above a sign-up form. */
+export const genderNote = (rules?: RegistrationRules): string | null =>
+    !rules?.gender || rules.gender === "any" ? null : `Run for ${GENDER_SETTING_LABEL[rules.gender].toLowerCase()} golfers`;
 
 export const multiBuyLabel = (rule: MultiBuyDiscount) => `Buy ${rule.buy}, get ${rule.percentOff}% off`;
 
-export const multiBuyDetail = (rule: MultiBuyDiscount) => `${rule.percentOff}% off every session once you choose ${rule.buy} or more`;
+export const multiBuyDetail = (rule: MultiBuyDiscount) => `${rule.percentOff}% off your whole registration once you choose ${rule.buy} or more sessions`;
 
 /** True when the rules ask anything beyond name and contact. */
-export const collectsEligibility = (rules?: RegistrationRules) => Boolean(rules?.age || rules?.genders?.length);
+export const collectsEligibility = (rules?: RegistrationRules) => Boolean(rules?.age);
 
 /* ------------------------------------------------------------------ */
 /* Eligibility                                                         */
@@ -131,8 +151,12 @@ export interface EligibilityResult {
 /**
  * Can this golfer register?
  *
- * Out-of-range ages and genders are **blocked**, not warned: the Academy can't take the
- * booking, so letting it through only moves the problem to a refund phone call.
+ * Age is the only thing that blocks: a junior program the golfer has aged out of can't
+ * take the booking, so letting it through only moves the problem to a refund call.
+ *
+ * Gender never blocks. A course may run a program for women or for girls, but how that
+ * is applied is the course's business — Tenfore records what the golfer said and leaves
+ * enforcement to the people at the first tee.
  */
 export const checkEligibility = (rules: RegistrationRules | undefined, who: EligibilityAnswers, asOfIso: string, name = "This golfer"): EligibilityResult => {
     const problems: string[] = [];
@@ -148,14 +172,6 @@ export const checkEligibility = (rules: RegistrationRules | undefined, who: Elig
             if ((min !== undefined && age < min) || (max !== undefined && age > max)) {
                 problems.push(`${name} will be ${age} at the first session. This is for ${ageRangeLabel(rules.age)?.toLowerCase()}.`);
             }
-        }
-    }
-
-    if (rules.genders?.length) {
-        if (!who.gender) {
-            incomplete = true;
-        } else if (!rules.genders.includes(who.gender)) {
-            problems.push(`This is limited to ${genderLimitLabel(rules)?.toLowerCase()} golfers.`);
         }
     }
 
