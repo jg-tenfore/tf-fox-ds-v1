@@ -23,9 +23,10 @@ import type { ReactNode } from "react";
 export const MCG = {
     name: "Montgomery County Golf",
     city: "Montgomery County, MD",
-    phone: "(301) 762-1600",
+    // Sample contact only (the repo is public): 555 number, example.com address.
+    phone: "(301) 555-0100",
     address: "Montgomery County, MD",
-    email: "golf@mcggolf.com",
+    email: "info@mcg.example.com",
 };
 
 /** Every tab in the prototype's global nav, in order. */

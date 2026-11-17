@@ -869,7 +869,7 @@ const packFor = (coachId: string, credits: number, discount: number, badge?: str
         perLessonPrice: Math.round(price / credits),
         savings: listPrice - price,
         availability: "online",
-        expiration: "December 31, 2026",
+        expiration: "1 year after purchase",
         transferable: false,
         badge,
         howItWorks: [
@@ -886,9 +886,9 @@ const packFor = (coachId: string, credits: number, discount: number, badge?: str
         ],
         restrictions: [
             "Valid with this instructor only — rates are set per instructor",
-            "Unused credits expire December 31, 2026",
+            "Unused credits expire 1 year after purchase",
             "Non-transferable between golfers",
-            "Cancel or reschedule at least 24 hours ahead or the credit is spent",
+            "Cancel at least 24 hours ahead or the credit is spent — your instructor can move a lesson",
         ],
     };
 };
@@ -998,15 +998,15 @@ export const subscriptionById = (id: string): LessonSubscription | undefined => 
 /* ------------------------------------------------------------------ */
 
 export const GOLFER = {
-    first: "Justin",
-    last: "Girard",
-    initials: "JG",
-    email: "hello@girardjustin.com",
-    phone: "(617) 470-7879",
+    first: "Morgan",
+    last: "Hale",
+    initials: "MH",
+    email: "morgan.hale@example.com",
+    phone: "(555) 010-0199",
     memberOf: "Montgomery County Golf",
 };
 
-/** Credit balances Justin holds — one purchased pack, one assigned Thrive import. */
+/** Credit balances Morgan holds — one purchased pack, one assigned Thrive import. */
 export const CREDIT_BALANCES: CreditBalance[] = [
     {
         id: "bal-martin-5",
@@ -1016,7 +1016,7 @@ export const CREDIT_BALANCES: CreditBalance[] = [
         creditsRemaining: 5,
         valueRemaining: 495,
         purchasedOn: "May 2, 2026",
-        expiresOn: "December 31, 2026",
+        expiresOn: "May 2, 2027",
         history: [],
     },
     {
@@ -1052,7 +1052,7 @@ export const EDGE_BALANCES: CreditBalance[] = [
         creditsRemaining: 0,
         valueRemaining: 0,
         purchasedOn: "January 8, 2026",
-        expiresOn: "December 31, 2026",
+        expiresOn: "January 8, 2027",
         history: [
             { date: "Jan 24, 2026", label: "45-Minute Private · Needwood", valueRelieved: 82 },
             { date: "Feb 7, 2026", label: "45-Minute Private · Needwood", valueRelieved: 82 },
@@ -1069,7 +1069,7 @@ export const EDGE_BALANCES: CreditBalance[] = [
         creditsRemaining: 2,
         valueRemaining: 140,
         purchasedOn: "March 3, 2025",
-        expiresOn: "December 31, 2025",
+        expiresOn: "March 3, 2026",
         history: [
             { date: "Mar 29, 2025", label: "45-Minute Private · Laytonsville", valueRelieved: 70 },
             { date: "Apr 12, 2025", label: "45-Minute Private · Laytonsville", valueRelieved: 70 },
@@ -1078,7 +1078,7 @@ export const EDGE_BALANCES: CreditBalance[] = [
     },
 ];
 
-/** Model B — the volume discount Justin is three lessons into with Doug. */
+/** Model B — the volume discount Morgan is three lessons into with Doug. */
 export const VOLUME_PROGRESS: VolumeProgress = {
     coachId: "doug-hamilton",
     serviceId: "private-45",
@@ -1113,7 +1113,7 @@ export const HOST_PARTICIPANT: Participant = {
 
 /** Sample guests so multi-person stories open with completed cards. */
 export const SAMPLE_GUESTS: Participant[] = [
-    { first: "Casey", last: "Girard", email: "casey.g@example.com", phone: "(240) 555-0142", birthDate: "2015-03-02" },
+    { first: "Casey", last: "Hale", email: "casey.h@example.com", phone: "(240) 555-0142", birthDate: "2015-03-02" },
     { first: "Rowan", last: "Ellis", email: "rowan.ellis@example.com", phone: "(240) 555-0188", birthDate: "2014-05-19" },
     { first: "Sam", last: "Okafor", email: "sam.okafor@example.com", phone: "(240) 555-0119", birthDate: "2016-01-08" },
 ];

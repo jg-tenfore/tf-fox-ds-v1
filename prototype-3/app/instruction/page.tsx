@@ -1,6 +1,11 @@
-import { InstructionHubScreen } from "@/components/mcg-3/instruction/instruction-hub";
+import { InstructionHubPage } from "@/components/mcg-3/instruction/hub/instruction-hub-page";
+import { Routed } from "./routed";
 
-/** `/instruction` — lessons, clinics and programs in one place (Prototype 3). */
+/** `/instruction` — the MCG Golf Academy hub: lessons, clinics, camps and instructors in one place. */
 export default function Page() {
-    return <InstructionHubScreen />;
+    return (
+        <Routed>
+            <InstructionHubPage />
+        </Routed>
+    );
 }

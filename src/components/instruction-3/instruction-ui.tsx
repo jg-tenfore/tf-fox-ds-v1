@@ -57,9 +57,9 @@ import { NAV_ITEMS_WITH_INSTRUCTION, SiteFooter, TopNav, clubBrandStyle, type Cl
 export const MCG_CLUB: Club = {
     name: "Montgomery County Golf",
     city: "Montgomery County, MD",
-    phone: "(301) 762-1600",
+    phone: "(301) 555-0100",
     addressLine: "Montgomery County, MD",
-    email: "academy@mcggolf.com",
+    email: "academy@mcg.example.com",
     Logo: McgLogo,
     // Black nav so the green MCG mark reads against it; brand accents pick up MCG green.
     navColor: undefined,
@@ -620,7 +620,7 @@ export const CreditCardPanel = ({ balance, expired, action }: { balance: CreditB
                 <MetaLine icon={Ticket02}>
                     {pack?.availability === "assigned" ? "Issued" : "Purchased"} {balance.purchasedOn}
                 </MetaLine>
-                <MetaLine icon={Calendar}>{balance.expiresOn ? `Expires ${balance.expiresOn}` : "No expiry"}</MetaLine>
+                <MetaLine icon={Calendar}>{balance.expiresOn ? `Expires ${balance.expiresOn} · 1 year after purchase` : "No expiry"}</MetaLine>
                 {pack && (
                     <MetaLine icon={Users01}>{pack.transferable ? "Transferable" : "Non-transferable"}</MetaLine>
                 )}
@@ -960,7 +960,7 @@ export const InstructionShell = ({ children }: { children: ReactNode }) => {
 
     return (
         <div className="flex min-h-dvh flex-col bg-secondary" style={clubBrandStyle(MCG_GREEN)}>
-            <TopNav active="Instruction" club={MCG_CLUB} accountLabel="Justin G." items={NAV_ITEMS_WITH_INSTRUCTION} />
+            <TopNav active="Instruction" club={MCG_CLUB} accountLabel="Morgan H." items={NAV_ITEMS_WITH_INSTRUCTION} />
             <main className="flex-1">{children}</main>
             <SiteFooter club={MCG_CLUB} />
         </div>

@@ -1,15 +1,15 @@
-import { ACADEMY_ROSTER } from "@/components/mcg-3/academy-roster";
-import { InstructorProfileScreen } from "@/components/mcg-3/academy/instructor-profile";
+import { ACADEMY_ROSTER } from "@/components/mcg-3/instruction/data";
+import { InstructorProfilePage } from "@/components/mcg-3/instruction/pro/instructor-profile-page";
+import { Routed } from "../../routed";
 
-/**
- * `/instruction/pro/[id]` — the alternative, product-page-shaped instructor profile.
- *
- * A second route on purpose: `/instruction/instructors/[id]` keeps rendering the simpler
- * layout, so the two can be opened side by side and compared.
- */
+/** An instructor's profile. `/instruction/pro/[id]` and `/instruction/instructors/[id]` render the same page. */
 export const generateStaticParams = () => ACADEMY_ROSTER.map((instructor) => ({ id: instructor.id }));
 
-export default async function InstructorProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    return <InstructorProfileScreen instructorId={id} />;
+    return (
+        <Routed>
+            <InstructorProfilePage id={id} />
+        </Routed>
+    );
 }

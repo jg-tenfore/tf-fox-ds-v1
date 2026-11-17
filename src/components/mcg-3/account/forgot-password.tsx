@@ -46,7 +46,7 @@ export const ForgotPasswordScreen = ({ sentOverride, emailOverride }: { sentOver
 
                         <p className="text-sm text-tertiary">
                             Still nothing after a few minutes? Check your spam folder, or call the golf office on{" "}
-                            <span className="font-semibold text-secondary">(301) 762-1600</span>.
+                            <span className="font-semibold text-secondary">(301) 555-0100</span>.
                         </p>
 
                         <PrototypeHint>This is a prototype — no email is sent. Head back to sign in and use any details to continue.</PrototypeHint>

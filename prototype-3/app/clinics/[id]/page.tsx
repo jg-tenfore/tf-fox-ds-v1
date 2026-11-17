@@ -1,10 +1,15 @@
-import { ClinicDetailScreen } from "@/components/mcg-3/events/clinic-detail";
-import { MCG_CLINICS } from "@/components/mcg-3/events-catalog";
+import { MCG_CLINICS } from "@/components/mcg-3/instruction/data";
+import { ServicePage } from "@/components/mcg-3/instruction/hub/service-page";
+import { Routed } from "../../instruction/routed";
 
-/** `output: "export"` needs every clinic page enumerated at build time. */
+/** Old clinic URLs keep working: they render the clinic's service page. */
 export const generateStaticParams = () => MCG_CLINICS.map((clinic) => ({ id: clinic.id }));
 
-export default async function ClinicPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    return <ClinicDetailScreen clinicId={id} />;
+    return (
+        <Routed>
+            <ServicePage id={id} />
+        </Routed>
+    );
 }

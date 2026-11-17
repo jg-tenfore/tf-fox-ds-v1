@@ -395,7 +395,7 @@ export const ActivityRow = ({ item, showStatus = true }: { item: ActivityItem; s
                 <Button
                     size="sm"
                     color="secondary"
-                    href={reviewHref({ ...item.review, courseSlug: item.courseSlug, dateLabel: item.dateLabel })}
+                    href={reviewHref({ ...item.review, courseSlug: item.courseSlug, dateLabel: item.isoDate })}
                     className="shrink-0"
                 >
                     Leave a review

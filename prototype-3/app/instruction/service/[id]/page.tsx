@@ -1,10 +1,15 @@
-import { PRIVATE_SERVICES } from "@/components/instruction-3/instruction-catalog";
-import { ServiceScreen } from "@/components/mcg-3/instruction/service-screen";
+import { serviceRouteIds } from "@/components/mcg-3/instruction/hub/service-ids";
+import { ServicePage } from "@/components/mcg-3/instruction/hub/service-page";
+import { Routed } from "../../routed";
 
-/** `/instruction/service/[id]` — choose an instructor (or any) for a private lesson. */
-export const generateStaticParams = () => PRIVATE_SERVICES.map((service) => ({ id: service.id }));
+/** `/instruction/service/[id]` — a private lesson, an Academy program or a county clinic. */
+export const generateStaticParams = () => serviceRouteIds().map((id) => ({ id }));
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    return <ServiceScreen serviceId={id} />;
+    return (
+        <Routed>
+            <ServicePage id={id} />
+        </Routed>
+    );
 }

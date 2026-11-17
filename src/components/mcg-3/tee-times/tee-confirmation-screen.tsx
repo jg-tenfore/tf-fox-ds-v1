@@ -36,9 +36,9 @@ const DEMO_RECEIPT: TeeReceipt = {
     transport: "riding",
     resident: true,
     cardLast4: "4242",
-    email: "hello@girardjustin.com",
+    email: "morgan.hale@example.com",
     lines: [
-        { label: "Justin Girard", detail: "Adult · County resident · 18 holes", amount: greenFee({ slug: "falls-road", holes: 18, weekend: false, twilight: false, resident: true }) },
+        { label: "Morgan Hale", detail: "Adult · County resident · 18 holes", amount: greenFee({ slug: "falls-road", holes: 18, weekend: false, twilight: false, resident: true }) },
         {
             label: "Dana Whitfield",
             detail: "Adult · County resident · 18 holes",
@@ -181,7 +181,7 @@ export const TeeConfirmationScreen = ({ receipt: given }: TeeConfirmationScreenP
                     <SectionTitle sub={course.blurb}>Before you tee off at {course.name}</SectionTitle>
                     <ul className="flex flex-col gap-2 rounded-2xl bg-primary p-6 text-sm text-tertiary ring-1 ring-secondary ring-inset">
                         <li>Check in at the pro shop 20 minutes before {receipt.timeLabel}. Resident, senior and junior rates are verified there.</li>
-                        <li>Cancel or change free up to 24 hours before your time, in your MCG account or by calling (301) 762-1600.</li>
+                        <li>Cancel or change free up to 24 hours before your time, in your MCG account or by calling (301) 555-0100.</li>
                         <li>Soft spikes only, and collared shirts on the course — the county keeps the dress code light but it is a dress code.</li>
                         <li>Rain check policy is system-wide: play fewer than nine and the round comes back to your account as a credit at any MCG course.</li>
                     </ul>

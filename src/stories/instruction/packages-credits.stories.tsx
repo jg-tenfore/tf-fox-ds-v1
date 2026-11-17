@@ -1,148 +1,79 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { LessonPackagesFlow } from "@/components/instruction/lesson-packages-flow";
+import { bookHref, creditsHref, packagesHref } from "@/components/mcg-3/instruction/data";
+import { p3Story } from "@/stories/mcg-3/p3-story-kit";
 
 /**
  * "Instruction / Packages & Credits" — Flow B of the MCG Academy build.
  *
- * The part MCG called the most complex piece of the whole thing: money taken today for
- * lessons owed later, tracked per instructor because rates are set per instructor.
+ * These stories now show **Prototype 3's updated Packages & Credits (ported from the Crane MCG
+ * prototype)**, each opened at the URL for that state. The story ids are the ones Flow B always
+ * had, so links from Linear still land on the matching state. (The original Flow B components
+ * still power Prototype 1's app; only these stories moved.)
  *
- * All three candidate models are built. Model A (stories 1–7) is the credit book MCG
- * runs today — a balance created on purchase and relieved lesson by lesson, which is
- * what makes per-instructor liability reportable. Model B is the volume discount raised
- * on the call: no pack, no balance, and the fifth lesson discounted once four are
- * taken. Model C is a monthly plan, which keeps the recurring revenue Model B gives up
- * without accruing the liability Model A does.
+ * Model A — the credit book MCG runs today — is the flow: packs per instructor, checkout, credits
+ * in the wallet with an expiry date one year after purchase, redeemed at booking. Model B (the
+ * volume discount) lives on as the loyalty-discount concept in My credits, and Model C (a
+ * monthly plan) as the plans marked Concept.
  */
-const meta: Meta<typeof LessonPackagesFlow> = {
+const meta: Meta = {
     title: "Prototypes/Instruction/Packages & Credits",
     id: "instruction-packages-credits",
-    component: LessonPackagesFlow,
     parameters: { layout: "fullscreen" },
 };
 
 export default meta;
-type Story = StoryObj<typeof LessonPackagesFlow>;
+type Story = StoryObj;
+
+const PACK = "mike-kenny--pack-5";
 
 /* -------------------------- Model A — credit book -------------------------- */
 
-/**
- * Packs shown per instructor, because rates are tied to people and therefore packs are
- * too. Grouped so the fragmentation reads as a choice rather than an accident.
- */
-export const BrowsePackages: Story = {
-    name: "1. Browse Packages",
-    args: { step: "browse" },
-};
+/** Packs shown per instructor, because rates are tied to people and therefore packs are too. */
+export const BrowsePackages: Story = p3Story(packagesHref(), "The packages catalog.", {}, "1. Browse Packages");
 
-/**
- * The pack as a product: how it works, what's included, and what the restrictions are —
- * the three copy blocks from the Sagamore prototype. Expiry and transferability are now
- * fields rather than prose, which turns most of MCG's open policy questions into
- * settings. Only "what if the instructor leaves" is still unanswered.
- */
-export const PackageDetails: Story = {
-    name: "2. Package Details",
-    args: { step: "details", packageId: "mike-kenny--pack-5" },
-};
+/** The pack as a product: what's included, how it works, restrictions, the fine print as fields. */
+export const PackageDetails: Story = p3Story(packagesHref({ pack: PACK }), "Mike Kenny's 5-lesson pack.", {}, "2. Package Details");
 
-/**
- * Package purchase on the Shop Checkout pattern, with the credit's terms restated at
- * the point of payment.
- */
-export const BuyCheckout: Story = {
-    name: "3. Buy — Checkout",
-    args: { step: "checkout", packageId: "mike-kenny--pack-5" },
-};
+/** Package purchase, with the credit's terms restated at the point of payment. */
+export const BuyCheckout: Story = p3Story(packagesHref({ pack: PACK, step: "checkout" }), "Checkout for the pack (signed in as the sample golfer).", {}, "3. Buy — Checkout");
 
-/**
- * Credits issued, expiry stated, and an immediate call to book the first lesson — the
- * moment a pack turns into a scheduled commitment instead of a balance that drifts.
- */
-export const PurchaseConfirmation: Story = {
-    name: "4. Purchase Confirmation",
-    args: { step: "confirmation", packageId: "mike-kenny--pack-5" },
-};
+/** Credits issued, expiry stated, and an immediate call to book the first lesson. */
+export const PurchaseConfirmation: Story = p3Story(packagesHref({ pack: PACK, step: "done" }), "“5 lessons are yours”.", {}, "4. Purchase Confirmation");
 
-/**
- * Credits in the MCG wallet alongside gift cards and punch cards, itemized by
- * instructor with their own expiry. One balance per instructor is also exactly how the
- * Academy reports what it still owes in lessons.
- */
-export const WalletCreditBalance: Story = {
-    name: "5. Wallet — Credit Balance",
-    args: { step: "wallet" },
-};
+/** Credits itemized by instructor, each with its own expiry — also how the Academy reports what it owes in lessons. */
+export const WalletCreditBalance: Story = p3Story(creditsHref(), "My lesson credits.", {}, "5. Wallet — Credit Balance");
 
-/**
- * Picking which credit to spend when a golfer holds packs from two instructors —
- * because a credit is tied to the person who sold it, choosing the balance also
- * chooses who teaches.
- */
-export const RedeemAtBooking: Story = {
-    name: "6. Redeem at Booking",
-    args: { step: "redeem" },
-};
+/** Spending a credit at booking: the credit covers the lesson, the facility fee still goes on the card. */
+export const RedeemAtBooking: Story = p3Story(
+    `${bookHref({ coach: "mike-kenny", service: "private-45", course: "falls-road", date: "2026-10-09", time: "09:00", step: "payment" })}&pay=credit`,
+    "Booking payment with Mike Kenny's credit selected (`pay=credit`).",
+    {},
+    "6. Redeem at Booking",
+);
 
-/**
- * Four of five remaining, with the relief history. The golfer view and the Academy's
- * liability view are the same ledger read from opposite ends.
- */
-export const BalanceAfterRedemption: Story = {
-    name: "7. Balance After Redemption",
-    args: { step: "after" },
-};
+/** Four of five remaining, with the redemption history. */
+export const BalanceAfterRedemption: Story = p3Story(creditsHref({ extra: { demo: "after-booking" } }), "My credits one lesson later (`demo=after-booking`).", {}, "7. Balance After Redemption");
 
 /* ------------------------ Model B — volume discount ------------------------ */
 
-/**
- * The grocery-store mechanic from the call. No balance and nothing owed — a meter
- * showing three of four lessons taken and what the next one unlocks.
- */
-export const ModelBDiscountProgress: Story = {
-    name: "Model B — Discount Progress",
-    args: { step: "volume-progress" },
-};
+/** Model B survives as the loyalty-discount concept shown in My credits (no balance, nothing owed). */
+export const ModelBDiscountProgress: Story = p3Story(creditsHref(), "My credits, where the loyalty-discount concept (Model B) sits beside the balances.", {}, "Model B — Discount Progress");
 
 /**
- * The payoff: the fifth lesson at half price, applied automatically at checkout with
- * nothing to redeem and no liability behind it.
+ * P3 has no separate "discount earned" state; the closest is the same concept in My credits after
+ * a lesson has been taken.
  */
-export const ModelBDiscountEarned: Story = {
-    name: "Model B — Discount Earned",
-    args: { step: "volume-earned" },
-};
+export const ModelBDiscountEarned: Story = p3Story(creditsHref({ extra: { demo: "after-booking" } }), "My credits after a booking, with the loyalty-discount concept.", {}, "Model B — Discount Earned");
 
 /* -------------------------- Model C — subscription -------------------------- */
 
-/**
- * The third model, lifted from the Sagamore prototype's resource-package step: a
- * monthly plan with a start date, auto-renew, and a renewal notice. Nothing is prepaid
- * beyond the current cycle, so no liability accrues — but unlike a pure discount the
- * revenue and the commitment are both predictable.
- */
-export const ModelCMonthlyPlan: Story = {
-    name: "Model C — Monthly Plan",
-    args: { step: "subscription", subscriptionId: "mike-kenny--sub-2" },
-};
+/** A monthly plan: start date, auto-renew, renewal notice. Nothing prepaid beyond the current cycle. */
+export const ModelCMonthlyPlan: Story = p3Story(packagesHref({ pack: "mike-kenny--sub-2" }), "Mike Kenny's 2-lessons-a-month plan (Concept).", {}, "Model C — Monthly Plan");
 
 /* -------------------------------- edge states ------------------------------ */
 
-/**
- * Credits imported from the old Thrive system: visible to the golfer holding them,
- * absent from the catalog, no buy button. The balances that need somewhere to live on
- * day one of a migration.
- */
-export const AssignedPackage: Story = {
-    name: "Assigned Package",
-    args: { step: "assigned" },
-};
+/** Credits imported from Thrive: visible to the golfer holding them, never for sale. */
+export const AssignedPackage: Story = p3Story(packagesHref({ pack: "doug-hamilton--thrive-import" }), "Doug Hamilton's Thrive import.", {}, "Assigned Package");
 
-/**
- * A pack that's been used up and one that expired with two lessons still on it — the
- * two states the Academy actually fields phone calls about.
- */
-export const ExpiredZeroBalance: Story = {
-    name: "Expired / Zero Balance",
-    args: { step: "expired" },
-};
+/** A used-up pack and one that expired with lessons still on it — the two states the Academy fields calls about. */
+export const ExpiredZeroBalance: Story = p3Story(creditsHref({ extra: { demo: "spent-expired" } }), "My credits with a spent and an expired balance.", {}, "Expired / Zero Balance");

@@ -267,7 +267,7 @@ export const ShopScreen = ({ initialCategory = "all", initialQuery = "" }: ShopS
                         <Tag01 className="size-8 text-fg-quaternary" aria-hidden="true" />
                         <h3 className="text-lg font-semibold text-primary">Nothing matches that</h3>
                         <p className="max-w-md text-sm text-tertiary">
-                            Try a wider price range, or call the shop at Needwood on (301) 762-1600 — if it's a special order we can usually get it in a week.
+                            Try a wider price range, or call the shop at Needwood on (301) 555-0100 — if it's a special order we can usually get it in a week.
                         </p>
                         <Button color="secondary" size="md" className="mt-2" onClick={clearAll}>
                             Clear filters
