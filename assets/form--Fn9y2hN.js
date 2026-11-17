@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";import{d as t}from"./iframe-D3Wtnow_.js";import{Vt as n,t as r}from"./exports-paK4cRST.js";var i,a,o=e((()=>{i=t(),r(),a=e=>(0,i.jsx)(n,{...e}),a.displayName=`Form`,a.__docgenInfo={description:``,methods:[],displayName:`Form`}}));export{o as n,a as t};

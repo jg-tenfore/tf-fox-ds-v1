@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/SAGAMORE-SPRING-19-BIyOYs2T.jpg?ignore`})),r;e((()=>{n(),r={src:t,height:700,width:700,blurDataURL:t}}))();export{r as default};

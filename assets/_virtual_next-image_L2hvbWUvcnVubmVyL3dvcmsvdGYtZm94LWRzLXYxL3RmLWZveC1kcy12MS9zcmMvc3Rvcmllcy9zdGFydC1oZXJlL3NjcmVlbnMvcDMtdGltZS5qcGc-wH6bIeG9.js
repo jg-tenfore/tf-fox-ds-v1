@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/p3-time-BQYJcfvs.jpg?ignore`})),r,i=e((()=>{n(),r={src:t,height:750,width:1200,blurDataURL:t}}));export{i as n,r as t};
