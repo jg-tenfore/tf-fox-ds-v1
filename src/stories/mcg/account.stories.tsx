@@ -27,7 +27,8 @@ import { DEMO_USER } from "@/components/mcg/session";
  * screen's own section here, so a story and its route look alike.
  */
 const meta: Meta = {
-    title: "MCG Prototype/Account",
+    title: "Prototypes/MCG Prototype 1/Account",
+    id: "mcg-prototype-account",
     parameters: { layout: "fullscreen" },
 };
 

@@ -67,7 +67,8 @@ import { useState } from "react";
  * and the exit guard.
  */
 const meta: Meta = {
-    title: "Instruction/Elements",
+    title: "Prototypes/Instruction/Elements",
+    id: "instruction-elements",
     parameters: { layout: "fullscreen" },
 };
 

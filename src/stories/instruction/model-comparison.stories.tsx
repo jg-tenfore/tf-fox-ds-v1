@@ -16,7 +16,8 @@ import { MicroLabel, SectionTitle } from "@/components/instruction/instruction-u
  * considered on the original call.
  */
 const meta: Meta = {
-    title: "Instruction/*Model Comparison*",
+    title: "Prototypes/Instruction/*Model Comparison*",
+    id: "instruction-model-comparison",
     parameters: { layout: "fullscreen" },
 };
 

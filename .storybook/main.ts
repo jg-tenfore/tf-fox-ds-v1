@@ -15,6 +15,9 @@ const config: StorybookConfig = {
   "framework": "@storybook/nextjs-vite",
   "staticDirs": [
     "../public",
+    // legacy-redirects.js (sends links to moved docs pages to their new id, loaded by
+    // manager-head.html and preview-head.html) and tf-logo.svg (the sidebar brand).
+    "./static",
     // Serve Sagamore brand imagery at a stable URL (sagamore-images/...) in both
     // dev and static builds, independent of Vite asset resolution.
     { "from": "../images/sagamore", "to": "/sagamore-images" },
@@ -41,6 +44,19 @@ const config: StorybookConfig = {
     if (configType === "PRODUCTION") {
       viteConfig.base = "/tf-fox-ds-v1/";
     }
+    // The Next.js framework copies next.config.mjs `env` into the stories, which sets
+    // NEXT_PUBLIC_ASSET_BASE to "/" and makes `asset()` build root-absolute URLs
+    // (/mcg-images/...). Those break under the /tf-fox-ds-v1/ base on GitHub Pages.
+    // Empty keeps them relative to iframe.html, which works at any base. It has to be a
+    // post plugin: the framework sets `define` in its own config hook, after viteFinal.
+    viteConfig.plugins = [
+      ...(viteConfig.plugins ?? []),
+      {
+        name: "fox-relative-asset-base",
+        enforce: "post",
+        config: () => ({ define: { "process.env.NEXT_PUBLIC_ASSET_BASE": JSON.stringify("") } }),
+      },
+    ];
     return viteConfig;
   },
 };

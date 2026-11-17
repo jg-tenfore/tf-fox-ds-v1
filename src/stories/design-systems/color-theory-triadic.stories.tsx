@@ -5,7 +5,8 @@ import { comboGuideConfig } from "./combo-style-guide";
 
 /** "Design Systems / Color Theory / Triadic" — every chromatic base hue in a triadic harmony. */
 const meta: Meta = {
-    title: "Design Systems/Color Theory/Triadic",
+    title: "Research/Color Theory/Triadic",
+    id: "design-systems-color-theory-triadic",
     parameters: { layout: "fullscreen" },
 };
 

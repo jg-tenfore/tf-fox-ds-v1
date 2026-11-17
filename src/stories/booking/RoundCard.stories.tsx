@@ -10,7 +10,8 @@ import { sampleBookings, type Booking } from "@/components/booking/sagamore-data
  * played, red if scrubbed), the party total, and a trailing slot for actions.
  */
 const meta = {
-    title: "Booking/Molecules/Round Card",
+    title: "Design System/Components/Booking/Round Card",
+    id: "booking-molecules-round-card",
     tags: ["!dev"],
     component: RoundCard,
     parameters: { layout: "padded" },

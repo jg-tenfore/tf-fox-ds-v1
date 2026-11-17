@@ -18,7 +18,8 @@ import { CalendarPanel, DEFAULT_DATE, fmtNice } from "./tee-search-popovers";
  * must book two bays for the same window.
  */
 const meta: Meta = {
-    title: "Global Nav/Tee Times/FloGolf Indoor",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Tee Times/FloGolf Indoor",
+    id: "global-nav-tee-times-flogolf-indoor",
     parameters: { layout: "fullscreen" },
 };
 

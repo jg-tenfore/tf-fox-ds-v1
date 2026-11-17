@@ -5,7 +5,8 @@ import { comboGuideConfig } from "./combo-style-guide";
 
 /** "Design Systems / Color Theory / Complementary" — every chromatic base hue in a complementary harmony. */
 const meta: Meta = {
-    title: "Design Systems/Color Theory/Complementary",
+    title: "Research/Color Theory/Complementary",
+    id: "design-systems-color-theory-complementary",
     parameters: { layout: "fullscreen" },
 };
 

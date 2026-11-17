@@ -126,7 +126,8 @@ const MyRoundsPage = ({ bookings }: MyRoundsPageProps) => {
 };
 
 const meta = {
-    title: "Booking/Pages/My Rounds",
+    title: "Archive/Early booking pages (June)/My Rounds",
+    id: "booking-pages-my-rounds",
     tags: ["!dev"],
     component: MyRoundsPage,
     parameters: { layout: "fullscreen" },

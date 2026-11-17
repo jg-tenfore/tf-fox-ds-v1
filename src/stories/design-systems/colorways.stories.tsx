@@ -11,7 +11,8 @@ import { ratioVsWhite } from "./contrast";
  * token, so what you see maps to tokens already in the design system.
  */
 const meta: Meta = {
-    title: "Design Systems/Colorways",
+    title: "Design System/Club Themes/Colorways",
+    id: "design-systems-colorways",
     parameters: { layout: "fullscreen" },
 };
 

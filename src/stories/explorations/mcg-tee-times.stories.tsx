@@ -17,7 +17,8 @@ import { clubBrandStyle, DropdownCell, MenuRow, SiteFooter, TopNav, type Club } 
  * show as disabled ("Full"). Times run 6:00 AM – 7:00 PM.
  */
 const meta = {
-    title: "Global Nav/Tee Times/MCG Courses",
+    title: "Archive/MCG Courses tee sheet (July)",
+    id: "global-nav-tee-times-mcg-courses",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

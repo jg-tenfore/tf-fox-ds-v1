@@ -10,7 +10,8 @@ import { LessonReviewScreen } from "@/components/mcg/academy/lesson-review-scree
  * are real; the review states attached to them are sample settings.
  */
 const meta: Meta<typeof LessonReviewScreen> = {
-    title: "MCG Prototype/Lesson Review",
+    title: "Prototypes/MCG Prototype 1/Lesson Review",
+    id: "mcg-prototype-lesson-review",
     component: LessonReviewScreen,
     parameters: { layout: "fullscreen" },
 };

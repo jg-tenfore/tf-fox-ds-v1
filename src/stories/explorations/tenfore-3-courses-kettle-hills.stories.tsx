@@ -7,7 +7,8 @@ import { KETTLE_HILLS_CLUB, KETTLE_HILLS_NINES, TeeTimesScreen } from "./tenfore
  * selector-bar GUI, different club identity + course list.
  */
 const meta: Meta = {
-    title: "Global Nav/Tee Times/3 Courses (Kettle Hills)",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Tee Times/3 Courses (Kettle Hills)",
+    id: "global-nav-tee-times-3-courses-kettle-hills",
     parameters: { layout: "fullscreen" },
 };
 

@@ -12,7 +12,8 @@ import { SquareBookingFlow } from "@/components/mcg-3/instruction/square-booking
  * Extras step, and an account required at checkout.
  */
 const meta: Meta = {
-    title: "MCG Prototype 3/Instruction",
+    title: "Prototypes/MCG Prototype 3/Instruction",
+    id: "mcg-prototype-3-instruction",
     parameters: { layout: "fullscreen" },
 };
 

@@ -16,7 +16,8 @@ import { InstructorProfileScreen } from "@/components/mcg/academy/instructor-pro
  * about any of them.
  */
 const meta: Meta = {
-    title: "MCG Prototype/Instructor Profile",
+    title: "Prototypes/MCG Prototype 1/Instructor Profile",
+    id: "mcg-prototype-instructor-profile",
     parameters: { layout: "fullscreen" },
 };
 

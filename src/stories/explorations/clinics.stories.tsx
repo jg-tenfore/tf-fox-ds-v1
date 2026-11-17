@@ -12,7 +12,7 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * Clinics are colored by focus area; list rows surface the instructor, skill level,
  * and spots. Re-skinned with design-system tokens.
  */
-const meta: Meta = { title: "Global Nav/Clinics", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Clinics", id: "global-nav-clinics", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

@@ -16,7 +16,8 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * description, and a reviews block. Re-skinned with the design-system tokens.
  */
 const meta: Meta = {
-    title: "Global Nav/Pro Shop/Product",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Pro Shop/Product",
+    id: "global-nav-pro-shop-product",
     parameters: { layout: "fullscreen" },
 };
 

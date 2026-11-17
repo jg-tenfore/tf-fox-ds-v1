@@ -13,7 +13,8 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * grow). Modeled on a classic list/calendar layout, re-skinned with tokens.
  */
 const meta: Meta = {
-    title: "Global Nav/Calendar",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Calendar",
+    id: "global-nav-calendar",
     parameters: { layout: "fullscreen" },
 };
 

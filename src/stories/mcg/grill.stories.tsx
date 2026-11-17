@@ -34,7 +34,8 @@ import { GrillScreen } from "@/components/mcg/grill/grill-screen";
  * Numbered stories are the order-ahead in sequence. Named stories are the branches.
  */
 const meta: Meta<typeof GrillScreen> = {
-    title: "MCG Prototype/Grill",
+    title: "Prototypes/MCG Prototype 1/Grill",
+    id: "mcg-prototype-grill",
     component: GrillScreen,
     // `GrillScreen` calls `useRouter` to hand off to the confirmation, which needs
     // Storybook's App Router mock switched on.

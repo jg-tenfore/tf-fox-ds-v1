@@ -32,7 +32,8 @@ const heroSrc = photos[0]?.src ?? "";
 const gallery = photos.slice(1, 6);
 
 const meta = {
-    title: "Explorations/SevenRooms",
+    title: "Research/Explorations/SevenRooms",
+    id: "explorations-sevenrooms",
     tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;

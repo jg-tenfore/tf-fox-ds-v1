@@ -9,7 +9,8 @@ import { BookingSummary } from "@/components/booking/booking-summary";
  * adds up the rest.
  */
 const meta = {
-    title: "Booking/Molecules/Booking Summary",
+    title: "Design System/Components/Booking/Booking Summary",
+    id: "booking-molecules-booking-summary",
     tags: ["!dev"],
     component: BookingSummary,
     parameters: { layout: "centered" },

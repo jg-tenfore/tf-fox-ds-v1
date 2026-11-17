@@ -16,7 +16,8 @@ type Category = "all" | StoreCategory | "cards";
  * functional over the real golf-product catalog.
  */
 const meta: Meta = {
-    title: "Global Nav/Pro Shop/Shop All",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Pro Shop/Shop All",
+    id: "global-nav-pro-shop-shop-all",
     parameters: { layout: "fullscreen" },
 };
 

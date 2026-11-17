@@ -9,7 +9,8 @@ import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
  * reuse across stories and screens via `sagamoreAssets` / `SagamoreLogo`.
  */
 const meta = {
-    title: "Foundations/Golf Courses/Sagamore",
+    title: "Design System/Styles/Golf Courses/Sagamore",
+    id: "foundations-golf-courses-sagamore",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

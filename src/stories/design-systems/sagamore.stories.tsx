@@ -5,7 +5,8 @@ import { ClubStyleGuide, DEFAULT_DATE, Eg, fmtNice } from "./club-style-guide";
 
 /** "Design Systems / Sagamore" — the booking components in the Sagamore black colorway. */
 const meta: Meta = {
-    title: "Design Systems/Sagamore",
+    title: "Design System/Club Themes/Sagamore",
+    id: "design-systems-sagamore",
     parameters: { layout: "fullscreen" },
 };
 

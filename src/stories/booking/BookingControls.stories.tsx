@@ -11,7 +11,8 @@ import type { HoleCount, Ride as RideType, TimeOfDay as TimeOfDayType } from "@/
  * else stays monochrome.
  */
 const meta = {
-    title: "Booking/Molecules/Booking Controls",
+    title: "Design System/Components/Booking/Booking Controls",
+    id: "booking-molecules-booking-controls",
     tags: ["!dev"],
     parameters: { layout: "centered" },
 } satisfies Meta;
