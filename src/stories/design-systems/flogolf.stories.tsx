@@ -5,7 +5,8 @@ import { ClubStyleGuide, DEFAULT_DATE, Eg, fmtNice } from "./club-style-guide";
 
 /** "Design Systems / FloGolf Indoor" — the simulator components in the FloGolf green colorway. */
 const meta: Meta = {
-    title: "Design Systems/FloGolf Indoor",
+    title: "Design System/Club Themes/FloGolf Indoor",
+    id: "design-systems-flogolf-indoor",
     parameters: { layout: "fullscreen" },
 };
 

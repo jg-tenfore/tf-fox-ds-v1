@@ -38,7 +38,8 @@ import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
  * walking vs riding, twilight pricing, last-minute discounts, ratings).
  */
 const meta = {
-    title: "Explorations/GolfNow",
+    title: "Research/Explorations/GolfNow",
+    id: "explorations-golfnow",
     tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;

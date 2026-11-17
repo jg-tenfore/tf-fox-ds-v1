@@ -13,7 +13,8 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * contests, the Rally-for-the-Cure charity series, and leagues/nights).
  */
 const meta: Meta = {
-    title: "Global Nav/Events/Browse Events",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Events/Browse Events",
+    id: "global-nav-events-browse-events",
     parameters: { layout: "fullscreen" },
 };
 

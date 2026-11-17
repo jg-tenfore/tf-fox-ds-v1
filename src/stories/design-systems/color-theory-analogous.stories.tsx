@@ -5,7 +5,8 @@ import { comboGuideConfig } from "./combo-style-guide";
 
 /** "Design Systems / Color Theory / Analogous" — every chromatic base hue in a analogous harmony. */
 const meta: Meta = {
-    title: "Design Systems/Color Theory/Analogous",
+    title: "Research/Color Theory/Analogous",
+    id: "design-systems-color-theory-analogous",
     parameters: { layout: "fullscreen" },
 };
 

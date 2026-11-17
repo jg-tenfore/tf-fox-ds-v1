@@ -5,7 +5,8 @@ import { ClubStyleGuide, DEFAULT_DATE, Eg, fmtNice } from "./club-style-guide";
 
 /** "Design Systems / Kettle Hills" — the booking components in the Kettle Hills blue colorway. */
 const meta: Meta = {
-    title: "Design Systems/Kettle Hills",
+    title: "Design System/Club Themes/Kettle Hills",
+    id: "design-systems-kettle-hills",
     parameters: { layout: "fullscreen" },
 };
 

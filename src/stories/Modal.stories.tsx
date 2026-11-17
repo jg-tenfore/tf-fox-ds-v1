@@ -18,7 +18,8 @@ import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
  * keeps every dialog in calm greyscale.
  */
 const meta = {
-    title: "Components/Actions/Modal",
+    title: "Design System/Components/Actions/Modal",
+    id: "components-actions-modal",
     component: Dialog,
     parameters: { layout: "centered" },
 } satisfies Meta<typeof Dialog>;

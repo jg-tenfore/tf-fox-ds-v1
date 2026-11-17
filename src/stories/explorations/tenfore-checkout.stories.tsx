@@ -38,7 +38,8 @@ const CheckoutHeader = () => (
  * stories show the flow pre-populated for different group sizes.
  */
 const meta: Meta = {
-    title: "Tee Time Checkout/Tee Time Details",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Tee Time Checkout/Tee Time Details",
+    id: "tee-time-checkout-tee-time-details",
     parameters: { layout: "fullscreen" },
 };
 

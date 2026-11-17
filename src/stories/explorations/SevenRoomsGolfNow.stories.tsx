@@ -60,7 +60,8 @@ const courseRating = 4.3;
 const reviewCount = 187;
 
 const meta = {
-    title: "Explorations/SevenRooms + GolfNow",
+    title: "Research/Explorations/SevenRooms + GolfNow",
+    id: "explorations-sevenrooms-golfnow",
     tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;

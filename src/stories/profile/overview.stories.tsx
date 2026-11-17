@@ -11,7 +11,8 @@ import { MEMBER, ProfileShell } from "./profile-shell";
  * introduces the connect concept early to nudge members to play together.
  */
 const meta: Meta = {
-    title: "Profile ∕ Account/Overview",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Profile ∕ Account/Overview",
+    id: "profile-∕-account-overview",
     parameters: { layout: "fullscreen" },
 };
 

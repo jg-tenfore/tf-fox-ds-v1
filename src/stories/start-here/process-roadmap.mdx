@@ -1,0 +1,38 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { AlsoOpen, ComingUp, OpenDecisions, ProcessHero, ProcessSteps, ShippedList } from "./process-sections";
+import { Page, Section } from "./ui";
+
+<Meta title="Start Here/Process & roadmap" />
+
+<Page>
+
+<ProcessHero />
+
+<Section title="How work flows" intro="Five steps, the same every round.">
+    <ProcessSteps />
+</Section>
+
+<Section
+    title="Coming up: Crane Web takes over"
+    intro="On the Nov 11 call, the team decided that Crane Web replaces Fox as TenFore's live golfer web app: the web shop and booking site. Fox stays as the home of the MCG prototypes, and the ideas Crane Web builds from."
+>
+    <ComingUp />
+</Section>
+
+<Section
+    id="open-decisions"
+    title="Open decisions: the lesson-software replacement"
+    intro="Eight questions for Weston, from Linear project P-WJ-118 on the WJ team. Justin proposed answers on Nov 3; the answer to D-2 came from the backend team on Nov 13. All eight wait for Weston to confirm."
+>
+    <OpenDecisions />
+</Section>
+
+<Section title="Also open">
+    <AlsoOpen />
+</Section>
+
+<Section title="What has shipped" intro="Every change merged to main, newest first, with its pull request number. Underlined lines open what they shipped.">
+    <ShippedList />
+</Section>
+
+</Page>

@@ -14,7 +14,8 @@ import { LessonBookScreen } from "@/components/mcg/academy/book-screen";
  * pass the selection in directly — the same component the route renders.
  */
 const meta: Meta<typeof LessonBookScreen> = {
-    title: "MCG Prototype/Lesson Booking",
+    title: "Prototypes/MCG Prototype 1/Lesson Booking",
+    id: "mcg-prototype-lesson-booking",
     component: LessonBookScreen,
     parameters: { layout: "fullscreen" },
 };

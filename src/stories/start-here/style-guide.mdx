@@ -1,0 +1,32 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { BadgeRule, BuildRules, ButtonRule, ColorwayRule, DataRules, StyleHero, TokenRule } from "./style-guide-sections";
+import { Page, Section } from "./ui";
+
+<Meta title="Start Here/Style guide" />
+
+<Page>
+
+<StyleHero />
+
+<Section title="Tokens and type" intro="What every screen is made of.">
+    <TokenRule />
+</Section>
+
+<Section title="Color for each club" intro="The same screens, dressed in each club's color.">
+    <ColorwayRule />
+</Section>
+
+<Section title="Badges and buttons" intro="Read from the Prototype 3 code, where they are used most.">
+    <BadgeRule />
+    <ButtonRule />
+</Section>
+
+<Section title="How the prototypes are built">
+    <BuildRules />
+</Section>
+
+<Section title="Data, images and names">
+    <DataRules />
+</Section>
+
+</Page>

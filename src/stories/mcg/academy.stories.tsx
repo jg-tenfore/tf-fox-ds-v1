@@ -17,7 +17,8 @@ import { AcademyInstructorsScreen } from "@/components/mcg/academy/instructors-s
  * screens, so Storybook and the prototype can't drift.
  */
 const meta: Meta = {
-    title: "MCG Prototype/Academy",
+    title: "Prototypes/MCG Prototype 1/Academy",
+    id: "mcg-prototype-academy",
     parameters: { layout: "fullscreen" },
 };
 

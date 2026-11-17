@@ -10,7 +10,8 @@ import { generateTeeTimes, groupTeeTimes, timeOfDayLabels, type TimeOfDay } from
  * slots fill in Sagamore green; everything else stays calm and monochrome.
  */
 const meta = {
-    title: "Booking/Molecules/Tee Time Slot",
+    title: "Design System/Components/Booking/Tee Time Slot",
+    id: "booking-molecules-tee-time-slot",
     tags: ["!dev"],
     component: TeeTimeSlot,
     parameters: { layout: "centered" },

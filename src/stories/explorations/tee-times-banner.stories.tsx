@@ -10,7 +10,8 @@ import { SAGAMORE_CLUB, SAGAMORE_NINES, TeeTimesScreen } from "./tenfore-chrome"
  * (Sagamore) tee-times screen as an example.
  */
 const meta: Meta = {
-    title: "Global Nav/Tee Times/Dismissible Banner",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Tee Times/Dismissible Banner",
+    id: "global-nav-tee-times-dismissible-banner",
     parameters: { layout: "fullscreen" },
 };
 

@@ -16,7 +16,8 @@ import { SiteFooter } from "./tenfore-chrome";
  * placement). No hold countdown — this is a merchandise cart.
  */
 const meta: Meta = {
-    title: "Shop Checkout/1. Cart",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Shop Checkout/1. Cart",
+    id: "shop-checkout-1-cart",
     parameters: { layout: "fullscreen" },
 };
 

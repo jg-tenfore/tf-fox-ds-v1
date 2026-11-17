@@ -12,7 +12,8 @@ import { KETTLE_HILLS_CLUB } from "./tenfore-chrome";
  * to compare.
  */
 const meta: Meta = {
-    title: "Global Nav/Tee Times/9-Hole Course Label (Exploration)",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Tee Times/9-Hole Course Label (Exploration)",
+    id: "global-nav-tee-times-9-hole-course-label-exploration",
     parameters: { layout: "fullscreen" },
 };
 

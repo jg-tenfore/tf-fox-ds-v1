@@ -167,7 +167,8 @@ const AvailabilityPage = ({ dayType }: AvailabilityPageProps) => {
 };
 
 const meta = {
-    title: "Booking/Pages/Availability",
+    title: "Archive/Early booking pages (June)/Availability",
+    id: "booking-pages-availability",
     tags: ["!dev"],
     component: AvailabilityPage,
     parameters: { layout: "fullscreen" },

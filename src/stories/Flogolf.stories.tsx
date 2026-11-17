@@ -11,7 +11,8 @@ import { FlogolfLogo } from "@/components/foundations/flogolf/flogolf-logo";
  * https://maps.app.goo.gl/XMFfrrW3ut8vtJzT9
  */
 const meta = {
-    title: "Foundations/Golf Courses/FloGolf Lounge",
+    title: "Design System/Styles/Golf Courses/FloGolf Lounge",
+    id: "foundations-golf-courses-flogolf-lounge",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

@@ -1,0 +1,44 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { IndexHero, PrototypeAreas, PrototypeTwo, counts } from "./screen-index-sections";
+import { Callout, Page, Section } from "./ui";
+
+<Meta title="Prototypes/Screen index" />
+
+<Page>
+
+<IndexHero />
+
+<Section
+    title={`MCG Prototype 3 · ${counts.p3} screens`}
+    intro="The newest: MCG's hybrid of Prototypes 1 and 2. Only Instruction and the sample programs have stories; the rest of the site is the same as Prototype 2's."
+>
+    <PrototypeAreas prototype="MCG Prototype 3" />
+</Section>
+
+<Section title="MCG Prototype 2 · no stories" intro="Open it as a site. Every link opens the same page in the app.">
+    <PrototypeTwo />
+</Section>
+
+<Section title={`MCG Prototype 1 · ${counts.p1} screens`} intro="The original county site, area by area, in the order of its top nav.">
+    <PrototypeAreas prototype="MCG Prototype 1" />
+</Section>
+
+<Section
+    title={`Instruction · ${counts.instruction} screens`}
+    intro="Prototype 1's lesson flows: booking by service, packages and credits in three pricing models, and the page that compares them."
+>
+    <PrototypeAreas prototype="Instruction" />
+</Section>
+
+<Section
+    title={`Golfer web · Sagamore & clubs · ${counts.golfer} screens`}
+    intro="Before MCG: the booking, shop, events and account screens for three sample clubs. Crane Web's shop starts from these."
+>
+    <PrototypeAreas prototype="Golfer web · Sagamore & clubs" />
+</Section>
+
+<Callout tone="gray">
+    This list is generated from Storybook's index by <b>scripts/build-screen-index.mjs</b>. Run it again after a prototype story is added, renamed or moved.
+</Callout>
+
+</Page>

@@ -16,7 +16,8 @@ import { LessonBookingFlow } from "@/components/instruction/lesson-booking-flow"
  * Numbered stories are steps in the sequence. Named stories are branches.
  */
 const meta: Meta<typeof LessonBookingFlow> = {
-    title: "Instruction/Book a Lesson",
+    title: "Prototypes/Instruction/Book a Lesson",
+    id: "instruction-book-a-lesson",
     component: LessonBookingFlow,
     parameters: { layout: "fullscreen" },
 };

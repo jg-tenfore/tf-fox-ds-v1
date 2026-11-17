@@ -15,7 +15,8 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * Register). Re-skinned with design-system tokens.
  */
 const meta: Meta = {
-    title: "Global Nav/Events/Event Details",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Events/Event Details",
+    id: "global-nav-events-event-details",
     parameters: { layout: "fullscreen" },
 };
 

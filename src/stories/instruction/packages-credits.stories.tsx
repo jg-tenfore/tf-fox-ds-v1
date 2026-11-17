@@ -15,7 +15,8 @@ import { LessonPackagesFlow } from "@/components/instruction/lesson-packages-flo
  * without accruing the liability Model A does.
  */
 const meta: Meta<typeof LessonPackagesFlow> = {
-    title: "Instruction/Packages & Credits",
+    title: "Prototypes/Instruction/Packages & Credits",
+    id: "instruction-packages-credits",
     component: LessonPackagesFlow,
     parameters: { layout: "fullscreen" },
 };

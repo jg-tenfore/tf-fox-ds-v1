@@ -7,7 +7,8 @@ import { ClinicDetailScreen } from "@/components/mcg-3/events/clinic-detail";
  * doesn't run them today, and each page says so.
  */
 const meta: Meta = {
-    title: "MCG Prototype 3/Programs",
+    title: "Prototypes/MCG Prototype 3/Programs",
+    id: "mcg-prototype-3-programs",
     parameters: { layout: "fullscreen" },
 };
 

@@ -33,7 +33,8 @@ import { PlayerAvatar, SiteFooter } from "./tenfore-chrome";
  * 1 / 2 / 4 Person stories show the receipt for different group sizes.
  */
 const meta: Meta = {
-    title: "Tee Time Checkout/Confirmation - Tee Time",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Tee Time Checkout/Confirmation - Tee Time",
+    id: "tee-time-checkout-confirmation-tee-time",
     parameters: { layout: "fullscreen" },
 };
 

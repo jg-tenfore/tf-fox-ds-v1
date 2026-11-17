@@ -19,7 +19,7 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * left, purchase details on the right. Reuses the Wallet building blocks (CreditCard
  * gift preview, punch-card visual, faux QR). Re-skinned with design tokens.
  */
-const meta: Meta = { title: "Global Nav/Pro Shop/Cards", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Pro Shop/Cards", id: "global-nav-pro-shop-cards", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

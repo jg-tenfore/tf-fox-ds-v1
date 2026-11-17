@@ -11,7 +11,8 @@ import { KettleHillsLogo } from "@/components/foundations/kettle-hills/kettle-hi
  * https://kettlehills.com/ · https://maps.app.goo.gl/vo74MPfZGDgksoeC8
  */
 const meta = {
-    title: "Foundations/Golf Courses/Kettle Hills",
+    title: "Design System/Styles/Golf Courses/Kettle Hills",
+    id: "foundations-golf-courses-kettle-hills",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

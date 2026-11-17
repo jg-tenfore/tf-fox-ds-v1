@@ -177,7 +177,8 @@ const CheckoutPage = ({ dateLabel, timeLabel, holes, ride, dayType, twilight, pl
  * and chosen add-ons on the right.
  */
 const meta = {
-    title: "Booking/Pages/Checkout",
+    title: "Archive/Early booking pages (June)/Checkout",
+    id: "booking-pages-checkout",
     tags: ["!dev"],
     component: CheckoutPage,
     parameters: { layout: "fullscreen" },

@@ -53,7 +53,8 @@ const AddPaymentModal = ({ onClose }: { onClose: () => void }) => {
  * membership, and documents follow beneath. Re-skinned with design-system tokens.
  */
 const meta: Meta = {
-    title: "Profile ∕ Account/My Account",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Profile ∕ Account/My Account",
+    id: "profile-∕-account-my-account",
     parameters: { layout: "fullscreen" },
 };
 

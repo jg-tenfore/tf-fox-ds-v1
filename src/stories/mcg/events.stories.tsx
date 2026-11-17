@@ -18,7 +18,8 @@ import { EventsBrowseScreen } from "@/components/mcg/events/events-browse";
  * right behaviour for a story.
  */
 const meta: Meta = {
-    title: "MCG Prototype/Events & Clinics",
+    title: "Prototypes/MCG Prototype 1/Events & Clinics",
+    id: "mcg-prototype-events-clinics",
     parameters: { layout: "fullscreen" },
 };
 

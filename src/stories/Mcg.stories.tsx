@@ -12,7 +12,8 @@ import { mcgCourses, mcgLogo, mcgPhotography } from "@/components/foundations/mc
  * https://www.mcggolf.com/courses/all-mcg-golf-courses
  */
 const meta = {
-    title: "Foundations/Golf Courses/MCG",
+    title: "Design System/Styles/Golf Courses/MCG",
+    id: "foundations-golf-courses-mcg",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

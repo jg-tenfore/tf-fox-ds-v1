@@ -28,7 +28,8 @@ import { cx } from "@/utils/cx";
  * period. Deals are shown via a discounted price, not badges. Sagamore Spring data.
  */
 const meta = {
-    title: "Explorations/Alt Concepts June",
+    title: "Research/Explorations/Alt Concepts June",
+    id: "explorations-alt-concepts-june",
     parameters: { layout: "fullscreen" },
 } satisfies Meta;
 

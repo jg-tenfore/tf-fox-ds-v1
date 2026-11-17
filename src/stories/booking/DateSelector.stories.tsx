@@ -8,7 +8,8 @@ import { DateSelector } from "@/components/booking/date-selector";
  * Sagamore green; today wears a small marker so you never lose your place.
  */
 const meta = {
-    title: "Booking/Molecules/Date Selector",
+    title: "Design System/Components/Booking/Date Selector",
+    id: "booking-molecules-date-selector",
     tags: ["!dev"],
     component: DateSelector,
     parameters: { layout: "centered" },

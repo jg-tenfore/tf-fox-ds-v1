@@ -1,0 +1,53 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { CompareBooking, ComparePrototypes, Feedback, Hosted, Links, ReviewHero, ReviewSteps, SamePage, SampleData, SidebarGuide } from "./review-sections";
+import { Callout, Page, Section } from "./ui";
+
+<Meta title="Start Here/How to review" />
+
+<Page>
+
+<ReviewHero />
+
+<Section title="Four steps" intro="The same every round.">
+    <ReviewSteps />
+</Section>
+
+<Section
+    title="How the sidebar is organized"
+    intro="Six folders, in this order. Product reviews start in Reviews; developers mostly live in Design System and Prototypes."
+>
+    <SidebarGuide />
+</Section>
+
+<Section title="Every screen has a stable link">
+    <Links />
+</Section>
+
+<Section
+    title="Compare Prototypes 1, 2 and 3"
+    intro="The three prototypes are separate copies of the same county site. Open the same page in each to compare. Only Instruction and Clinics differ much."
+>
+    <ComparePrototypes />
+    <div className="sb-unstyled mt-4">
+        <SamePage />
+    </div>
+    <Callout>
+        The biggest difference is how a lesson booking starts. Prototype 1 starts from an instructor; Prototype 3 starts from a search. Both land on the same
+        time board:
+    </Callout>
+    <CompareBooking />
+</Section>
+
+<Section title="Where feedback goes">
+    <Feedback />
+</Section>
+
+<Section title="What “Sample data” means">
+    <SampleData />
+</Section>
+
+<Section title="Where it lives">
+    <Hosted />
+</Section>
+
+</Page>

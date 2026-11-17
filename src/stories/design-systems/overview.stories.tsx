@@ -10,7 +10,8 @@ import { WHEEL } from "./color-harmony";
  * mechanism, and the accessibility guarantees.
  */
 const meta: Meta = {
-    title: "Design Systems/Overview",
+    title: "Design System/Club Themes/Overview",
+    id: "design-systems-overview",
     parameters: { layout: "fullscreen" },
 };
 

@@ -19,7 +19,8 @@ import { ShopScreen } from "@/components/mcg/shop/shop-screen";
  * pages never pass it.
  */
 const meta: Meta = {
-    title: "MCG Prototype/Shop",
+    title: "Prototypes/MCG Prototype 1/Shop",
+    id: "mcg-prototype-shop",
     parameters: { layout: "fullscreen" },
 };
 

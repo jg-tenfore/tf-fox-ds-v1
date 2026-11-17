@@ -14,7 +14,8 @@ import { TeeSheetScreen } from "@/components/mcg/tee-times/tee-sheet-screen";
  * on their own.
  */
 const meta: Meta = {
-    title: "MCG Prototype/Tee Times",
+    title: "Prototypes/MCG Prototype 1/Tee Times",
+    id: "mcg-prototype-tee-times",
     parameters: {
         layout: "fullscreen",
         // The screens use next/navigation (useRouter, Link), so they need the App Router mock.

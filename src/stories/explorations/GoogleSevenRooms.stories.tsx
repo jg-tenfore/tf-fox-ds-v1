@@ -45,7 +45,8 @@ const heroSrc = photos[0]?.src ?? "";
 const gallery = photos.slice(1, 4);
 
 const meta = {
-    title: "Explorations/Google + SevenRooms",
+    title: "Research/Explorations/Google + SevenRooms",
+    id: "explorations-google-sevenrooms",
     tags: ["!dev"],
     parameters: { layout: "fullscreen" },
 } satisfies Meta;

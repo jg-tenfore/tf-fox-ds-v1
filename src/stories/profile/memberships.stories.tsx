@@ -15,7 +15,7 @@ import { Segmented } from "./profile-ui";
  * "see details" dialog uses a value-prop grid (icon + heading + description) with
  * its own switcher, plus three account states (non-member / member / expired).
  */
-const meta: Meta = { title: "Profile ∕ Account/Memberships", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Prototypes/Golfer web · Sagamore & clubs/Profile ∕ Account/Memberships", id: "profile-∕-account-memberships", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

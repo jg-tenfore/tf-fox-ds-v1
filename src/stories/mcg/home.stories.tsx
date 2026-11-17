@@ -8,7 +8,8 @@ import { HomePage } from "@/components/mcg/home-page";
  * it in the prototype and vice versa.
  */
 const meta: Meta<typeof HomePage> = {
-    title: "MCG Prototype/Home",
+    title: "Prototypes/MCG Prototype 1/Home",
+    id: "mcg-prototype-home",
     component: HomePage,
     parameters: { layout: "fullscreen" },
 };

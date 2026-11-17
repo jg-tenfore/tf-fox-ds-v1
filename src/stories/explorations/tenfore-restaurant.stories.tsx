@@ -16,7 +16,8 @@ import { StarRating } from "./store-ui";
  * panel offers the next 14 days as a synced day × time grid (days replace bays).
  */
 const meta: Meta = {
-    title: "Global Nav/Restaurant",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Restaurant",
+    id: "global-nav-restaurant",
     parameters: { layout: "fullscreen" },
 };
 

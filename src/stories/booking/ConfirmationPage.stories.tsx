@@ -95,7 +95,8 @@ const ConfirmationPage = ({ dateLabel, timeLabel, holes, players, ride, lineItem
 };
 
 const meta = {
-    title: "Booking/Pages/Confirmation",
+    title: "Archive/Early booking pages (June)/Confirmation",
+    id: "booking-pages-confirmation",
     tags: ["!dev"],
     component: ConfirmationPage,
     parameters: { layout: "fullscreen" },

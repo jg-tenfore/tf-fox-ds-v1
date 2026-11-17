@@ -13,7 +13,7 @@ import { SAGAMORE_CLUB, SiteFooter, TopNav } from "./tenfore-chrome";
  * details page, with clinic-specific sections: instructor bio, what you'll learn,
  * skill level & prerequisites, and what to bring / what's provided.
  */
-const meta: Meta = { title: "Global Nav/Clinics/Clinic Details", parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Clinics/Clinic Details", id: "global-nav-clinics-clinic-details", parameters: { layout: "fullscreen" } };
 export default meta;
 type Story = StoryObj;
 

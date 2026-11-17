@@ -7,7 +7,8 @@ import { SAGAMORE_CLUB, SAGAMORE_NINES, TeeTimesScreen } from "./tenfore-chrome"
  * Course / Date / Players selector bar.
  */
 const meta: Meta = {
-    title: "Global Nav/Tee Times/18 Holes (Sagamore)",
+    title: "Prototypes/Golfer web · Sagamore & clubs/Global Nav/Tee Times/18 Holes (Sagamore)",
+    id: "global-nav-tee-times-18-holes-sagamore",
     parameters: { layout: "fullscreen" },
 };
 
