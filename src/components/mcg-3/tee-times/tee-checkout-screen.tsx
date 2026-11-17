@@ -243,7 +243,7 @@ export const TeeCheckoutScreen = ({ selection: given, resident: initialResident 
             lines,
             total,
             cardLast4: "4242",
-            email: details[0].email || user?.email || "golf@mcggolf.com",
+            email: details[0].email || user?.email || "info@mcg.example.com",
         };
 
         writeReceipt(receipt);
@@ -273,7 +273,7 @@ export const TeeCheckoutScreen = ({ selection: given, resident: initialResident 
                         Back to the tee sheet
                     </Button>
                     <span className="text-sm text-tertiary">
-                        Confirmation and cancellation policy below · <span className="text-secondary">(301) 762-1600</span>
+                        Confirmation and cancellation policy below · <span className="text-secondary">(301) 555-0100</span>
                     </span>
                 </div>
 
@@ -442,7 +442,7 @@ export const TeeCheckoutScreen = ({ selection: given, resident: initialResident 
                             </div>
 
                             <div className="flex flex-col gap-3">
-                                <Input label="Name on card" defaultValue={user ? `${user.first} ${user.last}` : "Justin Girard"} />
+                                <Input label="Name on card" defaultValue={user ? `${user.first} ${user.last}` : "Morgan Hale"} />
                                 <Input label="Card number" icon={CreditCard01} defaultValue="4242 4242 4242 4242" />
                                 <div className="grid gap-3 sm:grid-cols-3">
                                     <Input label="Expiry" defaultValue="04 / 28" />

@@ -88,9 +88,9 @@ export const SignUpScreen = () => {
 
     const submit = () => {
         signIn({
-            first: first || "Justin",
-            last: last || "Girard",
-            email: email || "hello@girardjustin.com",
+            first: first || "Morgan",
+            last: last || "Hale",
+            email: email || "morgan.hale@example.com",
             isNew: true,
         });
         router.push("/verify/");
@@ -109,8 +109,8 @@ export const SignUpScreen = () => {
                     }}
                 >
                     <div className="grid grid-cols-2 gap-4">
-                        <Input isRequired label="First name" placeholder="Justin" value={first} onChange={setFirst} />
-                        <Input isRequired label="Last name" placeholder="Girard" value={last} onChange={setLast} />
+                        <Input isRequired label="First name" placeholder="Morgan" value={first} onChange={setFirst} />
+                        <Input isRequired label="Last name" placeholder="Hale" value={last} onChange={setLast} />
                     </div>
 
                     <Input isRequired type="email" label="Email" placeholder="you@example.com" icon={Mail01} value={email} onChange={setEmail} />

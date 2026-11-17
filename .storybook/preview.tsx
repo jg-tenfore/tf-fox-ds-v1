@@ -32,7 +32,7 @@ const preview: Preview = {
                     [
                         "Screen index",
                         "MCG Prototype 3",
-                        ["Instruction", "Programs"],
+                        ["Instruction", "Instruction hub", "Lessons & programs", "Instructor profile", "Booking", "Packages & credits", "Programs", "Deep links & checks"],
                         "MCG Prototype 1",
                         [
                             "Home",

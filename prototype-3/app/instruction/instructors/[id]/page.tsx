@@ -1,10 +1,15 @@
-import { ACADEMY_ROSTER } from "@/components/mcg-3/academy-roster";
-import { AcademyInstructorDetailScreen } from "@/components/mcg-3/academy/instructor-detail";
+import { ACADEMY_ROSTER } from "@/components/mcg-3/instruction/data";
+import { InstructorProfilePage } from "@/components/mcg-3/instruction/pro/instructor-profile-page";
+import { Routed } from "../../routed";
 
-/** `output: "export"` needs every instructor page enumerated at build time. */
+/** An instructor's profile. `/instruction/pro/[id]` and `/instruction/instructors/[id]` render the same page. */
 export const generateStaticParams = () => ACADEMY_ROSTER.map((instructor) => ({ id: instructor.id }));
 
-export default async function InstructorPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    return <AcademyInstructorDetailScreen instructorId={id} />;
+    return (
+        <Routed>
+            <InstructorProfilePage id={id} />
+        </Routed>
+    );
 }

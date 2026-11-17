@@ -16,7 +16,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { type MultiBuyDiscount, cartMultiBuySavings } from "./registration-rules";
 
-const KEY = "mcg-p3-prototype-session-v1";
+// v2: the sample golfer is invented (Morgan Hale), so older sessions holding a real name start clean.
+const KEY = "mcg-p3-prototype-session-v2";
 
 /* ------------------------------------------------------------------ */
 /* Shapes                                                              */
@@ -100,11 +101,11 @@ export interface SessionState {
 }
 
 export const DEMO_USER: SessionUser = {
-    first: "Justin",
-    last: "Girard",
-    email: "hello@girardjustin.com",
+    first: "Morgan",
+    last: "Hale",
+    email: "morgan.hale@example.com",
     phone: "(240) 555-0117",
-    initials: "JG",
+    initials: "MH",
 };
 
 const EMPTY: SessionState = {

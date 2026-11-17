@@ -1,6 +1,11 @@
-import { InstructionHubScreen } from "@/components/mcg-3/instruction/instruction-hub";
+import { InstructionHubPage } from "@/components/mcg-3/instruction/hub/instruction-hub-page";
+import { Routed } from "../routed";
 
-/** Kept so old links still work: the combined Instruction page, browsing by instructor. */
+/** `/instruction/instructors` — the hub on the Instructors tab. */
 export default function Page() {
-    return <InstructionHubScreen initialView="instructors" />;
+    return (
+        <Routed>
+            <InstructionHubPage view="instructors" />
+        </Routed>
+    );
 }

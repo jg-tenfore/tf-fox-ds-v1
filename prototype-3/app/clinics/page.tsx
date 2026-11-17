@@ -1,9 +1,11 @@
-import { InstructionHubScreen } from "@/components/mcg-3/instruction/instruction-hub";
+import { ClinicsRedirect } from "@/components/mcg-3/instruction/hub/clinics-redirect";
+import { Routed } from "../instruction/routed";
 
-/**
- * Prototype 3 has no Clinics tab — clinics live under Instruction. The old URL still
- * works and opens Instruction filtered to group clinics.
- */
+/** Prototype 3 has no Clinics tab: the old URL opens Instruction on group programs. */
 export default function Page() {
-    return <InstructionHubScreen initialFilter={{ formats: ["clinic", "junior-camp", "junior-league", "op36"] }} />;
+    return (
+        <Routed>
+            <ClinicsRedirect />
+        </Routed>
+    );
 }

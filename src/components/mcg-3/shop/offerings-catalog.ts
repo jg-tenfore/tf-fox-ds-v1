@@ -235,7 +235,7 @@ export const OFFERING_PRODUCTS: ShopProduct[] = [
             "Credits post to your MCG account at purchase and show at every checkout",
             "Range balls for the lesson included; written notes and drills after each",
             `Valid with the instructor you buy from. Unused credits expire ${PACK_EXPIRY}`,
-            "Cancel or reschedule 24 hours ahead or the credit is spent",
+            "Cancel 24 hours ahead or the credit is spent — your instructor can move a lesson",
         ],
     },
     {
@@ -369,7 +369,7 @@ export const OFFERING_PRODUCTS: ShopProduct[] = [
             `Add ${usd(PREMIUM_SURCHARGE)} a round for Hampshire Greens or The Crossvines`,
             `A resident card costs ${usd(RESIDENT_CARD_PRICE)} and drops this pack to ${usd(PACK_RESIDENT)} — buy the card first if you qualify`,
             "Rounds apply automatically at booking; carts and the booking fee are extra",
-            "Expires December 31, 2026",
+            "Expires 1 year after purchase",
         ],
     },
     {
@@ -413,7 +413,7 @@ export const OFFERING_PRODUCTS: ShopProduct[] = [
             `Valid at ${STANDARD_NAMES}`,
             "Montgomery County resident card required; ID checked once at the counter",
             `Saves ${usd(PACK_SENIOR_LIST - PACK_SENIOR)} against ten senior walk-ups`,
-            "Expires December 31, 2026",
+            "Expires 1 year after purchase",
         ],
     },
 

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { InstructionStoreProvider } from "@/components/mcg-3/instruction/instruction-store";
 import { SessionProvider } from "@/components/mcg-3/session";
 import { RouteProvider } from "@/providers/router-provider";
 import { Theme } from "@/providers/theme";
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <body className={cx(inter.variable, "bg-primary antialiased")}>
                 <RouteProvider>
                     <Theme>
-                        <SessionProvider>{children}</SessionProvider>
+                        <SessionProvider>
+                            <InstructionStoreProvider>{children}</InstructionStoreProvider>
+                        </SessionProvider>
                     </Theme>
                 </RouteProvider>
             </body>
