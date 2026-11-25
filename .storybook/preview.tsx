@@ -72,7 +72,7 @@ const preview: Preview = {
                     ],
                     "Reviews",
                     // Newest round first: list each dated round here as it's added.
-                    ["Sep 23 – MCG Prototype 3", "Sep 15 – MCG Prototype 2", "Sep 15 – Austin's Academy feedback", "Sep 11 – MCG Prototype 1", "*"],
+                    ["Nov 25 – Gift Cards", ["Summary", "Nov 24 – Jarrette", "Nov 25 – New Concept"], "Sep 23 – MCG Prototype 3", "Sep 15 – MCG Prototype 2", "Sep 15 – Austin's Academy feedback", "Sep 11 – MCG Prototype 1", "*"],
                     "Research",
                     ["Explorations", "Color Theory", ["Analogous", "Complementary", "Triadic"]],
                     "Archive",

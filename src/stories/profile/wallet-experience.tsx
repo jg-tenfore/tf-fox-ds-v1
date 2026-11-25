@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Check, Clock, Gift01, InfoCircle, Plus, Ticket02, XClose } from "@untitledui/icons";
 import { Dialog, Modal, ModalOverlay } from "@/components/application/modals/modal";
 import { Button } from "@/components/base/buttons/button";
@@ -6,8 +6,8 @@ import { Input } from "@/components/base/input/input";
 import { SagamoreLogo } from "@/components/foundations/sagamore/sagamore-logo";
 import { CreditCard } from "@/components/shared-assets/credit-card/credit-card";
 import { cx } from "@/utils/cx";
-import { money, Panel, Progress, Segmented } from "./profile-ui";
 import { ProfileShell } from "./profile-shell";
+import { Panel, Progress, Segmented, money } from "./profile-ui";
 
 /**
  * "Profile / Wallet" experience — balance, gift cards, and punch cards, with the
@@ -63,7 +63,12 @@ export const QRCode = ({ value, size = 220 }: { value: string; size?: number }) 
 const ModalHeader = ({ title, onClose }: { title: string; onClose: () => void }) => (
     <div className="flex items-center justify-between border-b border-secondary px-5 py-4">
         <h2 className="text-md font-semibold text-primary">{title}</h2>
-        <button type="button" onClick={onClose} aria-label="Close" className="flex size-8 items-center justify-center rounded-lg text-fg-quaternary transition duration-100 ease-linear hover:bg-primary_hover">
+        <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex size-8 items-center justify-center rounded-lg text-fg-quaternary transition duration-100 ease-linear hover:bg-primary_hover"
+        >
             <XClose className="size-5" aria-hidden="true" />
         </button>
     </div>
@@ -76,7 +81,13 @@ export const PunchVisual = ({ total, used }: { total: number; used: number }) =>
         {Array.from({ length: total }).map((_, i) => {
             const isUsed = i < used;
             return (
-                <span key={i} className={cx("flex size-11 items-center justify-center rounded-full text-sm font-semibold", isUsed ? "bg-brand-solid text-white" : "bg-primary text-tertiary ring-1 ring-secondary ring-inset")}>
+                <span
+                    key={i}
+                    className={cx(
+                        "flex size-11 items-center justify-center rounded-full text-sm font-semibold",
+                        isUsed ? "bg-brand-solid text-white" : "bg-primary text-tertiary ring-1 ring-secondary ring-inset",
+                    )}
+                >
                     {isUsed ? <Check className="size-5 stroke-[3]" aria-hidden="true" /> : i + 1}
                 </span>
             );
@@ -227,7 +238,9 @@ const GiftCardModal = ({ onClose }: { onClose: () => void }) => {
                                     }}
                                     className={cx(
                                         "rounded-xl py-2.5 text-center text-sm font-semibold tabular-nums ring-1 transition duration-100 ease-linear ring-inset",
-                                        active ? "bg-brand-primary text-brand-secondary ring-brand" : "bg-primary text-secondary ring-secondary hover:bg-primary_hover",
+                                        active
+                                            ? "bg-brand-primary text-brand-secondary ring-brand"
+                                            : "bg-primary text-secondary ring-secondary hover:bg-primary_hover",
                                     )}
                                 >
                                     ${p}
@@ -286,7 +299,51 @@ const PUNCH = [
     { label: "Simulator Hours", used: 3, total: 5 },
 ];
 
-export const WalletExperience = ({ initialModal, punchQR }: { initialModal?: "gift" | "punch"; punchQR?: boolean }) => {
+/** A gift card the member owns, shown in Wallet › Gift cards. */
+export interface WalletGiftCard {
+    id: string;
+    name: string;
+    last4: string;
+    balance: number;
+    /** Card art; without it the row shows the gift icon. */
+    art?: string;
+    isNew?: boolean;
+}
+
+/** A gift card the member bought for someone else. */
+export interface SentGiftCard {
+    id: string;
+    toName: string;
+    toEmail?: string;
+    date: string;
+    value: number;
+    paid: number;
+    status: string;
+    art?: string;
+}
+
+const DEFAULT_GIFT_CARDS: WalletGiftCard[] = [{ id: "gc-4821", name: "Sagamore Gift Card", last4: "4821", balance: 75 }];
+
+export const WalletExperience = ({
+    initialModal,
+    punchQR,
+    accountLabel,
+    giftCards = DEFAULT_GIFT_CARDS,
+    sentGiftCards = [],
+    onBuyGiftCard,
+    notice,
+}: {
+    initialModal?: "gift" | "punch";
+    punchQR?: boolean;
+    accountLabel?: string;
+    giftCards?: WalletGiftCard[];
+    /** Gift cards bought for other people, listed under the member's own cards. */
+    sentGiftCards?: SentGiftCard[];
+    /** When set, "Buy gift card" calls this instead of opening the gift card modal. */
+    onBuyGiftCard?: () => void;
+    /** Shown above the balance, e.g. after a purchase. */
+    notice?: ReactNode;
+}) => {
     const [modal, setModal] = useState<"gift" | "punch" | null>(initialModal ?? null);
     const [qrStart, setQrStart] = useState(punchQR ?? false);
     const openPunch = (qr: boolean) => {
@@ -295,8 +352,9 @@ export const WalletExperience = ({ initialModal, punchQR }: { initialModal?: "gi
     };
 
     return (
-        <ProfileShell active="wallet">
+        <ProfileShell active="wallet" accountLabel={accountLabel}>
             <div className="flex flex-col gap-10">
+                {notice}
                 <Panel title="My Balance">
                     <div className="flex flex-wrap items-end justify-between gap-4 border-b border-secondary py-5">
                         <div>
@@ -304,8 +362,12 @@ export const WalletExperience = ({ initialModal, punchQR }: { initialModal?: "gi
                             <p className="mt-1 text-display-sm font-semibold text-primary tabular-nums">{money(BALANCE)}</p>
                         </div>
                         <div className="flex gap-2.5">
-                            <Button color="secondary" size="md">Statement</Button>
-                            <Button color="primary" size="md" iconLeading={Plus}>Add funds</Button>
+                            <Button color="secondary" size="md">
+                                Statement
+                            </Button>
+                            <Button color="primary" size="md" iconLeading={Plus}>
+                                Add funds
+                            </Button>
                         </div>
                     </div>
                     <div className="divide-y divide-secondary">
@@ -322,20 +384,82 @@ export const WalletExperience = ({ initialModal, punchQR }: { initialModal?: "gi
                     </div>
                 </Panel>
 
-                <Panel title="Gift cards" action={<Button color="secondary" size="sm" iconLeading={Plus} onClick={() => setModal("gift")}>Buy gift card</Button>}>
-                    <div className="flex items-center gap-4 py-5">
-                        <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-primary">
-                            <Gift01 className="size-5 text-fg-brand-primary" aria-hidden="true" />
-                        </span>
-                        <div className="flex-1">
-                            <p className="text-sm font-semibold text-primary">Sagamore Gift Card</p>
-                            <p className="text-sm text-tertiary tabular-nums">···· 4821</p>
-                        </div>
-                        <span className="text-md font-semibold text-primary tabular-nums">{money(75.0)}</span>
+                <Panel
+                    title="Gift cards"
+                    action={
+                        <Button color="secondary" size="sm" iconLeading={Plus} onClick={() => (onBuyGiftCard ? onBuyGiftCard() : setModal("gift"))}>
+                            Buy gift card
+                        </Button>
+                    }
+                >
+                    <div className="divide-y divide-secondary">
+                        {giftCards.map((g) => (
+                            <div key={g.id} className="flex items-center gap-4 py-5">
+                                {g.art ? (
+                                    <img src={g.art} alt="" className="aspect-[3/2] w-16 shrink-0 rounded-lg object-cover ring-1 ring-secondary" />
+                                ) : (
+                                    <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-primary">
+                                        <Gift01 className="size-5 text-fg-brand-primary" aria-hidden="true" />
+                                    </span>
+                                )}
+                                <div className="flex-1">
+                                    <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+                                        {g.name}
+                                        {g.isNew && (
+                                            <span className="rounded-full bg-success-secondary px-2 py-0.5 text-[10px] font-semibold text-success-primary">
+                                                New
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p className="text-sm text-tertiary tabular-nums">···· {g.last4}</p>
+                                </div>
+                                <span className="text-md font-semibold text-primary tabular-nums">{money(g.balance)}</span>
+                            </div>
+                        ))}
                     </div>
+                    {sentGiftCards.length > 0 && (
+                        <div className="border-t border-secondary py-5">
+                            <p className="text-xs font-medium tracking-wide text-quaternary uppercase">Sent as gifts</p>
+                            <div className="mt-2 divide-y divide-secondary">
+                                {sentGiftCards.map((g) => (
+                                    <div key={g.id} className="flex flex-wrap items-center gap-4 py-3.5">
+                                        {g.art ? (
+                                            <img src={g.art} alt="" className="aspect-[3/2] w-12 shrink-0 rounded-md object-cover ring-1 ring-secondary" />
+                                        ) : (
+                                            <Gift01 className="size-5 shrink-0 text-fg-quaternary" aria-hidden="true" />
+                                        )}
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-sm font-semibold text-primary">
+                                                {g.toName}
+                                                {g.toEmail && <span className="font-normal text-tertiary"> · {g.toEmail}</span>}
+                                            </p>
+                                            <p className="text-xs text-tertiary">{g.date}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm font-semibold text-primary tabular-nums">{money(g.value)} card</p>
+                                            <p className="text-xs text-tertiary tabular-nums">
+                                                Paid {money(g.paid)}
+                                                {g.value > g.paid && <span className="text-success-primary"> · +{money(g.value - g.paid)} bonus</span>}
+                                            </p>
+                                        </div>
+                                        <span className="rounded-full bg-success-secondary px-2 py-0.5 text-xs font-semibold text-success-primary">
+                                            {g.status}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </Panel>
 
-                <Panel title="Punch cards" action={<Button color="secondary" size="sm" iconLeading={Plus} onClick={() => openPunch(false)}>Buy punch card</Button>}>
+                <Panel
+                    title="Punch cards"
+                    action={
+                        <Button color="secondary" size="sm" iconLeading={Plus} onClick={() => openPunch(false)}>
+                            Buy punch card
+                        </Button>
+                    }
+                >
                     <div className="divide-y divide-secondary">
                         {PUNCH.map((p) => {
                             const left = p.total - p.used;
