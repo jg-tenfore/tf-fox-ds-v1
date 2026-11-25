@@ -110,7 +110,7 @@ export const Confirmation: Story = {
     args: { initialStep: "confirmation", initialOrder: SAMPLE_ORDER },
 };
 
-/** The purchase email when the card is for you: the card, its code, a barcode and a QR code. */
+/** The purchase email when the card is for you: the card, its Gift Card ID and a barcode. */
 export const SelfEmail: Story = {
     name: "Self Email",
     args: { initialStep: "email", initialOrder: SAMPLE_ORDER_FOR_ME },

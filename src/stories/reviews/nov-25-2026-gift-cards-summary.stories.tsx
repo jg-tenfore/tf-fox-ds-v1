@@ -99,7 +99,7 @@ function Nov25Summary() {
                         </>,
                         <>
                             <B>Purchase email</B>, laid out like the Gift Cards › Purchase email template. <B>Self Email</B> shows the card, its 12-digit Gift
-                            Card ID, and a barcode and QR code to scan at the Pro Shop; <B>Gift Email</B> shows “Gift sent” and the recipient, without the code.
+                            Card ID, and a barcode to scan at the Pro Shop; <B>Gift Email</B> shows “Gift sent” and the recipient, without the code.
                         </>,
                         <>
                             <B>Wallet</B> (Profile › Wallet): a card bought for yourself shows under Gift cards, marked New. A gift shows under Sent as gifts.
