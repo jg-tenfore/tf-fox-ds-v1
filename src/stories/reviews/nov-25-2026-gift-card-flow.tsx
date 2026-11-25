@@ -48,7 +48,6 @@ import {
     money,
 } from "@/components/gift-cards/gift-card-catalog";
 import { UpcBarcode } from "@/components/gift-cards/upc-barcode";
-import { QRCode } from "@/components/shared-assets/qr-code";
 import { cx } from "@/utils/cx";
 import { CartHeader } from "../explorations/cart-shared";
 import { SAGAMORE_CLUB, SiteFooter, TopNav } from "../explorations/tenfore-chrome";
@@ -808,12 +807,9 @@ export const PurchaseEmail = ({ order, onManage }: { order: GiftCardOrder; onMan
                         {!isGift && (
                             <>
                                 <DetailRow label="Gift Card ID" value={CARD_CODE} />
-                                {/* Scannable codes, like the live email's barcode, plus the square code */}
+                                {/* The barcode only, like the live email */}
                                 <div className="flex flex-col items-center gap-3 px-5 py-5">
-                                    <div className="flex items-center justify-center gap-8">
-                                        <UpcBarcode value={CARD_CODE} />
-                                        <QRCode value={CARD_CODE} size="md" />
-                                    </div>
+                                    <UpcBarcode value={CARD_CODE} />
                                     <p className="text-xs text-tertiary">Scannable barcode for easy redemption</p>
                                 </div>
                             </>
