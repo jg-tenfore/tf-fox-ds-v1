@@ -57,10 +57,10 @@ const NavRow = ({ item, active }: { item: NavItem; active: boolean }) => (
     </button>
 );
 
-export const ProfileShell = ({ active, children }: { active: BucketKey; children: ReactNode }) => (
+export const ProfileShell = ({ active, children, accountLabel = "Justin G." }: { active: BucketKey; children: ReactNode; accountLabel?: string }) => (
     <div className="flex min-h-dvh flex-col bg-secondary">
         {/* Global site navigation — the member is signed in */}
-        <TopNav active="" club={SAGAMORE_CLUB} accountLabel="Justin G." />
+        <TopNav active="" club={SAGAMORE_CLUB} accountLabel={accountLabel} />
 
         <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-6 py-10 lg:flex-row">
             {/* Left nav */}
@@ -78,7 +78,10 @@ export const ProfileShell = ({ active, children }: { active: BucketKey; children
                 {/* Keep the sign-out action visually distinct from the Memberships CTA */}
                 <div className="my-4 border-t border-secondary" />
                 <nav className="flex flex-col gap-1">
-                    <button type="button" className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-secondary transition duration-100 ease-linear hover:bg-primary_hover">
+                    <button
+                        type="button"
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-secondary transition duration-100 ease-linear hover:bg-primary_hover"
+                    >
                         <LogOut01 className="size-5 shrink-0 text-fg-quaternary" aria-hidden="true" />
                         <span className="text-sm">Log out</span>
                     </button>
