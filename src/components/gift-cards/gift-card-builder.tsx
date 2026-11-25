@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { Calendar, Check, CurrencyDollar, Gift01, Mail01, Printer, ShoppingBag03, User01, Wallet02 } from "@untitledui/icons";
+import { Calendar, Check, CurrencyDollar, Gift01, Mail01, Phone, Printer, ShoppingBag03, User01, Wallet02 } from "@untitledui/icons";
 import { Badge } from "@/components/base/badges/badges";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
@@ -52,10 +52,15 @@ export interface GiftCardOrder {
     deal?: GiftCardDeal;
     recipient: Recipient;
     delivery: Delivery;
+    toFirstName: string;
+    toLastName: string;
+    /** First and last name together. */
     toName: string;
     toEmail: string;
+    toPhone?: string;
     message: string;
     fromName: string;
+    fromEmail: string;
 }
 
 export interface GiftCardBuilderProps {
@@ -64,8 +69,13 @@ export interface GiftCardBuilderProps {
     initialDesign?: string;
     initialRecipient?: Recipient;
     initialDelivery?: Delivery;
-    initialToName?: string;
+    initialToFirstName?: string;
+    initialToLastName?: string;
     initialToEmail?: string;
+    /** Defaults to the email, as when the form was filled in before. */
+    initialToConfirmEmail?: string;
+    initialToPhone?: string;
+    initialToConfirmPhone?: string;
     initialMessage?: string;
     /** Open with the field errors showing, as after Add to cart with something missing. */
     showErrors?: boolean;
@@ -81,6 +91,7 @@ const dealLine = (deal: GiftCardDeal) =>
     [deal.endsOn && `Ends ${shortDate(deal.endsOn)}`, deal.limitPerCustomer && `Limit ${deal.limitPerCustomer} each`].filter(Boolean).join(" · ");
 
 const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+const digitsOf = (value: string) => value.replace(/\D/g, "");
 
 /** "To Alex · emailed today", "For you · saved to your wallet" */
 export const deliveryLine = (o: Pick<GiftCardOrder, "recipient" | "delivery" | "toName">) =>
@@ -99,8 +110,12 @@ export const GiftCardBuilder = ({
     initialDesign = CARD_DESIGNS[0].id,
     initialRecipient = "someone",
     initialDelivery = "email",
-    initialToName = "",
+    initialToFirstName = "",
+    initialToLastName = "",
     initialToEmail = "",
+    initialToConfirmEmail = initialToEmail,
+    initialToPhone = "",
+    initialToConfirmPhone = initialToPhone,
     initialMessage = "",
     showErrors = false,
     deals = GIFT_CARD_DEALS,
@@ -112,10 +127,17 @@ export const GiftCardBuilder = ({
     const [designId, setDesignId] = useState(initialDesign);
     const [recipient, setRecipient] = useState<Recipient>(initialRecipient);
     const [delivery, setDelivery] = useState<Delivery>(initialDelivery);
-    const [toName, setToName] = useState(initialToName);
+    const [toFirstName, setToFirstName] = useState(initialToFirstName);
+    const [toLastName, setToLastName] = useState(initialToLastName);
     const [toEmail, setToEmail] = useState(initialToEmail);
+    const [confirmEmail, setConfirmEmail] = useState(initialToConfirmEmail);
+    const [toPhone, setToPhone] = useState(initialToPhone);
+    const [confirmPhone, setConfirmPhone] = useState(initialToConfirmPhone);
     const [message, setMessage] = useState(initialMessage);
     const [fromName, setFromName] = useState(BUYER.name);
+    const [fromEmail, setFromEmail] = useState(BUYER.email);
+    const [editingFrom, setEditingFrom] = useState(false);
+    const toName = `${toFirstName.trim()} ${toLastName.trim()}`.trim();
     const [touched, setTouched] = useState(showErrors);
 
     const design = CARD_DESIGNS.find((d) => d.id === designId) ?? CARD_DESIGNS[0];
@@ -137,17 +159,43 @@ export const GiftCardBuilder = ({
                     ? "Enter an amount"
                     : `Enter an amount from $${CUSTOM_MIN} to $${CUSTOM_MAX}`
                 : undefined,
-        toName: recipient === "someone" && toName.trim() === "" ? "Add their name" : undefined,
+        toFirstName: recipient === "someone" && toFirstName.trim() === "" ? "Add their first name" : undefined,
+        toLastName: recipient === "someone" && toLastName.trim() === "" ? "Add their last name" : undefined,
         toEmail: recipient === "someone" && delivery === "email" && !isEmail(toEmail) ? "Add an email we can send the card to" : undefined,
+        confirmEmail:
+            recipient === "someone" && delivery === "email" && isEmail(toEmail) && confirmEmail.trim().toLowerCase() !== toEmail.trim().toLowerCase()
+                ? "The emails don't match"
+                : undefined,
+        confirmPhone:
+            recipient === "someone" && delivery === "email" && digitsOf(toPhone) !== digitsOf(confirmPhone) ? "The phone numbers don't match" : undefined,
         fromName: recipient === "someone" && fromName.trim() === "" ? "Add who it's from" : undefined,
+        fromEmail: recipient === "someone" && !isEmail(fromEmail) ? "Add your email" : undefined,
     };
     const isValid = !Object.values(errors).some(Boolean);
     const show = (key: keyof typeof errors) => (touched ? errors[key] : undefined);
 
     const addToCart = () => {
         setTouched(true);
-        if (!isValid) return;
-        onAddToCart?.({ design, value, price, deal, recipient, delivery, toName: toName.trim(), toEmail: toEmail.trim(), message, fromName: fromName.trim() });
+        if (!isValid) {
+            if (errors.fromName || errors.fromEmail) setEditingFrom(true);
+            return;
+        }
+        onAddToCart?.({
+            design,
+            value,
+            price,
+            deal,
+            recipient,
+            delivery,
+            toFirstName: toFirstName.trim(),
+            toLastName: toLastName.trim(),
+            toName,
+            toEmail: toEmail.trim(),
+            toPhone: delivery === "email" && digitsOf(toPhone) ? toPhone.trim() : undefined,
+            message,
+            fromName: fromName.trim(),
+            fromEmail: fromEmail.trim(),
+        });
     };
 
     return (
@@ -297,30 +345,111 @@ export const GiftCardBuilder = ({
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-                                        <Input
-                                            label="Their name"
-                                            placeholder="e.g. Alex"
-                                            value={toName}
-                                            onChange={setToName}
-                                            isRequired
-                                            isInvalid={!!show("toName")}
-                                            hint={show("toName")}
-                                        />
-                                        {delivery === "email" && (
-                                            <Input
-                                                label="Their email"
-                                                type="email"
-                                                icon={Mail01}
-                                                placeholder="alex@example.com"
-                                                value={toEmail}
-                                                onChange={setToEmail}
-                                                isRequired
-                                                isInvalid={!!show("toEmail")}
-                                                hint={show("toEmail")}
-                                            />
+                                    {/* From, as on the shop's gift form: the signed-in golfer, with Change */}
+                                    <div className="flex flex-col gap-4 rounded-xl bg-secondary p-4">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <p className="min-w-0 text-sm text-tertiary">
+                                                <span className="block text-sm font-semibold text-secondary">From</span>
+                                                <span className="font-medium text-primary">{fromName.trim() || "—"}</span> ({fromEmail.trim() || "no email"})
+                                            </p>
+                                            <Button color="link-color" size="sm" onClick={() => setEditingFrom((e) => !e)}>
+                                                {editingFrom ? "Done" : "Change"}
+                                            </Button>
+                                        </div>
+                                        {editingFrom && (
+                                            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+                                                <Input
+                                                    label="Your name"
+                                                    value={fromName}
+                                                    onChange={setFromName}
+                                                    isRequired
+                                                    isInvalid={!!show("fromName")}
+                                                    hint={show("fromName") ?? "It's on the card, so they know who it's from."}
+                                                />
+                                                <Input
+                                                    label="Your email"
+                                                    type="email"
+                                                    value={fromEmail}
+                                                    onChange={setFromEmail}
+                                                    isRequired
+                                                    isInvalid={!!show("fromEmail")}
+                                                    hint={show("fromEmail")}
+                                                />
+                                            </div>
                                         )}
                                     </div>
+
+                                    {/* To */}
+                                    <div className="flex flex-col gap-3">
+                                        <p className="text-sm font-semibold text-secondary">To</p>
+                                        <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+                                            <Input
+                                                label="First name"
+                                                placeholder="Alex"
+                                                value={toFirstName}
+                                                onChange={setToFirstName}
+                                                isRequired
+                                                isInvalid={!!show("toFirstName")}
+                                                hint={show("toFirstName")}
+                                            />
+                                            <Input
+                                                label="Last name"
+                                                placeholder="Rivera"
+                                                value={toLastName}
+                                                onChange={setToLastName}
+                                                isRequired
+                                                isInvalid={!!show("toLastName")}
+                                                hint={show("toLastName")}
+                                            />
+                                            {delivery === "email" && (
+                                                <>
+                                                    <Input
+                                                        label="Email"
+                                                        type="email"
+                                                        icon={Mail01}
+                                                        placeholder="alex@example.com"
+                                                        value={toEmail}
+                                                        onChange={setToEmail}
+                                                        isRequired
+                                                        isInvalid={!!show("toEmail")}
+                                                        hint={show("toEmail")}
+                                                    />
+                                                    <Input
+                                                        label="Confirm email"
+                                                        type="email"
+                                                        icon={Mail01}
+                                                        placeholder="alex@example.com"
+                                                        value={confirmEmail}
+                                                        onChange={setConfirmEmail}
+                                                        isRequired
+                                                        isInvalid={!!show("confirmEmail")}
+                                                        hint={show("confirmEmail")}
+                                                    />
+                                                    <Input
+                                                        label="Phone (optional)"
+                                                        type="tel"
+                                                        inputMode="tel"
+                                                        icon={Phone}
+                                                        placeholder="(555) 010-0000"
+                                                        value={toPhone}
+                                                        onChange={setToPhone}
+                                                    />
+                                                    <Input
+                                                        label="Confirm phone (optional)"
+                                                        type="tel"
+                                                        inputMode="tel"
+                                                        icon={Phone}
+                                                        placeholder="(555) 010-0000"
+                                                        value={confirmPhone}
+                                                        onChange={setConfirmPhone}
+                                                        isInvalid={!!show("confirmPhone")}
+                                                        hint={show("confirmPhone")}
+                                                    />
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+
                                     <TextArea
                                         label="Message (optional)"
                                         placeholder="Happy birthday! First round's on me."
@@ -329,15 +458,6 @@ export const GiftCardBuilder = ({
                                         value={message}
                                         onChange={setMessage}
                                         hint={`${message.length}/${MESSAGE_MAX} characters · it goes on the card email.`}
-                                    />
-                                    <Input
-                                        label="From"
-                                        value={fromName}
-                                        onChange={setFromName}
-                                        isRequired
-                                        isInvalid={!!show("fromName")}
-                                        hint={show("fromName")}
-                                        className="w-full @xl:max-w-sm"
                                     />
                                 </div>
                             )}

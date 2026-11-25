@@ -7,16 +7,21 @@ import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { TextArea } from "@/components/base/textarea/textarea";
 import { cx } from "@/utils/cx";
-import { GIFT_CARD_OFFERS, type GiftCardOffer, type GiftCardPurchase, formatOfferDate, offerHeadline } from "./gift-card-offers";
+import { GiftCardGiftForm, type GiftFormValues, type GiftSender } from "./gift-card-gift-form";
+import { GIFT_CARD_OFFERS, GOOD_FOR, type GiftCardGift, type GiftCardOffer, type GiftCardPurchase, formatOfferDate, offerHeadline } from "./gift-card-offers";
 
 /**
  * The shop's Gift Card page, rebuilt from the live Fox page (fox.tenfore.golf/dunes/shop/gift-cards)
  * with the Fox design system, without the shop's side rail. Same parts in the same order:
  * special offers (buy for yourself or send as a gift), a custom amount, an optional message,
- * then Purchase for Myself or Purchase as Gift.
+ * then Purchase for Myself or Purchase as Gift. Send as a Gift and Purchase as Gift open the
+ * gift form, as on the live site.
  *
  * Laid out with container queries, so it stacks inside a narrow frame as it would on a phone.
  */
+
+/** Which gift the form opens for: an offer (Send as a Gift) or the typed amount (Purchase as Gift). */
+export type GiftFormTarget = { offerId: number } | { amount: number | null };
 
 interface GiftCardPageProps {
     offers?: GiftCardOffer[];
@@ -24,9 +29,19 @@ interface GiftCardPageProps {
     defaultMessage?: string;
     /** Open with the amount error showing, as after Purchase for Myself with no amount. */
     showAmountError?: boolean;
-    /** Every purchase button reports here. On the live site each one goes to sign-in first. */
+    /** The signed-in golfer, shown as the sender on the gift form. */
+    sender?: GiftSender;
+    /** Open on the gift form, as after Send as a Gift or Purchase as Gift. */
+    initialGift?: GiftFormTarget;
+    giftDefaults?: Partial<GiftFormValues>;
+    showGiftErrors?: boolean;
+    /** Buy for Myself and Purchase for Myself report here. On the live site each goes to sign-in first. */
     onPurchase?: (purchase: GiftCardPurchase) => void;
+    /** The gift form's Add Gift to Cart reports here. */
+    onAddGiftToCart?: (gift: GiftCardGift) => void;
 }
+
+const SAMPLE_SENDER: GiftSender = { name: "Morgan Hale", email: "morgan.hale@example.com" };
 
 /** A positive dollar amount, or null when the field is empty or not a number above zero. */
 const parseAmount = (raw: string) => {
@@ -39,11 +54,22 @@ export const GiftCardPage = ({
     defaultAmount = "",
     defaultMessage = "",
     showAmountError = false,
+    sender = SAMPLE_SENDER,
+    initialGift,
+    giftDefaults,
+    showGiftErrors = false,
     onPurchase,
+    onAddGiftToCart,
 }: GiftCardPageProps) => {
     const [amount, setAmount] = useState(defaultAmount);
     const [message, setMessage] = useState(defaultMessage);
     const [amountError, setAmountError] = useState(showAmountError);
+    const [gift, setGift] = useState<GiftFormTarget | null>(initialGift ?? null);
+
+    const openGift = (target: GiftFormTarget) => {
+        setGift(target);
+        if (typeof window !== "undefined") window.scrollTo(0, 0);
+    };
 
     // As on the live site: buying for yourself needs an amount; a gift can go on without one (the gift form follows).
     const purchaseForMyself = () => {
@@ -55,7 +81,27 @@ export const GiftCardPage = ({
         onPurchase?.({ recipient: "myself", amount: value, message });
     };
 
-    const purchaseAsGift = () => onPurchase?.({ recipient: "gift", amount: parseAmount(amount), message });
+    // As on the live site, a gift goes on even without an amount; the gift form asks for one.
+    const purchaseAsGift = () => openGift({ amount: parseAmount(amount) });
+
+    if (gift) {
+        const offer = "offerId" in gift ? offers.find((o) => o.id === gift.offerId) : undefined;
+        return (
+            <div className="@container w-full bg-secondary p-4 @3xl:p-8">
+                <GiftCardGiftForm
+                    key={JSON.stringify(gift)}
+                    offer={offer}
+                    amount={"amount" in gift ? gift.amount : null}
+                    sender={sender}
+                    defaults={{ message, ...giftDefaults }}
+                    showErrors={showGiftErrors}
+                    goodFor={offer?.goodFor ?? GOOD_FOR}
+                    onBack={() => setGift(null)}
+                    onAddToCart={onAddGiftToCart}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="@container w-full bg-secondary p-4 @3xl:p-8">
@@ -73,7 +119,7 @@ export const GiftCardPage = ({
                         </h2>
                         <ul className="grid gap-5 @3xl:grid-cols-2">
                             {offers.map((offer) => (
-                                <OfferCard key={offer.id} offer={offer} onPurchase={onPurchase} />
+                                <OfferCard key={offer.id} offer={offer} onPurchase={onPurchase} onSendGift={() => openGift({ offerId: offer.id })} />
                             ))}
                         </ul>
                     </div>
@@ -123,7 +169,7 @@ export const GiftCardPage = ({
     );
 };
 
-const OfferCard = ({ offer, onPurchase }: { offer: GiftCardOffer; onPurchase?: (purchase: GiftCardPurchase) => void }) => {
+const OfferCard = ({ offer, onPurchase, onSendGift }: { offer: GiftCardOffer; onPurchase?: (purchase: GiftCardPurchase) => void; onSendGift: () => void }) => {
     const soldOut = !!offer.soldOut;
 
     return (
@@ -151,7 +197,7 @@ const OfferCard = ({ offer, onPurchase }: { offer: GiftCardOffer; onPurchase?: (
                 <Button size="lg" color="primary" isDisabled={soldOut} onClick={() => onPurchase?.({ recipient: "myself", offerId: offer.id })}>
                     Buy for Myself
                 </Button>
-                <Button size="lg" color="secondary" isDisabled={soldOut} onClick={() => onPurchase?.({ recipient: "gift", offerId: offer.id })}>
+                <Button size="lg" color="secondary" isDisabled={soldOut} onClick={onSendGift}>
                     Send as a Gift
                 </Button>
             </div>

@@ -30,8 +30,10 @@ export const FilledIn: Story = {
     name: "Filled in",
     args: {
         initialDesign: "birthday-gift",
-        initialToName: "Alex",
+        initialToFirstName: "Alex",
+        initialToLastName: "Rivera",
         initialToEmail: "alex@example.com",
+        initialToPhone: "(555) 010-2481",
         initialMessage: "Happy birthday! First round's on me.",
     },
 };
@@ -45,13 +47,34 @@ export const DealNudge: Story = {
 /** A custom amount. */
 export const CustomAmount: Story = {
     name: "Custom amount",
-    args: { initialAmount: { kind: "custom" }, initialCustom: "75", initialDesign: "desert-canyon", initialToName: "Sam", initialToEmail: "sam@example.com" },
+    args: {
+        initialAmount: { kind: "custom" },
+        initialCustom: "75",
+        initialDesign: "desert-canyon",
+        initialToFirstName: "Sam",
+        initialToLastName: "Chen",
+        initialToEmail: "sam@example.com",
+    },
 };
 
 /** Add to cart with things missing: each field says what it needs. */
 export const MissingDetails: Story = {
     name: "Missing details",
     args: { initialAmount: { kind: "custom" }, initialCustom: "", showErrors: true },
+};
+
+/** The confirm email and confirm phone don't match what was typed first. */
+export const EmailsDontMatch: Story = {
+    name: "Emails don't match",
+    args: {
+        initialToFirstName: "Alex",
+        initialToLastName: "Rivera",
+        initialToEmail: "alex@example.com",
+        initialToConfirmEmail: "alex@exmaple.com",
+        initialToPhone: "(555) 010-2481",
+        initialToConfirmPhone: "(555) 010-2418",
+        showErrors: true,
+    },
 };
 
 /** Buying for yourself: no recipient fields. */
@@ -63,7 +86,13 @@ export const ForMe: Story = {
 /** Emailed to the buyer to print and hand over: no recipient email needed. */
 export const PrintAtHome: Story = {
     name: "Print it yourself",
-    args: { initialDelivery: "print", initialDesign: "snowy-holiday", initialToName: "Dad", initialMessage: "Merry Christmas — tee time's on me." },
+    args: {
+        initialDelivery: "print",
+        initialDesign: "snowy-holiday",
+        initialToFirstName: "Chris",
+        initialToLastName: "Hale",
+        initialMessage: "Merry Christmas — tee time's on me.",
+    },
 };
 
 /** Shop Checkout › 1. Cart, with the gift card as the line item. */
@@ -81,7 +110,7 @@ export const Confirmation: Story = {
     args: { initialStep: "confirmation", initialOrder: SAMPLE_ORDER },
 };
 
-/** The purchase email when the card is for you: the card and its code. */
+/** The purchase email when the card is for you: the card, its code, a barcode and a QR code. */
 export const SelfEmail: Story = {
     name: "Self Email",
     args: { initialStep: "email", initialOrder: SAMPLE_ORDER_FOR_ME },
@@ -108,7 +137,7 @@ export const WalletForMe: Story = {
 /** The Shop page at phone width (390). */
 export const PhoneWidth: Story = {
     name: "Phone width",
-    args: { initialToName: "Alex", initialToEmail: "alex@example.com" },
+    args: { initialToFirstName: "Alex", initialToLastName: "Rivera", initialToEmail: "alex@example.com" },
     decorators: [
         (Story) => (
             <div className="mx-auto w-[390px]">
