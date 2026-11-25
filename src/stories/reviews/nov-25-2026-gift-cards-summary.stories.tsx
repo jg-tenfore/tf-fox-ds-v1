@@ -12,7 +12,7 @@ function Nov25Summary() {
             eyebrow="Nov 25, 2026 · Jarrette"
             title="Gift cards: today's page, then a builder"
             intro="First, the shop's Gift Card page from the live Fox site, rebuilt with the Fox design system as a base: same parts, same order, same rules, no side rail. Then the same job redone as a gift card builder, after a builder-style gift card flow on Mobbin, with the deals first, then carried through the shop's own cart, checkout and confirmation, the purchase email and the wallet."
-            meta={["Source: fox.tenfore.golf/dunes/shop/gift-cards", "Today's page · 5 stories", "New Concept · 15 stories"]}
+            meta={["Source: fox.tenfore.golf/dunes/shop/gift-cards", "Today's page · 10 stories", "New Concept · 16 stories"]}
         >
             <Block title="What's on the page">
                 <List
@@ -30,6 +30,11 @@ function Nov25Summary() {
                         <>
                             <B>Purchase for Myself</B> or <B>Purchase as Gift</B> for the custom amount.
                         </>,
+                        <>
+                            <B>The gift form.</B> Send as a Gift and Purchase as Gift open it: <B>From</B> (the signed-in golfer, with Change), <B>To</B> (first
+                            and last name, email and confirm email, phone and confirm phone, both optional), the offer or amount being sent, a personal message,
+                            then <B>Back</B> or <B>Add Gift to Cart</B>.
+                        </>,
                     ]}
                 />
                 <Links
@@ -37,6 +42,11 @@ function Nov25Summary() {
                         [`${S}default`, "The page"],
                         [`${S}amount-required`, "Amount required"],
                         [`${S}filled-in`, "Filled in"],
+                        [`${S}send-as-gift`, "Send as a Gift"],
+                        [`${S}send-as-gift-filled-in`, "Gift form · filled in"],
+                        [`${S}send-as-gift-missing-details`, "Gift form · missing details"],
+                        [`${S}purchase-as-gift`, "Purchase as Gift · $25"],
+                        [`${S}purchase-as-gift-no-amount`, "Purchase as Gift · no amount"],
                         [`${S}no-special-offers`, "No special offers"],
                         [`${S}phone-width`, "Phone width"],
                     ]}
@@ -47,12 +57,12 @@ function Nov25Summary() {
                 <List
                     items={[
                         "Every purchase button sends a signed-out golfer to sign-in first, then back.",
-                        "Send as a Gift and Purchase as Gift then open a separate gift form (/gift-cards/gift?offerId=… or ?amount=…). That form needs an account to see, so it isn't rebuilt here.",
+                        "Send as a Gift and Purchase as Gift then open a separate gift form (/gift-cards/gift?offerId=… or ?amount=…). It's rebuilt here from a screenshot of the signed-in form.",
                         "Purchase for Myself with no amount shows “Amount is required”. Purchase as Gift goes on without one.",
                         "An amount of 0 or letters stops Purchase for Myself without a message. Here it shows “Amount is required” instead.",
                     ]}
                 />
-                <p>In Storybook, each button reports what it would buy in the Actions panel.</p>
+                <p>In Storybook, Buy for Myself, Purchase for Myself and Add Gift to Cart report what they would buy in the Actions panel.</p>
             </Block>
 
             <Block title="Differences from the live page">
@@ -78,8 +88,9 @@ function Nov25Summary() {
                             Destinations: Desert canyon, Coastal cliffs, Mountain lake. Holidays &amp; occasions: Snowy holiday, Birthday gift, Fireworks night.
                         </>,
                         <>
-                            <B>3 · Who&apos;s it for?</B> Someone else (email it to them, or email it to you to print) with their name, an optional message and
-                            who it&apos;s from. Or you: the card is saved to your account.
+                            <B>3 · Who&apos;s it for?</B> Someone else (email it to them, or email it to you to print), with the gift form&apos;s fields folded
+                            in: <B>From</B> (you, with Change), their first and last name, email and confirm email, phone and confirm phone (optional), and a
+                            message. Printing needs only their name. Or you: the card is saved to your account.
                         </>,
                         <>
                             <B>Add to cart</B> goes into the shop&apos;s own layouts: <B>Cart</B> (Shop Checkout 1), <B>Checkout</B> (Shop Checkout 3) with Send
@@ -87,8 +98,8 @@ function Nov25Summary() {
                             returns. No shipping or tax, and the deal bonus shows as its own line.
                         </>,
                         <>
-                            <B>Purchase email</B>, laid out like the Gift Cards › Purchase email template. <B>Self Email</B> shows the card with its code;{" "}
-                            <B>Gift Email</B> shows “Gift sent” and the recipient, without the code.
+                            <B>Purchase email</B>, laid out like the Gift Cards › Purchase email template. <B>Self Email</B> shows the card, its 12-digit code,
+                            and a barcode and QR code to scan at the Pro Shop; <B>Gift Email</B> shows “Gift sent” and the recipient, without the code.
                         </>,
                         <>
                             <B>Wallet</B> (Profile › Wallet): a card bought for yourself shows under Gift cards, marked New. A gift shows under Sent as gifts.
@@ -100,6 +111,7 @@ function Nov25Summary() {
                         [`${G}choose`, "Open the builder"],
                         [`${G}deal-nudge`, "Deal nudge"],
                         [`${G}missing-details`, "Missing details"],
+                        [`${G}emails-dont-match`, "Emails don't match"],
                         [`${G}for-me`, "For me"],
                         [`${G}cart`, "Cart"],
                         [`${G}checkout`, "Checkout"],
@@ -120,6 +132,8 @@ function Nov25Summary() {
                         "The $10 to $500 limit on custom amounts is a sample rule.",
                         "Sign-in: the live site asks for it before buying. The builder assumes a signed-in golfer.",
                         "Whether a gift can be scheduled for a later date.",
+                        "The gift form's error messages, its “$25.00 gift card” box for Purchase as Gift, and asking for an amount when none was typed are best guesses; the screenshot only shows the offer case.",
+                        "What the recipient's phone number is used for (a text with the card?).",
                     ]}
                 />
             </Block>

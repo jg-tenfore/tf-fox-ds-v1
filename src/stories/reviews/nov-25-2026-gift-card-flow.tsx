@@ -47,6 +47,8 @@ import {
     maskCode,
     money,
 } from "@/components/gift-cards/gift-card-catalog";
+import { UpcBarcode } from "@/components/gift-cards/upc-barcode";
+import { QRCode } from "@/components/shared-assets/qr-code";
 import { cx } from "@/utils/cx";
 import { CartHeader } from "../explorations/cart-shared";
 import { SAGAMORE_CLUB, SiteFooter, TopNav } from "../explorations/tenfore-chrome";
@@ -63,7 +65,8 @@ export type GiftCardFlowStep = "shop" | "cart" | "checkout" | "confirmation" | "
 
 const ACCOUNT_LABEL = "Morgan H.";
 const ORDER_NUMBER = "#SG-100519";
-const CARD_CODE = "GC-48K2-9QF7";
+/** A sample 12-digit card code, the shape the live shop uses. It is also the barcode (UPC-A) and QR value. */
+const CARD_CODE = "284716093352";
 const PAID_ON = "November 25, 2026";
 const BILLING = "Morgan Hale, 118 Fairway Dr, Brookline MA 02445, US";
 
@@ -86,10 +89,14 @@ export const SAMPLE_ORDER: GiftCardOrder = {
     deal: GIFT_CARD_DEALS[0],
     recipient: "someone",
     delivery: "email",
-    toName: "Alex",
+    toFirstName: "Alex",
+    toLastName: "Rivera",
+    toName: "Alex Rivera",
     toEmail: "alex@example.com",
+    toPhone: "(555) 010-2481",
     message: "Happy birthday! First round's on me.",
     fromName: BUYER.name,
+    fromEmail: BUYER.email,
 };
 
 /** The same deal, bought for yourself. */
@@ -97,8 +104,11 @@ export const SAMPLE_ORDER_FOR_ME: GiftCardOrder = {
     ...SAMPLE_ORDER,
     design: designById("coastal-cliffs"),
     recipient: "me",
+    toFirstName: "",
+    toLastName: "",
     toName: "",
     toEmail: "",
+    toPhone: undefined,
     message: "",
 };
 
@@ -115,8 +125,10 @@ const builderPropsFor = (o: GiftCardOrder): Partial<GiftCardBuilderProps> => {
         initialDesign: o.design.id,
         initialRecipient: o.recipient,
         initialDelivery: o.delivery,
-        initialToName: o.toName,
+        initialToFirstName: o.toFirstName,
+        initialToLastName: o.toLastName,
         initialToEmail: o.toEmail,
+        initialToPhone: o.toPhone ?? "",
         initialMessage: o.message,
     };
 };
@@ -444,6 +456,7 @@ const CheckoutScreen = ({ order, onPay }: { order: GiftCardOrder; onPay: () => v
                                 <div className="mt-4 rounded-xl bg-secondary px-4 py-3 text-sm">
                                     <p className="text-tertiary">Message</p>
                                     <p className="mt-1 text-primary">{order.message || "No message"}</p>
+                                    {order.toPhone && <p className="mt-2 text-tertiary">Their phone {order.toPhone}</p>}
                                     <p className="mt-2 text-tertiary">From {order.fromName}</p>
                                 </div>
                             )}
@@ -729,7 +742,6 @@ const SOCIALS = [
 export const PurchaseEmail = ({ order, onManage }: { order: GiftCardOrder; onManage?: () => void }) => {
     const isGift = order.recipient === "someone";
     const firstName = BUYER.name.split(" ")[0];
-    const sentTo = order.delivery === "email" ? order.toName : "you";
 
     return (
         <div className="min-h-dvh bg-tertiary px-4 py-12">
@@ -783,7 +795,7 @@ export const PurchaseEmail = ({ order, onManage }: { order: GiftCardOrder; onMan
                         <>
                             <CardFace design={order.design} value={order.value} code={CARD_CODE} revealCode className="mx-auto max-w-[400px]" />
                             <p className="text-center text-sm text-tertiary">
-                                Show this code at the Pro Shop, or use it at checkout online. It&apos;s also in your wallet.
+                                Scan the barcode at the Pro Shop, or enter the code at checkout online. It&apos;s also in your wallet.
                             </p>
                         </>
                     )}
@@ -793,6 +805,19 @@ export const PurchaseEmail = ({ order, onManage }: { order: GiftCardOrder; onMan
                 <section className="px-8 pt-8">
                     <h2 className="text-lg font-semibold text-primary">Details</h2>
                     <div className="mt-4 flex flex-col divide-y divide-secondary rounded-xl ring-1 ring-secondary ring-inset">
+                        {!isGift && (
+                            <>
+                                <DetailRow label="Gift card code" value={CARD_CODE} />
+                                {/* Scannable codes, like the live email's barcode, plus the square code */}
+                                <div className="flex flex-col items-center gap-3 px-5 py-5">
+                                    <div className="flex items-center justify-center gap-8">
+                                        <UpcBarcode value={CARD_CODE} />
+                                        <QRCode value={CARD_CODE} size="md" />
+                                    </div>
+                                    <p className="text-xs text-tertiary">Scannable barcode for easy redemption</p>
+                                </div>
+                            </>
+                        )}
                         <DetailRow label="Card value" value={money(order.value)} />
                         {order.value > order.price && (
                             <DetailRow label="You paid" value={`${money(order.price)} (deal: +${money(order.value - order.price)} bonus)`} />
@@ -804,6 +829,7 @@ export const PurchaseEmail = ({ order, onManage }: { order: GiftCardOrder; onMan
                                 value={order.delivery === "email" ? order.toEmail : `Printable copy, emailed to you`}
                             />
                         )}
+                        {isGift && order.delivery === "email" && order.toPhone && <DetailRow label="Recipient phone" value={order.toPhone} />}
                         {isGift && order.message && <DetailRow label="Message" value={`“${order.message}”`} />}
                         {isGift && <DetailRow label="From" value={order.fromName} />}
                         <DetailRow label="Design" value={order.design.name} />

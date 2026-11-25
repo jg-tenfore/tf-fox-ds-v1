@@ -125,5 +125,5 @@ export const money0 = (n: number) => (Number.isInteger(n) ? `$${n}` : money(n));
 
 export const formatDate = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
-/** "GC-••••-31MD" */
-export const maskCode = (code: string) => code.replace(/^(GC-)[A-Z0-9]{4}/, "$1••••");
+/** "GC-••••-31MD", or "••••••••3352" for a 12-digit card code. */
+export const maskCode = (code: string) => (/^\d{12}$/.test(code) ? `••••••••${code.slice(-4)}` : code.replace(/^(GC-)[A-Z0-9]{4}/, "$1••••"));

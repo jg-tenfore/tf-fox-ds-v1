@@ -53,5 +53,12 @@ export const offerHeadline = (offer: GiftCardOffer) => `Pay $${offer.price}, get
 export const formatOfferDate = (isoDate: string) =>
     new Date(`${isoDate}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
-/** What a purchase button asks for. The live site sends both kinds to sign-in first, then on to checkout or the gift form. */
-export type GiftCardPurchase = { recipient: "myself" | "gift"; offerId: number } | { recipient: "myself" | "gift"; amount: number | null; message: string };
+/** What Buy for Myself and Purchase for Myself ask for. The live site sends a signed-out golfer to sign-in first. */
+export type GiftCardPurchase = { recipient: "myself"; offerId: number } | { recipient: "myself"; amount: number; message: string };
+
+/** What the gift form's Add Gift to Cart asks for. */
+export type GiftCardGift = ({ offerId: number } | { amount: number }) & {
+    to: { firstName: string; lastName: string; email: string; phone?: string };
+    from: { name: string; email: string };
+    message: string;
+};
