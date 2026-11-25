@@ -807,7 +807,7 @@ export const PurchaseEmail = ({ order, onManage }: { order: GiftCardOrder; onMan
                     <div className="mt-4 flex flex-col divide-y divide-secondary rounded-xl ring-1 ring-secondary ring-inset">
                         {!isGift && (
                             <>
-                                <DetailRow label="Gift card code" value={CARD_CODE} />
+                                <DetailRow label="Gift Card ID" value={CARD_CODE} />
                                 {/* Scannable codes, like the live email's barcode, plus the square code */}
                                 <div className="flex flex-col items-center gap-3 px-5 py-5">
                                     <div className="flex items-center justify-center gap-8">
