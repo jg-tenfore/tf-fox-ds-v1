@@ -1,5 +1,4 @@
 import type { Preview } from "@storybook/nextjs-vite";
-
 // Load the full Untitled UI + Tailwind v4 pipeline (theme.css carries the
 // monochromatic Sagamore palette) so every story renders on-brand.
 import "../src/styles/globals.css";
@@ -32,7 +31,16 @@ const preview: Preview = {
                     [
                         "Screen index",
                         "MCG Prototype 3",
-                        ["Instruction", "Instruction hub", "Lessons & programs", "Instructor profile", "Booking", "Packages & credits", "Programs", "Deep links & checks"],
+                        [
+                            "Instruction",
+                            "Instruction hub",
+                            "Lessons & programs",
+                            "Instructor profile",
+                            "Booking",
+                            "Packages & credits",
+                            "Programs",
+                            "Deep links & checks",
+                        ],
                         "MCG Prototype 1",
                         [
                             "Home",
@@ -72,7 +80,17 @@ const preview: Preview = {
                     ],
                     "Reviews",
                     // Newest round first: list each dated round here as it's added.
-                    ["Nov 25 – Gift Cards", ["Summary", "Nov 24 – Jarrette", "Nov 25 – New Concept"], "Sep 23 – MCG Prototype 3", "Sep 15 – MCG Prototype 2", "Sep 15 – Austin's Academy feedback", "Sep 11 – MCG Prototype 1", "*"],
+                    [
+                        "Nov 27 – Mobile Nav",
+                        ["Summary", "Options"],
+                        "Nov 25 – Gift Cards",
+                        ["Summary", "Nov 24 – Jarrette", "Nov 25 – New Concept"],
+                        "Sep 23 – MCG Prototype 3",
+                        "Sep 15 – MCG Prototype 2",
+                        "Sep 15 – Austin's Academy feedback",
+                        "Sep 11 – MCG Prototype 1",
+                        "*",
+                    ],
                     "Research",
                     ["Explorations", "Color Theory", ["Analogous", "Complementary", "Triadic"]],
                     "Archive",
