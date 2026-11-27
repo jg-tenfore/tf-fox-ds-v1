@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/5_14_23_LRO_Lynnfield_Magazine_Sagamore_Golf_Course_17-1-scaled-DSczUOil.jpg?ignore`})),r;e((()=>{n(),r={src:t,height:1707,width:2560,blurDataURL:t}}))();export{r as default};

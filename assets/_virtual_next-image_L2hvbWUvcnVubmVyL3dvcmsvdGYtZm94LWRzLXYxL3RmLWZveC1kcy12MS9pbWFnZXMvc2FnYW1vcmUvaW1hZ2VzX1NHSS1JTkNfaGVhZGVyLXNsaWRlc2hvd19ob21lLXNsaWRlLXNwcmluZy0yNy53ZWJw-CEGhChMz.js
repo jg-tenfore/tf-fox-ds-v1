@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/images_SGI-INC_header-slideshow_home-slide-spring-27-DimquLwL.webp?ignore`})),r;e((()=>{n(),r={src:t,height:500,width:1920,blurDataURL:t}}))();export{r as default};

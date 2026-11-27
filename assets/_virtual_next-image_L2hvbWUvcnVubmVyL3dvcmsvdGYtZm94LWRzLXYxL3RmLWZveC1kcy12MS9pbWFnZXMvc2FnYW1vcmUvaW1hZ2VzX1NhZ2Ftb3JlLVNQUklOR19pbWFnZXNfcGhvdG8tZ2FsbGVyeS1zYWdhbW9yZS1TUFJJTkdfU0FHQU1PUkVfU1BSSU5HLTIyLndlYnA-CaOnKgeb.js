@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-tpQASj4C.js";var t,n=e((()=>{t=`/tf-fox-ds-v1/assets/images_Sagamore-SPRING_images_photo-gallery-sagamore-SPRING_SAGAMORE_SPRING-22-DcTicKoH.webp?ignore`})),r;e((()=>{n(),r={src:t,height:475,width:700,blurDataURL:t}}))();export{r as default};
